@@ -1,0 +1,64 @@
+---
+title: "Workflow: Înrolare Student la Curs Opțional"
+---
+flowchart TD
+    Start([Student acceseză\n'Cursurile Mele']) --> CheckAuth{Autentificat?}
+
+    CheckAuth -->|Nu| Login[Redirecționare\nla Login]
+    Login --> Start
+
+    CheckAuth -->|Da| LoadCourses[Încărcare\nlista cursuri]
+
+    LoadCourses --> FilterOptional[Filtrare\ncursuri opționale\ndisponibile]
+
+    FilterOptional --> DisplayCourses[Afișare cursuri\npe anul de studiu]
+
+    DisplayCourses --> StudentChoice{Student\nselectează curs?}
+
+    StudentChoice -->|Nu| End1([Sfârșit])
+
+    StudentChoice -->|Da| CheckEnrolled{Deja înscris\nla acest curs?}
+
+    CheckEnrolled -->|Da| ShowError1[Afișare mesaj:\n'Deja înscris!']
+    ShowError1 --> DisplayCourses
+
+    CheckEnrolled -->|Nu| ValidateCourse{Curs valid\npentru student?}
+
+    ValidateCourse -->|Nu| ShowError2[Afișare mesaj:\n'Curs indisponibil!']
+    ShowError2 --> DisplayCourses
+
+    ValidateCourse -->|Da| SendEnrollRequest[Trimitere request\nPOST /enroll-optional.php]
+
+    SendEnrollRequest --> DBTransaction{Tranzacție\nBază de Date}
+
+    DBTransaction --> CheckStudyGroup{Există\nstudy_group\npentru curs?}
+
+    CheckStudyGroup -->|Nu| CreateStudyGroup[CREATE\nstudy_group nou]
+    CreateStudyGroup --> AddToGroup
+
+    CheckStudyGroup -->|Da| AddToGroup[INSERT INTO\nstudy_group_members]
+
+    AddToGroup --> CommitTrans[COMMIT tranzacție]
+
+    CommitTrans --> RefreshList[Refresh listă\ncursuri student]
+
+    RefreshList --> ShowSuccess[Afișare mesaj:\n'Înrolare reușită!']
+
+    ShowSuccess --> End2([Sfârșit])
+
+    DBTransaction -->|Eroare| Rollback[ROLLBACK]
+    Rollback --> ShowError3[Afișare mesaj:\n'Eroare la înrolare']
+    ShowError3 --> DisplayCourses
+
+    style Start fill:#90EE90
+    style End1 fill:#FFB6C1
+    style End2 fill:#90EE90
+    style CheckAuth fill:#FFE4B5
+    style ValidateCourse fill:#FFE4B5
+    style CheckEnrolled fill:#FFE4B5
+    style CheckStudyGroup fill:#FFE4B5
+    style DBTransaction fill:#FFE4B5
+    style ShowSuccess fill:#98FB98
+    style ShowError1 fill:#FFB6C1
+    style ShowError2 fill:#FFB6C1
+    style ShowError3 fill:#FFB6C1

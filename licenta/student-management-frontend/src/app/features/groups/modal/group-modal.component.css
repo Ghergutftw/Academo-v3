@@ -1,0 +1,25 @@
+.form-control:not(.search-input), .form-select {
+  border-left: 5px solid #dc3545;
+}
+
+.form-control.ng-valid:not(.search-input), .form-select.ng-valid {
+  border-left: 5px solid #28a745;
+}
+
+.search-input {
+  border-left: none !important;
+}
+
+.student-selection {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+/* Read-only field should not show validation colors */
+.form-control[readonly] {
+  border-left: 5px solid #6c757d;
+  background-color: #e9ecef;
+}

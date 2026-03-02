@@ -1,0 +1,102 @@
+---
+title: "Sequence Diagram: Autentificare Utilizator"
+---
+sequenceDiagram
+    autonumber
+    actor User as Utilizator
+    participant UI as Login Component
+    participant AuthService as Auth Service
+    participant HTTP as HTTP Client
+    participant API as /api/auth/login.php
+    participant Model as Teacher/Student Model
+    participant DB as MySQL Database
+
+    User->>UI: Introduce email & parolă
+    User->>UI: Click "Login"
+
+    UI->>UI: Validare formular<br/>(email valid, parolă min 6 chars)
+
+    alt Validare failed
+        UI-->>User: Afișare eroare validare
+    else Validare success
+        UI->>AuthService: login(credentials)
+
+        AuthService->>HTTP: POST /api/auth/login.php<br/>{email, password}
+
+        HTTP->>API: HTTP Request
+
+        API->>API: Verifică dacă email<br/>conține '@'
+
+        alt Email fără '@'
+            API->>API: Adaugă @academic.tuiasi.ro<br/>sau @student.tuiasi.ro
+        end
+
+        API->>Model: getByEmail(email)
+
+        Model->>DB: SELECT * FROM teachers<br/>WHERE email = ?
+
+        alt User găsit în teachers
+            DB-->>Model: Record găsit
+            Model-->>API: User data (cu password hash)
+
+            API->>API: password_verify(input, hash)
+
+            alt Password invalid
+                API-->>HTTP: {success: false, error: "Invalid"}
+                HTTP-->>AuthService: Error response
+                AuthService-->>UI: Login failed
+                UI-->>User: Mesaj: "Date incorecte"
+            else Password valid
+                API->>API: Generare token<br/>(base64 JSON)
+                API-->>HTTP: {success: true,<br/>user: {...}, token: "..."}
+                HTTP-->>AuthService: Success response
+
+                AuthService->>AuthService: Salvare token în<br/>sessionStorage
+                AuthService->>AuthService: Salvare user în<br/>sessionStorage
+
+                AuthService-->>UI: Login success
+
+                alt User is Admin
+                    UI->>UI: Redirect /admin/dashboard
+                else User is Teacher
+                    UI->>UI: Redirect /teacher/dashboard
+                end
+
+                UI-->>User: Dashboard afișat
+            end
+
+        else User nu există în teachers
+            API->>Model: Caută în students
+            Model->>DB: SELECT * FROM students<br/>WHERE email = ?
+
+            alt User găsit în students
+                DB-->>Model: Record găsit
+                Model-->>API: User data
+
+                API->>API: password_verify(input, hash)
+
+                alt Password valid
+                    API->>API: Generare token
+                    API-->>HTTP: Success + token
+                    HTTP-->>AuthService: Login success
+                    AuthService->>AuthService: Save session
+                    AuthService-->>UI: Success
+                    UI->>UI: Redirect /student/dashboard
+                    UI-->>User: Dashboard afișat
+                else Password invalid
+                    API-->>HTTP: Error
+                    HTTP-->>AuthService: Failed
+                    AuthService-->>UI: Error
+                    UI-->>User: "Date incorecte"
+                end
+
+            else User nu există nicăieri
+                API-->>HTTP: {success: false,<br/>error: "User not found"}
+                HTTP-->>AuthService: Error
+                AuthService-->>UI: Failed
+                UI-->>User: "Utilizator inexistent"
+            end
+        end
+    end
+
+    Note over User,DB: Token-ul este trimis în header-ul<br/>Authorization: Bearer {token}<br/>la toate request-urile ulterioare

@@ -1,0 +1,113 @@
+serve
+
+sequenceDiagram
+    box rgb(240, 248, 255) Local Development Machine
+    participant Dev as 👨‍💻 Developer
+    participant CLI as 🛠️ Angular CLI
+    participant Vite as ⚡ Vite Dev Server (incl. esbuild)
+    end
+    participant Browser as 🖥️ Browser
+
+    Dev->>CLI: 1. Rulează `ng serve`
+    activate CLI
+    Note over CLI: Citește angular.json<br/>Determin. port (4200) & config.
+    
+    CLI->>Vite: 2. Pornește serverul de dezvoltare
+    activate Vite
+    Note over Vite: esbuild: Transpilare TS->JS<br/>Compilare în Memoria RAM<br/>(Virtual Modules)
+    
+    Vite-->>CLI: Server ready on localhost:4200
+    deactivate CLI
+
+    par Initial Load
+        Browser->>Vite: 3. HTTP GET / (index.html)
+        Vite-->>Browser: Returnează index.html + script @vite/client
+        Browser->>Vite: HTTP GET JS Modules (main.js, etc.)
+        Vite-->>Browser: Servește modulele din RAM
+    and WebSocket Handshake
+        Browser->>Vite: 4. Connection Upgrade (ws://)
+        Note right of Browser: Inițiat de @vite/client
+        Vite-->>Browser: 101 Switching Protocols (WS established)
+    end
+    Note over Browser: Aplicația Angular pornește
+    activate Browser
+    deactivate Browser
+    activate Vite
+    deactivate Vite
+
+
+build
+
+sequenceDiagram
+    participant Source as 📂 Cod Sursă (TS/HTML/SCSS)
+    box rgb(255, 250, 240) Build Pipeline (Angular CLI & esbuild)
+    participant AOT as ⚙️ AOT Compiler
+    participant Optimizer as 🛠️ esbuild (Tree Shaking & Bundling)
+    participant Minifier as 🗜️ Minification & Uglify
+    end
+    participant Dist as 📦 Folder /dist/browser
+
+    Note over Source, Dist: Comanda: `ng build --configuration production`
+
+    Source->>AOT: Input: Template-uri și Componente
+    activate AOT
+    Note over AOT: Compilează HTML/CSS în JavaScript pur
+    AOT->>Optimizer: Output: Cod JS intermediar (ES2022)
+    deactivate AOT
+    
+    activate Optimizer
+    Note over Optimizer: Analizează importurile
+    Note over Optimizer: Elimină codul nefolosit (Tree Shaking)
+    Note over Optimizer: Grupează modulele (Bundling & Chunking)
+    Optimizer->>Minifier: Output: Bundle-uri mari, neoptimizate
+    deactivate Optimizer
+
+    activate Minifier
+    Note over Minifier: Scurtează nume variabile (a, b, c)
+    Note over Minifier: Elimină spații și comentarii
+    Minifier->>Dist: Output: Fișiere statice optimizate + Hashing
+    Note right of Dist: index.html<br/>main.a5b6c7.js<br/>styles.d8e9f0.css
+    deactivate Minifier
+
+
+sequenceDiagram
+    box rgb(240, 248, 255) Mediul Local (Dev)
+    participant Dev as 👨‍💻 Dezvoltator
+    participant CLI as 🛠️ Angular CLI (Build System)
+    end
+    box rgb(255, 245, 255) Mediul de Producție
+    participant Server as ☁️ Server Producție (Fișiere Statice)
+    end
+    participant Client as 🖥️ Browser Utilizator
+
+    Note over Dev, Client: Scenariu: Actualizare aplicație (Angular modern cu build Vite/esbuild)
+
+    %% Etapa de Dezvoltare și Build
+    Dev->>Dev: Modifică codul sursă
+    Dev->>CLI: Rulează `ng build --prod`
+    activate CLI
+    %% Nota actualizata pentru a reflecta stack-ul modern
+    Note right of CLI: Sistem modern de build<br/>(bazat pe Vite & esbuild)<br/>generează fișiere cu hash unic
+    CLI-->>Dev: Generează fișiere statice în /dist (ex: main.NEW_HASH.js)
+    deactivate CLI
+
+    %% Etapa de Deployment
+    Note over Server: Starea inițială: Serverul găzduiește versiunea veche<br/>(ex: main.OLD_HASH.js)
+    Dev->>Server: DEPLOY: Încarcă noile fișiere statice pe server
+    Note over Server: Starea nouă: Serverul găzduiește versiunea nouă<br/>(index.html actualizat + main.NEW_HASH.js)
+
+    %% Etapa de Acces Utilizator
+    rect rgb(245, 245, 245)
+    note right of Client: Flux Acces Utilizator
+        Client->>Server: 1. HTTP GET / (Cere index.html)
+        %% Serverul static raspunde
+        Server-->>Client: 2. Returnează noul index.html (referință la NEW_HASH.js)
+        
+        Client->>Client: Parsează HTML, identifică noul script
+        
+        Client->>Server: 3. HTTP GET /main.NEW_HASH.js
+        Note right of Server: Serverul web livrează<br/>fișierul static de pe disc
+        Server-->>Client: 4. Returnează noul cod (200 OK)
+    end
+    
+    Note right of Client: Browserul descarcă obligatoriu versiunea nouă<br/>datorită numelui diferit de fișier (Cache Busting),<br/>generat de build-ul Vite/esbuild.

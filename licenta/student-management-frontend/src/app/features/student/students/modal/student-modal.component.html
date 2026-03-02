@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ mode === 'add' ? 'Adaugă Student' : 'Editează Student' }}</h5>
+  <button type="button" class="btn-close" aria-label="Închide" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="studentName" class="form-label">Nume</label>
+      <input id="studentName" type="text" class="form-control" [(ngModel)]="studentName" required />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="studentEmail" class="form-label">Email</label>
+      <input id="studentEmail" type="email" class="form-control" [(ngModel)]="studentEmail" required />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="studentStudyCycle" class="form-label">Ciclu Studii</label>
+      <select id="studentStudyCycle" class="form-select" [(ngModel)]="studentStudyCycle" (ngModelChange)="onStudyCycleChange()" required>
+        <option value="" disabled selected>Selectați ciclul</option>
+        <option value="Licenta">Licență</option>
+        <option value="Master">Master</option>
+      </select>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="studentStudyYear" class="form-label">An Studiu</label>
+      <select id="studentStudyYear" class="form-select" [(ngModel)]="studentStudyYear" (ngModelChange)="onStudyYearChange()" [disabled]="!studentStudyCycle" required>
+        <option [value]="null" disabled selected>Selectați anul</option>
+        @for (year of availableStudyYears; track year) {
+          <option [value]="year">Anul {{ year }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="studentGroup" class="form-label">
+      Grupă
+      @if (!studentStudyCycle) {
+        <small class="text-muted ms-1">(selectați mai întâi ciclul de studii)</small>
+      } @else if (!studentStudyYear) {
+        <small class="text-muted ms-1">(selectați mai întâi anul de studiu)</small>
+      } @else if (filteredGroups.length === 0) {
+        <small class="text-warning ms-1">(nicio grupă disponibilă pentru această selecție)</small>
+      }
+    </label>
+    <select id="studentGroup" class="form-control" [(ngModel)]="studentGroupId" [disabled]="!studentStudyYear || filteredGroups.length === 0" required>
+      <option [value]="null" disabled>Selectează o grupă</option>
+      @for (group of filteredGroups; track group.id) {
+        <option [value]="group.id">{{ group.name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="studentStartYear" class="form-label">An Început</label>
+      <input id="studentStartYear" type="number" class="form-control" [(ngModel)]="studentStartYear"
+             placeholder="ex: 2022" [min]="2000" [max]="currentYear + 1" step="1" required />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="studentFinancingType" class="form-label">Tip Finanțare</label>
+      <select id="studentFinancingType" class="form-select" [(ngModel)]="studentFinancingType" required>
+        <option value="" disabled selected>Selectați</option>
+        <option value="Buget">Buget</option>
+        <option value="Taxa">Taxă</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="studentStatus" class="form-label">Status</label>
+    <select id="studentStatus" class="form-select" [(ngModel)]="studentStatus" required>
+      <option value="" disabled selected>Selectați statusul</option>
+      <option value="Activ">Activ</option>
+      <option value="Suspendat">Suspendat</option>
+      <option value="Exmatriculat">Exmatriculat</option>
+    </select>
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Anulează</button>
+  <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!studentName || !studentEmail || !studentGroupId">
+    {{ mode === 'add' ? 'Adaugă' : 'Salvează' }}
+  </button>
+</div>

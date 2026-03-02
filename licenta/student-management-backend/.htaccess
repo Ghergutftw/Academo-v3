@@ -1,0 +1,3 @@
+Options -Indexes
+
+# CORS headers are handled by PHP (_bootstrap.php) to avoid duplication

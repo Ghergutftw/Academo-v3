@@ -1,0 +1,98 @@
+---
+title: "Workflow: Import Studenți Excel de către Administrator"
+---
+flowchart TD
+    Start([Administrator\nacceseză Lista Studenți]) --> CheckAuth{Autentificat\nca Admin?}
+
+    CheckAuth -->|Nu| Redirect[Redirecționare Login]
+    Redirect --> Start
+
+    CheckAuth -->|Da| ViewStudents[Afișare listă\nstudenți existenți]
+
+    ViewStudents --> ClickImport{Admin click\npe 'Import Excel'?}
+
+    ClickImport -->|Nu| End1([Sfârșit])
+
+    ClickImport -->|Da| SelectFile[Admin selectează\nfișier .xlsx]
+
+    SelectFile --> FileLoaded{Fișier\nîncărcat?}
+
+    FileLoaded -->|Nu| End1
+
+    FileLoaded -->|Da| ParseExcel[Frontend: XLSX.js\nParsing fișier]
+
+    ParseExcel --> ValidateColumns{Coloane\nvalide?}
+
+    ValidateColumns -->|Nu| ShowError1[Mesaj eroare:\n'Format invalid!\nVerifică coloanele']
+    ShowError1 --> SelectFile
+
+    ValidateColumns -->|Da| ValidateRows[Validare fiecare rând:\n- Email obligatoriu\n- Nume obligatoriu\n- Grupa validă]
+
+    ValidateRows --> CheckEnums{Enum-uri\nvalide?}
+
+    CheckEnums -->|Nu| ShowError2[Mesaj eroare:\n'Valori invalide pentru\nstudy_cycle/financing']
+    ShowError2 --> SelectFile
+
+    CheckEnums -->|Da| MatchGroups[Match nume grupă\ncu student_groups\nexistente]
+
+    MatchGroups --> ConfirmImport{Admin confirmă\nimportul?}
+
+    ConfirmImport -->|Nu| SelectFile
+
+    ConfirmImport -->|Da| SendToBackend[POST /students/import.php\nArray JSON studenți]
+
+    SendToBackend --> StartTransaction[START TRANSACTION]
+
+    StartTransaction --> LoopStudents[Pentru fiecare student\ndin array]
+
+    LoopStudents --> CheckEmail{Email\ndeja există?}
+
+    CheckEmail -->|Da| Skip[Incrementare\ncounter 'skipped']
+    Skip --> NextStudent{Mai sunt\nstudenți?}
+
+    CheckEmail -->|Nu| CheckGroup{Grupa\nexistă?}
+
+    CheckGroup -->|Nu| CreateGroup[INSERT INTO\nstudent_groups]
+    CreateGroup --> InsertStudent
+
+    CheckGroup -->|Da| InsertStudent[INSERT INTO students\ncu date validate]
+
+    InsertStudent --> Success{Insert\nreușit?}
+
+    Success -->|Da| IncrementSuccess[Incrementare\ncounter 'created']
+    IncrementSuccess --> NextStudent
+
+    Success -->|Nu| IncrementFailed[Incrementare\ncounter 'failed'\nLog error]
+    IncrementFailed --> NextStudent
+
+    NextStudent -->|Da| LoopStudents
+
+    NextStudent -->|Nu| CommitTrans[COMMIT TRANSACTION]
+
+    CommitTrans --> GenerateReport[Generare raport:\n- Created: X\n- Skipped: Y\n- Failed: Z]
+
+    GenerateReport --> RefreshList[Refresh listă\nstudenți]
+
+    RefreshList --> ShowReport[Afișare pop-up\ncu rezultate import]
+
+    ShowReport --> End2([Sfârșit])
+
+    SendToBackend -->|Connection Error| Rollback[ROLLBACK]
+    Rollback --> ShowError3[Mesaj eroare:\n'Eroare la import,\nîncearcă din nou']
+    ShowError3 --> ViewStudents
+
+    style Start fill:#90EE90
+    style End1 fill:#FFB6C1
+    style End2 fill:#90EE90
+    style CheckAuth fill:#FFE4B5
+    style ValidateColumns fill:#FFE4B5
+    style CheckEnums fill:#FFE4B5
+    style CheckEmail fill:#FFE4B5
+    style CheckGroup fill:#FFE4B5
+    style Success fill:#FFE4B5
+    style ConfirmImport fill:#FFE4B5
+    style NextStudent fill:#FFE4B5
+    style ShowReport fill:#98FB98
+    style ShowError1 fill:#FFB6C1
+    style ShowError2 fill:#FFB6C1
+    style ShowError3 fill:#FFB6C1

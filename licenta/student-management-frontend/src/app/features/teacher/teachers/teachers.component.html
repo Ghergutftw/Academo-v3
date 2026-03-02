@@ -1,0 +1,121 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Profesori</h2>
+      <div class="d-flex gap-2">
+        <button
+          (click)="clearSearchText(); clearCourseFilter()"
+          [class]="'btn btn-sm ' + (searchText || selectedCourseId ? 'btn-warning' : 'btn-outline-secondary')"
+          [disabled]="!searchText && !selectedCourseId"
+          title="Resetează filtrele">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Resetează
+        </button>
+        <button (click)="openAddModal()" class="btn btn-light">Adaugă Profesor</button>
+      </div>
+    </div>
+    <div class="card-body bg-light">
+      <!-- Filters -->
+      <div class="row mb-3 filter-row">
+        <!-- Name Search -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Caută după Nume sau Email</label>
+          <mat-form-field class="w-100">
+            <input
+              (input)="onSearchChange()"
+              [(ngModel)]="searchText"
+              matInput
+              placeholder="Tastează pentru a căuta profesori..."
+              type="text">
+            <button
+              (click)="clearSearchText()"
+              *ngIf="searchText"
+              mat-icon-button
+              matSuffix>
+              ✕
+            </button>
+          </mat-form-field>
+        </div>
+
+        <!-- Course Filter -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold"> Materie</label>
+          <mat-form-field class="w-100">
+            <input
+              [formControl]="courseControl"
+              [matAutocomplete]="auto"
+              matInput
+              placeholder="Tastează pentru a căuta materii..."
+              type="text">
+            <button
+              (click)="clearCourseFilter()"
+              *ngIf="selectedCourseId"
+              class="btn btn-sm"
+              mat-icon-button
+              matSuffix>
+              ✕
+            </button>
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              (optionSelected)="onCourseSelected($event.option.value)"
+              [displayWith]="displayCourseName.bind(this)">
+              @for (course of filteredCourses$ | async; track course.id) {
+                <mat-option [value]="course">
+                  {{ course.name }}
+                  @if (course.teacher_name) {
+                    <small class="text-muted"> - {{ course.teacher_name }}</small>
+                  }
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+
+      @if (teachers().length) {
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-soft">
+            <thead class="table-light">
+            <tr>
+              <th>Nume</th>
+              <th>Email</th>
+              <th>Acțiuni</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (teacher of getPaginatedTeachers(); track teacher.id) {
+                <tr>
+                  <td>{{ teacher.name }}</td>
+                  <td>{{ teacher.email }}</td>
+                  <td>
+                    <button (click)="editTeacher(teacher)"
+                            class="btn btn-sm btn-outline-primary me-2">
+                      Editează
+                    </button>
+                    <button (click)="deleteTeacher(teacher.id)"
+                            class="btn btn-sm btn-outline-danger">
+                      Șterge
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [length]="filteredTeachers().length"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageSize]="pageSize"
+          aria-label="Select page of teachers"
+          showFirstLastButtons>
+        </mat-paginator>
+      } @else {
+        <div class="alert alert-info">
+          No teachers found.
+        </div>
+      }
+    </div>
+  </div>
+</div>

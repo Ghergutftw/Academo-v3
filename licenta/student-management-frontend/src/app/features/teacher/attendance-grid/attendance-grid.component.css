@@ -1,0 +1,307 @@
+.attendance-grid-container {
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h2 {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+/* Table Styles */
+.attendance-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.attendance-table thead th {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.attendance-table tbody td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  vertical-align: middle;
+}
+
+/* Student Column */
+.student-col {
+  min-width: 250px;
+  max-width: 250px;
+  background-color: #fff;
+  z-index: 11;
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.student-name {
+  font-weight: 600;
+  color: #212529;
+  font-size: 0.95rem;
+}
+
+.student-email {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Lab Columns */
+.lab-col {
+  min-width: 80px;
+  width: 80px;
+  padding: 8px 4px;
+  font-size: 0.85rem;
+}
+
+.lab-col.has-session {
+  background-color: #e7f5ff;
+  font-weight: 600;
+}
+
+.lab-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lab-number {
+  font-weight: 600;
+}
+
+.lab-stats {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Stats Column */
+.stats-col {
+  min-width: 100px;
+  width: 100px;
+  background-color: #fff;
+}
+
+.sticky-col-right {
+  position: sticky;
+  right: 0;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.student-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.percentage {
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.percentage.high {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.percentage.medium {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.percentage.low {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Attendance Cells */
+.attendance-cell {
+  transition: all 0.2s ease;
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+.attendance-cell.present {
+  background-color: #d4edda;
+}
+
+.attendance-cell.absent {
+  background-color: #f8d7da;
+}
+
+.attendance-cell.no-session {
+  background-color: #f8f9fa;
+}
+
+.attendance-toggle-btn {
+  width: 42px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.attendance-toggle-btn:active {
+  transform: scale(0.92);
+}
+
+.attendance-toggle-btn.btn-present {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.attendance-toggle-btn.btn-present:hover {
+  background-color: #218838;
+}
+
+.attendance-toggle-btn.btn-absent {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.attendance-toggle-btn.btn-absent:hover {
+  background-color: #c82333;
+}
+
+/* Tiny button in lab header */
+.btn.btn-xs {
+  --bs-btn-padding-y: 0.1rem;
+  --bs-btn-padding-x: 0.25rem;
+  --bs-btn-font-size: 0.65rem;
+}
+
+/* Legend */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+}
+
+.legend-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 1.3rem;
+}
+
+.legend-icon.present {
+  background-color: #d4edda;
+}
+
+.legend-icon.absent {
+  background-color: #f8d7da;
+}
+
+.legend-icon.no-session {
+  background-color: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .lab-col {
+    min-width: 60px;
+    width: 60px;
+  }
+
+  .lab-stats {
+    display: none;
+  }
+
+  .student-col {
+    min-width: 200px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .attendance-grid-container {
+    padding: 10px;
+  }
+
+  .lab-col {
+    min-width: 50px;
+    width: 50px;
+    font-size: 0.75rem;
+  }
+
+  .attendance-cell i {
+    font-size: 1rem;
+  }
+
+  .student-col {
+    min-width: 150px;
+    max-width: 150px;
+  }
+
+  .student-name {
+    font-size: 0.85rem;
+  }
+
+  .student-email {
+    font-size: 0.7rem;
+  }
+}
+
+/* Loading & Empty States */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Card Enhancements */
+.card {
+  border: none;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.card-header {
+  border-radius: 8px 8px 0 0 !important;
+  border: none;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+/* Hide disabled options in the Material select panel to avoid showing the currently selected item */
+.hide-disabled .mat-mdc-option.mdc-list-item--disabled {
+  display: none !important;
+}
