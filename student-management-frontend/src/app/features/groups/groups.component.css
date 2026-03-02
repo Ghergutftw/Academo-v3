@@ -1,0 +1,46 @@
+.groups-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.groups-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.groups-list {
+  .mat-expansion-panel {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.group-content {
+  .group-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+}
+
+.students-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+mat-panel-description {
+  justify-content: flex-end;
+  align-items: center;
+
+  mat-icon {
+    margin-right: 8px;
+  }
+}

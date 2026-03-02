@@ -1,0 +1,102 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Groups</h2>
+      @if (isAdmin) {
+        <button class="btn btn-light" (click)="openAddModal()">Add Group</button>
+      }
+    </div>
+    <div class="card-body bg-light">
+      @if (groups.length) {
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-soft">
+            <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Year</th>
+              <th>Students</th>
+              @if (isAdmin) {
+                <th>Actions</th>
+              }
+            </tr>
+            </thead>
+            <tbody>
+              @for (group of getPaginatedGroups(); track group.id) {
+                <tr>
+                  <td>{{ group.name }}</td>
+                  <td>{{ group.year }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-info" (click)="toggleStudents(group.id)">
+                      {{ expandedGroup === group.id ? 'Hide' : 'Show' }} Students
+                    </button>
+                  </td>
+                  @if (isAdmin) {
+                    <td>
+                      <button class="btn btn-sm btn-outline-primary me-2" (click)="editGroup(group)">Edit</button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="deleteGroup(group.id)">Delete</button>
+                    </td>
+                  }
+                </tr>
+                @if (expandedGroup === group.id) {
+                  <tr>
+                    <td [attr.colspan]="isAdmin ? 4 : 3">
+                      <div class="table-responsive">
+                        <table class="table table-bordered table-soft">
+                          <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            @if (isAdmin) {
+                              <th>Actions</th>
+                            }
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @if (studentsMap[group.id] && studentsMap[group.id].length) {
+                              @for (student of studentsMap[group.id]; track student.id) {
+                                <tr>
+                                  <td>{{ student.name }}</td>
+                                  <td>{{ student.email }}</td>
+                                  @if (isAdmin) {
+                                    <td>
+                                      <button class="btn btn-sm btn-outline-primary me-2"
+                                              (click)="editStudent(student)">Edit
+                                      </button>
+                                      <button class="btn btn-sm btn-outline-danger" (click)="deleteStudent(student.id, group.id)">
+                                        Delete
+                                      </button>
+                                    </td>
+                                  }
+                                </tr>
+                              }
+                            } @else {
+                              <tr>
+                                <td [attr.colspan]="isAdmin ? 3 : 2" class="text-center">No students in this group.</td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          [length]="groups.length"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+          aria-label="Select page of groups">
+        </mat-paginator>
+      } @else {
+        <div class="alert alert-info">No groups found.</div>
+      }
+    </div>
+  </div>
+</div>

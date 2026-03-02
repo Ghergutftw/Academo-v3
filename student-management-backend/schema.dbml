@@ -1,0 +1,102 @@
+// Student Management System Schema with Attendance Tracking
+
+Table teachers {
+  id integer [pk]
+  name varchar [not null]
+  email varchar [unique, not null]
+  created_at timestamp
+}
+
+Table courses {
+  id integer [pk]
+  name varchar [not null]
+  description text
+  teacher_id integer [not null] // who teaches this course
+  created_at timestamp
+}
+
+Table groups {
+  id integer [pk]
+  name varchar [not null]
+  year integer
+  created_at timestamp
+}
+
+Table students {
+  id integer [pk]
+  name varchar [not null]
+  email varchar [unique, not null]
+  group_id integer [not null] // belongs to a group
+  created_at timestamp
+}
+
+// Junction: groups attend many courses
+Table group_courses {
+  id integer [pk]
+  group_id integer [not null]
+  course_id integer [not null]
+  created_at timestamp
+}
+
+// Laboratory topics for each course (1-14 per course)
+Table laboratories {
+  id integer [pk]
+  course_id integer [not null]
+  lab_number integer [not null, note: '1-14']
+  topic varchar [not null, default: 'Laboratory']
+  created_at timestamp
+  updated_at timestamp
+
+  // ensure each course has unique lab numbers
+  indexes {
+    (course_id, lab_number) [unique]
+  }
+}
+
+// Each course has multiple sessions (lectures/labs/etc.)
+// Sessions now track laboratory number and are per group
+Table sessions {
+  id integer [pk]
+  course_id integer [not null]
+  laboratory_number integer [not null, default: 1, note: '1-14 laboratories per course']
+  group_id integer [not null]
+  session_date date [not null]
+  topic varchar [note: 'Copied from laboratories table']
+  created_at timestamp
+}
+
+// Attendance: one record per student per session
+Table attendance {
+  id integer [pk]
+  student_id integer [not null]
+  session_id integer [not null]
+  status varchar [not null, note: 'present, absent']
+  recorded_at timestamp
+
+  // ensure a student can only have one attendance per session
+  indexes {
+    (student_id, session_id) [unique]
+  }
+}
+
+// Users table for authentication
+Table users {
+  id integer [pk]
+  username varchar [unique, not null]
+  password_hash varchar [not null]
+  role varchar [not null, note: 'admin, teacher, student']
+  user_type_id integer [note: 'teacher_id, student_id, or null for admin']
+  created_at timestamp
+}
+
+// Relationships
+Ref: courses.teacher_id > teachers.id
+Ref: students.group_id > groups.id
+Ref: group_courses.group_id > groups.id
+Ref: group_courses.course_id > courses.id
+Ref: laboratories.course_id > courses.id
+Ref: sessions.course_id > courses.id
+Ref: sessions.group_id > groups.id
+Ref: attendance.student_id > students.id
+Ref: attendance.session_id > sessions.id
+

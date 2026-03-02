@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Courses</h2>
+      <button (click)="openAddModal()" class="btn btn-light">Add Course</button>
+    </div>
+    <div class="card-body bg-light">
+      @if (courses.length) {
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-soft">
+            <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Teacher</th>
+              <th style="width: 280px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (course of getPaginatedCourses(); track course.id) {
+                <tr>
+                  <td>{{ course.name }}</td>
+                  <td>{{ course.description }}</td>
+                  <td>{{ getTeacherName(course.teacher_id) }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-info me-1" (click)="editLaboratories(course.id)">
+                      Edit Labs
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary me-1" (click)="editCourse(course)">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCourse(course.id)">Delete</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          [length]="courses.length"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+          aria-label="Select page of courses">
+        </mat-paginator>
+      } @else {
+        <div class="alert alert-info">No courses found.</div>
+      }
+    </div>
+  </div>
+</div>
+
+

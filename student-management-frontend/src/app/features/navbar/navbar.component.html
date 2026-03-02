@@ -1,0 +1,60 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-text">Student Management</span>
+  </div>
+
+  @if (isAuthenticated) {
+    <ul class="nav-links">
+      @if (isAdmin) {
+        <li><a routerLink="/admin/students" routerLinkActive="active"
+               [routerLinkActiveOptions]="{exact: true}">Students</a></li>
+        <li><a routerLink="/admin/teachers" routerLinkActive="active">Teachers</a></li>
+        <li><a routerLink="/admin/courses" routerLinkActive="active">Courses</a></li>
+        <li><a routerLink="/admin/course-assignments" routerLinkActive="active">Assign Courses</a></li>
+        <li><a routerLink="/admin/groups" routerLinkActive="active">Groups</a></li>
+      }
+
+      @if (isTeacher) {
+        <li><a routerLink="/teacher" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+        </li>
+        <li><a routerLink="/teacher/courses" routerLinkActive="active">My Courses</a></li>
+        <li><a routerLink="/teacher/students" routerLinkActive="active">Students</a></li>
+        <li><a routerLink="/teacher/groups" routerLinkActive="active">Groups</a></li>
+
+      }
+
+      @if (isStudent) {
+        <li><a routerLink="/student" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+        </li>
+        <li><a routerLink="/student/courses" routerLinkActive="active">My Courses</a></li>
+        <li><a routerLink="/student/groups" routerLinkActive="active">Groups</a></li>
+      }
+    </ul>
+
+    <div class="navbar-user">
+      <button class="user-profile-btn" type="button" (click)="toggleDropdown()">
+        <div class="user-avatar">{{ userInitial }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ currentUser?.name }}</div>
+          <div class="user-role">{{ currentUser?.role }}</div>
+        </div>
+        <i class="fas fa-chevron-down dropdown-icon"></i>
+      </button>
+
+      @if (showDropdown) {
+        <div class="custom-dropdown-menu">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name">{{ currentUser?.name }}</div>
+            <div class="dropdown-user-email">{{ currentUser?.email }}</div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout-item" type="button" (click)="logout()">
+            <i class="fas fa-sign-out-alt me-2"></i>
+            Logout
+          </button>
+        </div>
+      }
+    </div>
+  }
+</nav>
+
