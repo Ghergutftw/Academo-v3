@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../_bootstrap.php';
-require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../models/Teacher.php';
+require_once __DIR__ . '/../../models/Student.php';
+require_once __DIR__ . '/../../enums/UserRole.php';
 
 if (!isset($db)) {
     $db = (new Database())->getConnection();
@@ -18,34 +20,68 @@ if (empty($email) || empty($password)) {
     respond(['error' => 'Email and password are required'], 400);
 }
 
-$user = new User($db);
-$loginResult = $user->login($email, $password);
+$teacherModel = new Teacher($db);
+$teacher = $teacherModel->getByEmail($email);
 
-if ($loginResult) {
-    $userName = $loginResult['name'];
-    if (empty($userName)) {
-        $userDetails = $user->getUserDetails($loginResult['role'], $loginResult['user_type_id']);
-        $userName = $userDetails['name'] ?? 'User';
-    }
+// If not found and email doesn't contain @, try with @academic.tuiasi.ro
+if (!$teacher && strpos($email, '@') === false) {
+    $teacher = $teacherModel->getByEmail($email . '@academic.tuiasi.ro');
+}
 
+if ($teacher && password_verify($password, $teacher['password'])) {
+    $role = $teacher['is_admin'] ? UserRole::ADMIN : UserRole::TEACHER;
+    
     $response = [
         'success' => true,
         'user' => [
-            'id' => $loginResult['id'],
-            'email' => $loginResult['email'],
-            'role' => $loginResult['role'],
-            'user_type_id' => $loginResult['user_type_id'],
-            'name' => $userName,
+            'id' => $teacher['id'],
+            'email' => $teacher['email'],
+            'role' => $role,
+            'user_type_id' => $teacher['id'],
+            'name' => $teacher['name'],
+            'is_admin' => (bool)$teacher['is_admin']
         ],
         'token' => base64_encode(json_encode([
-            'id' => $loginResult['id'],
-            'email' => $loginResult['email'],
-            'role' => $loginResult['role'],
-            'user_type_id' => $loginResult['user_type_id']
+            'id' => $teacher['id'],
+            'email' => $teacher['email'],
+            'role' => $role,
+            'user_type_id' => $teacher['id']
         ]))
     ];
     respond($response, 200);
-} else {
-    respond(['error' => 'Invalid email or password'], 401);
+    exit;
 }
+
+// Try to authenticate as student
+$studentModel = new Student($db);
+$student = $studentModel->getByEmail($email);
+
+// If not found and email doesn't contain @, try with @student.tuiasi.ro
+if (!$student && strpos($email, '@') === false) {
+    $student = $studentModel->getByEmail($email . '@student.tuiasi.ro');
+}
+
+if ($student && password_verify($password, $student['password'])) {
+    $response = [
+        'success' => true,
+        'user' => [
+            'id' => $student['id'],
+            'email' => $student['email'],
+            'role' => UserRole::STUDENT,
+            'user_type_id' => $student['id'],
+            'name' => $student['name'],
+            'study_cycle' => $student['study_cycle'] ?? 'Licenta'
+        ],
+        'token' => base64_encode(json_encode([
+            'id' => $student['id'],
+            'email' => $student['email'],
+            'role' => UserRole::STUDENT,
+            'user_type_id' => $student['id']
+        ]))
+    ];
+    respond($response, 200);
+    exit;
+}
+
+respond(['error' => 'Invalid email or password'], 401);
 

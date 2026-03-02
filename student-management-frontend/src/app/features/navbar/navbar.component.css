@@ -18,6 +18,13 @@
   font-weight: 700;
   font-size: 1.25rem;
 
+  .brand-logo-image {
+    height: 45px !important;
+    width: 45px !important;
+    object-fit: contain;
+    display: block;
+  }
+
   .brand-logo {
     font-size: 1.5rem;
   }
@@ -38,9 +45,12 @@
   padding: 0;
   flex: 1;
   justify-content: center;
+  align-items: center;
 
   li {
     margin: 0;
+    display: flex;
+    align-items: center;
 
     a {
       color: rgba(255, 255, 255, 0.9);
@@ -49,7 +59,9 @@
       border-radius: 6px;
       transition: all 0.3s ease;
       font-weight: 500;
-      display: block;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
 
       &:hover {
         background: rgba(255, 255, 255, 0.15);

@@ -1,0 +1,113 @@
+@startuml Student Management System - Use Cases
+!theme plain
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+title Student Management System\nDiagrama Cazuri de Utilizare
+
+' Actori
+actor "Student" as student #lightblue
+actor "Profesor" as teacher #lightgreen
+actor "Administrator" as admin #orange
+
+' Sistem
+rectangle "Student Management System" {
+
+  ' === AUTENTIFICARE ===
+  package "Autentificare" #aliceblue {
+    usecase (Login) as UC_Login
+    usecase (Logout) as UC_Logout
+    usecase (Schimbare Parolă) as UC_ChangePass
+  }
+
+  ' === FUNCȚIONALITĂȚI STUDENT ===
+  package "Funcționalități Student" #lightyellow {
+    usecase (Vizualizare Cursuri Proprii) as UC_S_ViewCourses
+    usecase (Înrolare Curs Opțional) as UC_S_EnrollOptional
+    usecase (Vizualizare Prezență Proprie) as UC_S_ViewAttendance
+    usecase (Vizualizare Colegi Grupă) as UC_S_ViewClassmates
+    usecase (Download Materiale Curs) as UC_S_Download
+  }
+
+  ' === FUNCȚIONALITĂȚI PROFESOR ===
+  package "Funcționalități Profesor" #lightgreen {
+    usecase (Vizualizare Cursuri Predate) as UC_T_ViewCourses
+    usecase (Creare Sesiune Laborator) as UC_T_CreateSession
+    usecase (Marcare Prezență Studenți) as UC_T_MarkAttendance
+    usecase (Vizualizare Istoric Activități) as UC_T_ViewHistory
+    usecase (Gestionare Laboratoare) as UC_T_ManageLabs
+    usecase (Vizualizare Lista Studenți) as UC_T_ViewStudents
+    usecase (Adăugare Studenți în Sesiune) as UC_T_AddStudents
+  }
+
+  ' === FUNCȚIONALITĂȚI ADMINISTRATOR ===
+  package "Funcționalități Administrator" #mistyrose {
+    usecase (Gestionare Studenți\n[CRUD]) as UC_A_ManageStudents
+    usecase (Import Excel Studenți) as UC_A_ImportExcel
+    usecase (Gestionare Profesori\n[CRUD]) as UC_A_ManageTeachers
+    usecase (Gestionare Cursuri\n[CRUD]) as UC_A_ManageCourses
+    usecase (Gestionare Grupe Fizice\n[CRUD]) as UC_A_ManageGroups
+    usecase (Gestionare Grupe Studiu\n[CRUD]) as UC_A_ManageStudyGroups
+    usecase (Vizualizare Date Sensibile) as UC_A_ViewSensitive
+    usecase (Asociere Asistenți Laborator) as UC_A_AssignInstructors
+  }
+}
+
+' === RELAȚII STUDENT ===
+student --> UC_Login
+student --> UC_Logout
+student --> UC_ChangePass
+student --> UC_S_ViewCourses
+student --> UC_S_EnrollOptional
+student --> UC_S_ViewAttendance
+student --> UC_S_ViewClassmates
+student --> UC_S_Download
+
+' === RELAȚII PROFESOR ===
+teacher --> UC_Login
+teacher --> UC_Logout
+teacher --> UC_ChangePass
+teacher --> UC_T_ViewCourses
+teacher --> UC_T_CreateSession
+teacher --> UC_T_MarkAttendance
+teacher --> UC_T_ViewHistory
+teacher --> UC_T_ManageLabs
+teacher --> UC_T_ViewStudents
+teacher --> UC_T_AddStudents
+
+' === RELAȚII ADMINISTRATOR (moștenește drepturi Profesor) ===
+admin --> UC_Login
+admin --> UC_Logout
+admin --> UC_ChangePass
+admin --|> teacher : extends
+
+admin --> UC_A_ManageStudents
+admin --> UC_A_ImportExcel
+admin --> UC_A_ManageTeachers
+admin --> UC_A_ManageCourses
+admin --> UC_A_ManageGroups
+admin --> UC_A_ManageStudyGroups
+admin --> UC_A_ViewSensitive
+admin --> UC_A_AssignInstructors
+
+' === DEPENDENȚE ÎNTRE USE CASES ===
+UC_S_EnrollOptional ..> UC_S_ViewCourses : <<include>>
+UC_T_MarkAttendance ..> UC_T_CreateSession : <<include>>
+UC_A_ImportExcel ..> UC_A_ManageStudents : <<extend>>
+UC_A_ManageStudyGroups ..> UC_A_ManageGroups : <<include>>
+
+' Note explicative
+note right of admin
+  Administratorul are toate
+  drepturile unui profesor +
+  funcționalități de administrare
+end note
+
+note bottom of UC_A_ViewSensitive
+  Informații vizibile doar pentru admin:
+  - Finanțare (Buget/Taxă)
+  - Status student (Activ/Suspendat)
+  - Anul de început studii
+end note
+
+@enduml

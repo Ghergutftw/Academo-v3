@@ -1,59 +1,57 @@
 import {Routes} from '@angular/router';
-import {AdminDashboardComponent} from './features/admin-dashboard/admin-dashboard.component';
-import {StudentsListComponent} from './features/students/students.component';
-import {TeachersComponent} from './features/teachers/teachers.component';
-import {GroupsComponent} from './features/groups/groups.component';
-import {CoursesComponent} from './features/courses/courses.component';
-import {CourseAssignmentsComponent} from './features/course-assignments/course-assignments.component';
-import {
-  CourseLaboratoriesComponent
-} from './features/admin-dashboard/course-laboratories/course-laboratories.component';
-import {LoginComponent} from './features/login/login.component';
-import {TeacherDashboardComponent} from './features/teacher-dashboard/teacher-dashboard.component';
-import {StudentDashboardComponent} from './features/student-dashboard/student-dashboard.component';
-import {StudentCoursesComponent} from './features/student-courses/student-courses.component';
-import {TeacherCoursesComponent} from './features/teacher-courses/teacher-courses.component';
 import {roleGuard} from './core/guards/auth.guard';
 import {UserRole} from './shared/models/user-role.enum';
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'login', pathMatch: 'full'},
-  {path: 'login', component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
+  },
+
+  {
+    path: 'exam-schedule',
+    loadComponent: () => import('./features/exam-schedule/exam-schedule.component').then(m => m.ExamScheduleComponent)
+  },
 
   {
     path: 'admin',
-    component: AdminDashboardComponent,
     canActivate: [roleGuard([UserRole.ADMIN])],
     children: [
-      {path: '', redirectTo: 'students', pathMatch: 'full'},
-      {path: 'students', component: StudentsListComponent},
-      {path: 'teachers', component: TeachersComponent},
-      {path: 'groups', component: GroupsComponent},
-      {path: 'courses/:id/laboratories', component: CourseLaboratoriesComponent},
-      {path: 'courses', component: CoursesComponent},
-      {path: 'course-assignments', component: CourseAssignmentsComponent}
-    ],
+      { path: '', redirectTo: 'students', pathMatch: 'full' },
+      { path: 'students', loadComponent: () => import('./features/student/students/students.component').then(m => m.StudentsListComponent) },
+      { path: 'teachers', loadComponent: () => import('./features/teacher/teachers/teachers.component').then(m => m.TeachersComponent) },
+      { path: 'groups', loadComponent: () => import('./features/groups/groups.component').then(m => m.GroupsComponent) },
+      { path: 'study-groups', loadComponent: () => import('./features/study-groups/study-groups.component').then(m => m.StudyGroupsComponent) },
+      { path: 'courses', loadComponent: () => import('./features/courses/courses.component').then(m => m.CoursesComponent) },
+      { path: 'courses/:id/laboratories', loadComponent: () => import('./features/courses/course-laboratories/course-laboratories.component').then(m => m.CourseLaboratoriesComponent) },
+    ]
   },
 
   {
     path: 'teacher',
     canActivate: [roleGuard([UserRole.TEACHER])],
     children: [
-      {path: '', component: TeacherDashboardComponent},
-      {path: 'courses', component: TeacherCoursesComponent},
-      {path: 'students', component: StudentsListComponent},
-      {path: 'groups', component: GroupsComponent},
+      { path: '', redirectTo: 'attendance-grid', pathMatch: 'full' },
+      { path: 'courses', loadComponent: () => import('./features/teacher/teacher-courses/teacher-courses.component').then(m => m.TeacherCoursesComponent) },
+      { path: 'attendance-grid', loadComponent: () => import('./features/teacher/attendance-grid/attendance-grid.component').then(m => m.AttendanceGridComponent) },
+      { path: 'previous-activities', loadComponent: () => import('./features/teacher/teacher-previous-activities/teacher-previous-activities.component').then(m => m.TeacherPreviousActivitiesComponent) },
+      { path: 'students', loadComponent: () => import('./features/student/students/students.component').then(m => m.StudentsListComponent) },
+      { path: 'groups', loadComponent: () => import('./features/groups/groups.component').then(m => m.GroupsComponent) },
+      { path: 'study-groups', loadComponent: () => import('./features/study-groups/study-groups.component').then(m => m.StudyGroupsComponent) },
     ]
   },
+
   {
     path: 'student',
     canActivate: [roleGuard([UserRole.STUDENT])],
     children: [
-      {path: '', component: StudentDashboardComponent},
-      {path: 'courses', component: StudentCoursesComponent},
-      {path: 'groups', component: GroupsComponent},
+      { path: '', loadComponent: () => import('./features/student/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent) },
+      { path: 'courses', loadComponent: () => import('./features/student/student-courses/student-courses.component').then(m => m.StudentCoursesComponent) },
+      { path: 'my-group', loadComponent: () => import('./features/student/my-group/my-group.component').then(m => m.MyGroupComponent) },
+      { path: 'groups', loadComponent: () => import('./features/groups/groups.component').then(m => m.GroupsComponent) },
     ]
   },
 
-  {path: '**', redirectTo: 'login'},
+  { path: '**', redirectTo: 'login' },
 ];

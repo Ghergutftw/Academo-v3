@@ -7,7 +7,6 @@ class Laboratory {
     public $course_id;
     public $lab_number;
     public $topic;
-    public $created_at;
     public $updated_at;
 
     public function __construct($db) {

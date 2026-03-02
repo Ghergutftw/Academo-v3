@@ -2,5 +2,6 @@ export interface Teacher {
   id: number;
   name: string;
   email: string;
-  created_at?: string;
+  password?: string; // Optional, only for create/update
+  is_admin?: boolean;
 }

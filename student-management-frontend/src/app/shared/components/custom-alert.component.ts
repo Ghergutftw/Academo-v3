@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AlertService, AlertConfig } from '../services/alert.service';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AlertConfig, AlertService} from '../services/alert.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-custom-alert',
@@ -220,7 +220,8 @@ export class CustomAlertComponent implements OnInit, OnDestroy {
   alertConfig: AlertConfig | null = null;
   private subscription?: Subscription;
 
-  constructor(private alertService: AlertService) {}
+  constructor(private alertService: AlertService) {
+  }
 
   ngOnInit() {
     this.subscription = this.alertService.alert$.subscribe(config => {

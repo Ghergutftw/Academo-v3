@@ -1,33 +1,193 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="card">
     <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
-      <h2 class="mb-0">Courses</h2>
-      <button (click)="openAddModal()" class="btn btn-light">Add Course</button>
+      <h2 class="mb-0">Materii</h2>
+      <div class="d-flex gap-2">
+        <button
+          (click)="clearSearchText(); clearTeacherFilter(); clearYearFilter(); clearSemesterFilter(); clearStudyCycleFilter()"
+          [class]="'btn btn-sm ' + (searchText || selectedTeacher || selectedYear || selectedSemester || selectedStudyCycle ? 'btn-warning' : 'btn-outline-secondary')"
+          [disabled]="!searchText && !selectedTeacher && !selectedYear && !selectedSemester && !selectedStudyCycle"
+          title="Resetează filtrele">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Resetează
+        </button>
+        <button (click)="openAddModal()" class="btn btn-light">Adaugă Materie</button>
+      </div>
     </div>
     <div class="card-body bg-light">
       @if (courses.length) {
+        <!-- Search and Filters -->
+        <div class="row mb-3 filter-row">
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Caută după Nume</label>
+            <mat-form-field class="w-100">
+              <input
+                (input)="applySearch()"
+                [(ngModel)]="searchText"
+                matInput
+                placeholder="Tastează pentru a căuta materii..."
+                type="text">
+              <button
+                (click)="clearSearchText()"
+                *ngIf="searchText"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">Ciclu</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="studyCycleControl"
+                [matAutocomplete]="studyCycleAuto"
+                matInput
+                placeholder="Selectează ciclul..."
+                type="text">
+              <button
+                (click)="clearStudyCycleFilter()"
+                *ngIf="selectedStudyCycle"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #studyCycleAuto="matAutocomplete"
+                (optionSelected)="onStudyCycleSelected($event.option.value)"
+                [displayWith]="displayStudyCycle.bind(this)">
+                @for (cycle of studyCycles; track cycle) {
+                  <mat-option [value]="cycle">
+                    {{ cycle }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">An</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="yearControl"
+                [matAutocomplete]="yearAuto"
+                matInput
+                placeholder="Selectează anul..."
+                type="text">
+              <button
+                (click)="clearYearFilter()"
+                *ngIf="selectedYear"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #yearAuto="matAutocomplete"
+                (optionSelected)="onYearSelected($event.option.value)"
+                [displayWith]="displayYear.bind(this)">
+                @for (year of availableYears; track year) {
+                  <mat-option [value]="year">
+                    {{ displayYear(year) }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">Semestru</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="semesterControl"
+                [matAutocomplete]="semesterAuto"
+                matInput
+                placeholder="Selectează semestrul..."
+                type="text">
+              <button
+                (click)="clearSemesterFilter()"
+                *ngIf="selectedSemester"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #semesterAuto="matAutocomplete"
+                (optionSelected)="onSemesterSelected($event.option.value)"
+                [displayWith]="displaySemester.bind(this)">
+                @for (semester of semesters; track semester) {
+                  <mat-option [value]="semester">
+                    Semestrul {{ semester }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Profesor</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="teacherControl"
+                [matAutocomplete]="teacherAuto"
+                matInput
+                placeholder="Tastează pentru a căuta profesori..."
+                type="text">
+              <button
+                (click)="clearTeacherFilter()"
+                *ngIf="selectedTeacher"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #teacherAuto="matAutocomplete"
+                (optionSelected)="onTeacherSelected($event.option.value)"
+                [displayWith]="displayTeacherName.bind(this)">
+                @for (teacher of filteredTeachers$ | async; track teacher.id) {
+                  <mat-option [value]="teacher">
+                    {{ teacher.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table class="table table-striped table-hover table-soft">
             <thead class="table-light">
             <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Teacher</th>
-              <th style="width: 280px;">Actions</th>
+              <th>Nume</th>
+              <th>Profesor</th>
+              <th>Ciclu</th>
+              <th>An</th>
+              <th>Semestru</th>
+              <th style="width: 300px;">Acțiuni</th>
             </tr>
             </thead>
             <tbody>
               @for (course of getPaginatedCourses(); track course.id) {
                 <tr>
                   <td>{{ course.name }}</td>
-                  <td>{{ course.description }}</td>
                   <td>{{ getTeacherName(course.teacher_id) }}</td>
                   <td>
-                    <button class="btn btn-sm btn-outline-info me-1" (click)="editLaboratories(course.id)">
-                      Edit Labs
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary me-1" (click)="editCourse(course)">Edit</button>
-                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCourse(course.id)">Delete</button>
+                    @if (course.year && course.year <= 4) {
+                      <span>Licență</span>
+                    }
+                    @if (course.year && course.year >= 5) {
+                      <span>Master</span>
+                    }
+                  </td>
+                  <td>{{ displayYear(course.year || 0) || 'N/A' }}</td>
+                  <td>Semestrul {{ course.semester || 'N/A' }}</td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <button (click)="editCourse(course)" class="btn btn-sm btn-outline-primary">
+                        Editează
+                      </button>
+                      <button (click)="editLaboratories(course.id)" class="btn btn-sm btn-outline-info">
+                        Laboratoare
+                      </button>
+                      <button (click)="deleteCourse(course.id)" class="btn btn-sm btn-outline-danger">
+                        Șterge
+                      </button>
+                    </div>
                   </td>
                 </tr>
               }
@@ -36,16 +196,16 @@
         </div>
 
         <mat-paginator
-          [length]="courses.length"
-          [pageSize]="pageSize"
+          (page)="onPageChange($event)"
+          [length]="filteredCourses.length"
           [pageIndex]="pageIndex"
           [pageSizeOptions]="pageSizeOptions"
-          (page)="onPageChange($event)"
-          showFirstLastButtons
-          aria-label="Select page of courses">
+          [pageSize]="pageSize"
+          aria-label="Select page of courses"
+          showFirstLastButtons>
         </mat-paginator>
       } @else {
-        <div class="alert alert-info">No courses found.</div>
+        <div class="alert alert-info">Nu au fost găsite materii.</div>
       }
     </div>
   </div>

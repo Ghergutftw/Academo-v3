@@ -1,11 +1,9 @@
 <?php
-// config/db.php
-// PDO connection wrapped in a tiny Database class (compatible with the models you already have)
 class Database {
     private string $host = 'localhost';
     private string $db_name = 'student_management';
-    private string $username = 'root';  // Changed from 'admin' to 'root'
-    private string $password = 'root';      // Changed from 'admin' to empty string
+    private string $username = 'root';
+    private string $password = '';
     private ?\PDO $conn = null;
 
     public function getConnection(): \PDO {

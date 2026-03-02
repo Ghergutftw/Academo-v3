@@ -10,7 +10,7 @@ if (!isset($input['id'])) {
     respond(['error' => 'Missing group id'], 400);
 }
 
-$group = new Group($db);
+$group = new StudentGroups($db);
 $success = $group->delete($input['id']);
 
 if ($success) {

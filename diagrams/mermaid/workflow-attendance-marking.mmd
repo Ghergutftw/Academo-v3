@@ -1,0 +1,83 @@
+---
+title: "Workflow: Marcare Prezență de către Profesor"
+---
+flowchart TD
+    Start([Profesor acceseză\nDashboard]) --> CheckAuth{Autentificat\nca Profesor?}
+
+    CheckAuth -->|Nu| Redirect[Redirecționare Login]
+    Redirect --> Start
+
+    CheckAuth -->|Da| LoadCourses[Încărcare\ncursuri predate]
+
+    LoadCourses --> SelectCourse{Profesor\nselectează curs?}
+
+    SelectCourse -->|Nu| End1([Sfârșit])
+
+    SelectCourse -->|Da| LoadGroups[Încărcare\nstudy_groups\npentru curs]
+
+    LoadGroups --> LoadLabs[Încărcare\nlaboratoare\n1-14]
+
+    LoadLabs --> SelectGroup{Profesor\nselectează grupă?}
+
+    SelectGroup -->|Nu| End1
+
+    SelectGroup -->|Da| LoadStudents[Încărcare\nlista studenți\ndin study_group]
+
+    LoadStudents --> SelectLab{Profesor\nselectează\nlaborator?}
+
+    SelectLab -->|Nu| End1
+
+    SelectLab -->|Da| CheckLabDone{Laborator\ndeja marcat?}
+
+    CheckLabDone -->|Da| ShowError1[Mesaj eroare:\n'Laborator deja efectuat!']
+    ShowError1 --> SelectLab
+
+    CheckLabDone -->|Nu| SelectDate[Profesor selectează\ndata sesiunii]
+
+    SelectDate --> MarkStudents[Profesor marchează\nprezența fiecărui\nstudent]
+
+    MarkStudents --> AddGuests{Profesor\nadaugă studenți\nguest?}
+
+    AddGuests -->|Da| SearchStudents[Căutare și\nadăugare studenți\ndin alte grupe]
+    SearchStudents --> MarkStudents
+
+    AddGuests -->|Nu| ValidateForm{Toate câmpurile\ncompletate?}
+
+    ValidateForm -->|Nu| ShowError2[Mesaj eroare:\n'Completați toate câmpurile']
+    ShowError2 --> SelectDate
+
+    ValidateForm -->|Da| CreateSession[POST /sessions/create.php\nCreare sesiune nouă]
+
+    CreateSession --> DBInsertSession[INSERT INTO sessions\ncu date sesiune]
+
+    DBInsertSession --> GetSessionID[Obține session_id\ngenerat]
+
+    GetSessionID --> InitAttendance[Pentru fiecare student:\nINSERT INTO attendance\nstatus='absent']
+
+    InitAttendance --> UpdateAttendance[UPDATE attendance\nSET status='present'\npentru studenți marcați]
+
+    UpdateAttendance --> CommitTrans[COMMIT tranzacție]
+
+    CommitTrans --> ShowSuccess[Mesaj succes:\n'Prezența a fost\nînregistrată!']
+
+    ShowSuccess --> RefreshHistory[Refresh\nhistoric sesiuni]
+
+    RefreshHistory --> ResetForm[Reset formular]
+
+    ResetForm --> End2([Sfârșit])
+
+    CreateSession -->|Eroare| HandleError[ROLLBACK tranzacție]
+    HandleError --> ShowError3[Mesaj eroare:\n'Nu s-a putut înregistra']
+    ShowError3 --> SelectDate
+
+    style Start fill:#90EE90
+    style End1 fill:#FFB6C1
+    style End2 fill:#90EE90
+    style CheckAuth fill:#FFE4B5
+    style CheckLabDone fill:#FFE4B5
+    style ValidateForm fill:#FFE4B5
+    style AddGuests fill:#FFE4B5
+    style ShowSuccess fill:#98FB98
+    style ShowError1 fill:#FFB6C1
+    style ShowError2 fill:#FFB6C1
+    style ShowError3 fill:#FFB6C1

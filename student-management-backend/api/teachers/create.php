@@ -11,8 +11,12 @@ if (!isset($input['name'], $input['email'])) {
     respond(['error' => 'Missing required fields: name, email'], 400);
 }
 
+// Generate default password if not provided
+$password = $input['password'] ?? 'teacher123';
+$is_admin = $input['is_admin'] ?? false;
+
 $teacher = new Teacher($db);
-$newId = $teacher->create($input['name'], $input['email']);
+$newId = $teacher->create($input['name'], $input['email'], $password, $is_admin);
 
 if ($newId) {
     $createdTeacher = $teacher->getById($newId);

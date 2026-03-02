@@ -1,5 +1,8 @@
 {
   "require": {
-    "ext-json": "*"
+    "ext-json": "*",
+    "phpoffice/phpspreadsheet": "^1.29",
+    "psr/simple-cache": "^3.0",
+    "ext-pdo": "*"
   }
 }

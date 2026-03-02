@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <h5 class="modal-title">Editează laborator</h5>
+  <button type="button" class="btn-close" aria-label="Închide" (click)="cancel()"></button>
+</div>
+<div class="modal-body">
+  <div *ngIf="!isTeacher" class="mb-3">
+    <label class="form-label">Temă laborator</label>
+    <input [(ngModel)]="editingTopic" class="form-control" maxlength="255" placeholder="Introduceți tema laboratorului" />
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold mb-2">Fișiere laborator</label>
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+      <input #labFileInput type="file" (change)="onLabFileSelected(lab, $event)" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt" style="display:none;">
+      <button class="btn btn-outline-primary d-flex align-items-center gap-2" (click)="labFileInput.click()" type="button">
+        <i class="bi bi-upload"></i>
+        <span>Adaugă fișiere</span>
+      </button>
+      <ng-container *ngIf="labFileInput.files && labFileInput.files.length">
+        <ng-container *ngFor="let f of getFilesArray(labFileInput.files)"><span class="badge bg-light text-dark border ms-2">{{ f.name }}</span></ng-container>
+      </ng-container>
+      <span *ngIf="lab.uploadSuccess" class="text-success ms-2">Fișiere încărcate!</span>
+    </div>
+    <ul class="list-group mb-3 lab-files-list" style="max-height: 220px; overflow-y: auto;">
+      <ng-container *ngIf="lab.files && lab.files.length > 0; else noFiles">
+        <ng-container *ngFor="let file of lab.files; trackBy: trackFile">
+          <li class="list-group-item d-flex align-items-center justify-content-between" style="font-size: 1.1rem;">
+            <div class="d-flex align-items-center" style="max-width: 60%; min-width: 0;">
+              <i class="bi bi-file-earmark-text fs-4 text-primary me-3"></i>
+              <span class="file-name fw-semibold text-truncate" style="max-width: 220px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ getFileName(file) }}</span>
+            </div>
+            <div>
+              <button class="btn btn-outline-info me-2 px-3" (click)="downloadLabFile(lab, file)" title="Descarcă"><i class="bi bi-download"></i></button>
+              <button class="btn btn-outline-danger px-3" (click)="deleteLabFile(lab, file)" title="Șterge"><i class="bi bi-trash"></i></button>
+            </div>
+          </li>
+        </ng-container>
+      </ng-container>
+      <ng-template #noFiles>
+        <li class="list-group-item text-muted">Nu există fișiere</li>
+      </ng-template>
+    </ul>
+    <button class="btn btn-outline-primary w-100 py-2" (click)="downloadAllLabFiles(lab)"><i class="bi bi-archive"></i> Descarcă toate</button>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Anulează</button>
+  <button *ngIf="!isTeacher" type="button" class="btn btn-primary" [disabled]="!editingTopic.trim()" (click)="save()">Salvează</button>
+</div>

@@ -1,0 +1,181 @@
+// Student Management System - Database Schema (ERD)
+// Folosește dbdiagram.io pentru vizualizare
+// https://dbdiagram.io/
+
+// --- ENUMERĂRI ---
+
+Enum study_cycle_type {
+  Licenta
+  Master
+}
+
+Enum financing_type {
+  Buget
+  Taxa
+}
+
+Enum student_status_type {
+  Activ
+  Suspendat
+  Exmatriculat
+}
+
+Enum attendance_status_type {
+  present
+  absent
+}
+
+// --- MANAGEMENTUL UTILIZATORILOR ---
+
+Table teachers {
+  id integer [pk, increment, note: 'ID unic profesor']
+  email varchar [unique, not null, note: 'Email autentificare']
+  password varchar [not null, note: 'Hash BCrypt']
+  name varchar [not null, note: 'Nume complet']
+  is_admin boolean [default: false, note: 'Flag administrator']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Profesori și administratori ai sistemului'
+}
+
+Table students {
+  id integer [pk, increment, note: 'ID unic student']
+  email varchar [unique, not null, note: 'Email autentificare']
+  password varchar [not null, note: 'Hash BCrypt']
+  name varchar [not null, note: 'Nume complet']
+  group_id integer [not null, note: 'Grupa fizică de apartenență']
+  start_year integer [note: 'Anul de început studii']
+  study_cycle study_cycle_type [default: 'Licenta']
+  study_year integer [default: 1, note: 'Anul de studiu curent']
+  financing_type financing_type [default: 'Buget', note: 'Vizibil doar pentru admin']
+  student_status student_status_type [default: 'Activ', note: 'Vizibil doar pentru admin']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Studenți înregistrați în sistem'
+}
+
+// --- STRUCTURA ACADEMICĂ ---
+
+Table student_groups {
+  id integer [pk, increment]
+  name varchar [not null, note: 'Ex: 1210A, 1211B']
+  year integer [note: 'Anul de studiu']
+  academic_year varchar [note: 'Ex: 2023-2024']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Grupe de studenți '
+}
+
+Table courses {
+  id integer [pk, increment]
+  name varchar [not null, note: 'Numele cursului']
+  teacher_id integer [not null, note: 'Profesor titular']
+  year integer [default: 1, note: 'An studiu: 1-4']
+  semester integer [default: 1, note: 'Semestru: 1 sau 2']
+  is_optional boolean [default: false, note: 'Materie opțională?']
+  course_file varchar [note: 'Cale fișier curs (PDF)']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Cursuri disponibile (obligatorii și opționale)'
+}
+
+Table course_lab_instructors {
+  id integer [pk, increment]
+  course_id integer [not null]
+  teacher_id integer [not null, note: 'Asistent laborator']
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (course_id, teacher_id) [unique, name: 'unique_course_instructor']
+  }
+
+  Note: 'Asistenți pentru laboratoarele cursurilor'
+}
+
+Table laboratories {
+  id integer [pk, increment]
+  course_id integer [not null]
+  lab_number integer [not null, note: 'Număr 1-14']
+  topic varchar [not null, default: 'Laboratory', note: 'Tema laboratorului']
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (course_id, lab_number) [unique, name: 'unique_course_lab']
+  }
+
+  Note: 'Laboratoare definite pentru fiecare curs'
+}
+
+// --- GRUPE DE STUDIU (FORMAȚIUNI FLEXIBILE) ---
+
+Table study_groups {
+  id integer [pk, increment]
+  name varchar [not null, note: 'Ex: Grupa 1210A - POO']
+  course_id integer [not null, note: 'Cursul asociat']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Grupe de studiu pentru un anumit curs (pot include studenți din mai multe grupe fizice)'
+}
+
+Table study_group_members {
+  id integer [pk, increment]
+  study_group_id integer [not null]
+  student_id integer [not null]
+
+  indexes {
+    (study_group_id, student_id) [unique, name: 'unique_group_member']
+  }
+
+  Note: 'Asociere M:N între studenți și grupe de studiu'
+}
+
+
+// --- SESIUNI ȘI PREZENȚĂ ---
+
+Table sessions {
+  id integer [pk, increment]
+  course_id integer [not null]
+  laboratory_number integer [not null, default: 1]
+  study_group_id integer [not null]
+  session_date datetime [not null, note: 'Data și ora sesiunii']
+  topic varchar [note: 'Tema sesiunii']
+  created_at timestamp [default: `now()`]
+
+  Note: 'Sesiuni de laborator planificate/desfășurate'
+}
+
+Table attendance {
+  id integer [pk, increment]
+  student_id integer [not null]
+  session_id integer [not null]
+  status attendance_status_type [not null, note: 'Status prezență']
+  recorded_at timestamp [default: `now()`]
+
+  indexes {
+    (student_id, session_id) [unique, name: 'unique_attendance']
+  }
+
+  Note: 'Prezența studenților la sesiuni'
+}
+
+// --- RELAȚII (FOREIGN KEYS) ---
+
+// Relații Cursuri
+Ref: courses.teacher_id > teachers.id [delete: restrict]
+Ref: course_lab_instructors.course_id > courses.id [delete: cascade]
+Ref: course_lab_instructors.teacher_id > teachers.id [delete: cascade]
+Ref: laboratories.course_id > courses.id [delete: cascade]
+
+// Relații Studenți
+Ref: students.group_id > student_groups.id [delete: restrict]
+
+// Relații Grupe de Studiu
+Ref: study_groups.course_id > courses.id [delete: cascade]
+Ref: study_group_members.study_group_id > study_groups.id [delete: cascade]
+Ref: study_group_members.student_id > students.id [delete: cascade]
+
+// Relații Sesiuni și Prezență
+Ref: sessions.course_id > courses.id [delete: cascade]
+Ref: sessions.study_group_id > study_groups.id [delete: cascade]
+Ref: attendance.student_id > students.id [delete: cascade]
+Ref: attendance.session_id > sessions.id [delete: cascade]

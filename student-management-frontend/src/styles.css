@@ -3,12 +3,22 @@
 /* Import Bootstrap Icons */
 @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css');
 
+/* Import Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
 /* Import Google Font - Inter (modern, readable font) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Global font and text settings */
 html, body {
   height: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -20,8 +30,33 @@ body {
 }
 
 /* Make all text bigger and bolder */
-* {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+*:not([class*="bi-"]):not(.bi),
+*:not([class*="bi-"]):not(.bi)::before,
+*:not([class*="bi-"]):not(.bi)::after {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Additional selectors for comprehensive coverage */
+input:not([class*="bi-"]),
+select:not([class*="bi-"]),
+textarea:not([class*="bi-"]),
+button:not([class*="bi-"]),
+label:not([class*="bi-"]),
+span:not([class*="bi-"]),
+div:not([class*="bi-"]),
+p:not([class*="bi-"]),
+a:not([class*="bi-"]),
+li:not([class*="bi-"]),
+th:not([class*="bi-"]),
+td:not([class*="bi-"]) {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Ensure Bootstrap Icons use correct font */
+.bi::before,
+[class^="bi-"]::before,
+[class*=" bi-"]::before {
+  font-family: "bootstrap-icons" !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -137,6 +172,34 @@ label, .form-label {
   font-weight: 600 !important;
 }
 
+.bg-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.alert-primary {
+  background-color: rgba(102, 126, 234, 0.1) !important;
+  border-color: #667eea !important;
+  color: #667eea !important;
+}
+
+.border-primary {
+  border-color: #667eea !important;
+}
+
+
 .bg-soft-primary {
   background-color: #e3f2fd !important;
   color: #212529 !important;
@@ -215,4 +278,251 @@ body {
 .btn-outline-danger:hover {
   background-color: #ef9a9a;
   color: #212529;
+}
+
+/* Compact filter sections */
+.filter-row .form-select,
+.filter-row .form-control {
+  font-size: 0.9rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.filter-row .form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+/* Container adjustments - 80% of screen */
+.container-fluid {
+  max-width: 90%;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Tighter column spacing */
+.filter-row .col-md-2,
+.filter-row .col-md-3,
+.filter-row .col-md-4 {
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments for tables */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .container-fluid {
+    max-width: 95%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .filter-row .col-md-2,
+  .filter-row .col-md-3,
+  .filter-row .col-md-4 {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+/* Make filter controls more compact */
+.mb-3 .row .col-md-2,
+.mb-3 .row .col-md-3,
+.mb-3 .row .col-md-4 {
+  margin-bottom: 0.5rem;
+}
+
+/* Unified Material form field styling */
+.filter-row mat-form-field {
+  font-size: 0.9rem !important;
+}
+
+.filter-row .mat-mdc-form-field {
+  font-size: 0.9rem !important;
+}
+
+.filter-row .mat-mdc-text-field-wrapper {
+  padding: 0 !important;
+}
+
+.filter-row .mat-mdc-form-field-infix {
+  padding: 0.45rem 0.75rem !important;
+  min-height: auto !important;
+}
+
+.filter-row .mat-mdc-input-element {
+  font-size: 0.9rem !important;
+  padding: 0.45rem 0.75rem !important;
+}
+
+.filter-row .mat-mdc-select {
+  font-size: 0.9rem !important;
+  padding: 0.45rem 0.75rem !important;
+}
+
+.filter-row .mat-mdc-select-value {
+  font-size: 0.9rem !important;
+}
+
+.filter-row button[matSuffix] {
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 1 !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 24px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  color: #666 !important;
+}
+
+.filter-row button[matSuffix]:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 50% !important;
+}
+
+/* Material form field labels */
+.filter-row .form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+/* Unified Material Design Font Styling */
+/* Apply Inter font to ALL Material components */
+.mat-mdc-form-field,
+.mat-mdc-input-element,
+.mat-mdc-text-field-wrapper,
+.mat-mdc-form-field-infix,
+.mat-mdc-select,
+.mat-mdc-select-value,
+.mat-mdc-option,
+.mat-mdc-optgroup-label,
+.mdc-list-item,
+.mat-mdc-autocomplete-panel,
+.mat-mdc-option .mdc-list-item__primary-text,
+.mat-mdc-form-field-label,
+.mat-mdc-floating-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Material form fields consistent sizing */
+.mat-mdc-form-field {
+  font-size: 1rem !important;
+}
+
+.mat-mdc-input-element {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-select {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-select-value {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-option {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+/* Material labels */
+.mat-mdc-form-field-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+/* Material buttons */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-icon-button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Material autocomplete panel */
+.mat-mdc-autocomplete-panel {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Material paginator - enhanced */
+.mat-mdc-paginator,
+.mat-mdc-paginator .mat-mdc-paginator-page-size-label,
+.mat-mdc-paginator .mat-mdc-paginator-range-label,
+.mat-mdc-paginator .mat-mdc-paginator-page-size-select,
+.mat-mdc-paginator .mat-mdc-select,
+.mat-mdc-paginator .mat-mdc-select-value {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+/* Override any conflicting Material typography */
+.mat-typography,
+.mat-typography h1,
+.mat-typography h2,
+.mat-typography h3,
+.mat-typography h4,
+.mat-typography h5,
+.mat-typography h6,
+.mat-typography .mat-h1,
+.mat-typography .mat-h2,
+.mat-typography .mat-h3,
+.mat-typography .mat-h4,
+.mat-typography .mat-h5,
+.mat-typography .mat-h6,
+.mat-typography .mat-headline-1,
+.mat-typography .mat-headline-2,
+.mat-typography .mat-headline-3,
+.mat-typography .mat-headline-4,
+.mat-typography .mat-headline-5,
+.mat-typography .mat-headline-6,
+.mat-typography .mat-body-1,
+.mat-typography .mat-body-2,
+.mat-typography .mat-caption,
+.mat-typography .mat-button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Filter row specific styling - enhanced */
+.filter-row .mat-mdc-form-field,
+.filter-row .mat-mdc-input-element,
+.filter-row .mat-mdc-select,
+.filter-row .mat-mdc-select-value {
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+}
+
+/* Ensure clear buttons have consistent styling */
+.filter-row button[matSuffix] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
 }

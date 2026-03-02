@@ -4,19 +4,29 @@ if (!isset($db)) {
     $db = (new Database())->getConnection();
 }
 
-// Get group_id from query parameter
 $groupId = $_GET['group_id'] ?? null;
+$studyGroupId = $_GET['study_group_id'] ?? null;
 
-if ($groupId === null || $groupId === '') {
-    respond(['error' => 'Missing group_id'], 400);
-}
-
-$groupId = intval($groupId);
-
-if ($groupId === 0) {
-    respond(['error' => 'Invalid group_id'], 400);
-}
 $student = new Student($db);
-$stmt = $student->getByGroup($groupId);
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-respond($rows);
+
+if ($studyGroupId) {
+    $studyGroupId = intval($studyGroupId);
+    if ($studyGroupId === 0) {
+        respond(['error' => 'Invalid study_group_id'], 400);
+    }
+
+    $stmt = $student->getByStudyGroup($studyGroupId);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    respond($rows);
+} elseif ($groupId) {
+    $groupId = intval($groupId);
+    if ($groupId === 0) {
+        respond(['error' => 'Invalid group_id'], 400);
+    }
+
+    $stmt = $student->getByGroup($groupId);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    respond($rows);
+} else {
+    respond(['error' => 'Missing group_id or study_group_id'], 400);
+}

@@ -1,4 +1,3 @@
 export const environment = {
-  apiUrl: 'http://localhost:8001/api'
+  apiUrl: 'http://localhost/licenta/student-management-backend/api'
 }
-

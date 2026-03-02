@@ -1,4 +1,5 @@
-import { UserRole } from './user-role.enum';
+import {UserRole} from './user-role.enum';
+import {StudyCycle} from './study-cycle.enum';
 
 export interface User {
   id: number;
@@ -6,6 +7,8 @@ export interface User {
   role: UserRole;
   user_type_id: number;
   name: string;
+  is_admin?: boolean; // For teachers
+  study_cycle?: StudyCycle; // For students
 }
 
 export interface LoginCredentials {

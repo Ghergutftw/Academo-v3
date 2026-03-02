@@ -1,0 +1,116 @@
+---
+title: "Sequence Diagram: Marcare Prezență Studenți"
+---
+sequenceDiagram
+    autonumber
+    actor Teacher as Profesor
+    participant UI as Teacher Dashboard
+    participant SessionSvc as Session Service
+    participant AttendanceSvc as Attendance Service
+    participant HTTP as HTTP Client
+    participant SessionAPI as /api/sessions/create.php
+    participant AttendanceAPI as /api/attendance/save.php
+    participant SessionModel as Session Model
+    participant AttendanceModel as Attendance Model
+    participant DB as MySQL Database
+
+    Teacher->>UI: Selectează curs
+    UI->>SessionSvc: getByCourse(courseId)
+    SessionSvc->>HTTP: GET /api/sessions/getByCourse.php
+    HTTP->>DB: SELECT study groups pentru curs
+    DB-->>HTTP: Lista study_groups
+    HTTP-->>UI: Study groups afișate
+
+    Teacher->>UI: Selectează study group
+    UI->>SessionSvc: getByStudyGroup(studyGroupId)
+    SessionSvc->>HTTP: GET /api/students/getByStudyGroup.php
+    HTTP->>DB: SELECT students<br/>FROM study_group_members
+    DB-->>HTTP: Lista studenți
+    HTTP-->>UI: Studenți afișați în UI
+
+    Teacher->>UI: Selectează laborator (1-14)
+    Teacher->>UI: Selectează dată
+    Teacher->>UI: Marchează prezența<br/>fiecărui student
+
+    opt Adăugare studenți guest
+        Teacher->>UI: Click "Adaugă student"
+        UI->>UI: Modal cu căutare studenți
+        Teacher->>UI: Caută și adaugă student
+        UI->>UI: Adaugă în lista temporară
+    end
+
+    Teacher->>UI: Click "Salvează prezența"
+
+    UI->>UI: Validare:<br/>- Toate câmpurile complete?<br/>- Lab nu e deja marcat?
+
+    alt Validare failed
+        UI-->>Teacher: Mesaj eroare
+    else Validare success
+        UI->>SessionSvc: createSession(sessionData)
+
+        SessionSvc->>HTTP: POST /api/sessions/create.php<br/>{course_id, study_group_id,<br/>laboratory_number, session_date}
+
+        HTTP->>SessionAPI: HTTP Request
+
+        SessionAPI->>SessionAPI: Validare date intrare
+
+        SessionAPI->>SessionModel: create(sessionData)
+
+        SessionModel->>DB: START TRANSACTION
+
+        SessionModel->>DB: INSERT INTO sessions<br/>(course_id, study_group_id,<br/>laboratory_number, session_date)
+
+        DB-->>SessionModel: session_id generat
+
+        SessionModel->>DB: SELECT students<br/>FROM study_group_members<br/>WHERE study_group_id = ?
+
+        DB-->>SessionModel: Lista studenți (IDs)
+
+        loop Pentru fiecare student
+            SessionModel->>DB: INSERT INTO attendance<br/>(student_id, session_id,<br/>status='absent')
+        end
+
+        SessionModel->>DB: COMMIT TRANSACTION
+
+        SessionModel-->>SessionAPI: {success: true, session_id}
+
+        SessionAPI-->>HTTP: Response cu session_id
+
+        HTTP-->>SessionSvc: Session created
+
+        SessionSvc-->>UI: Session ID returnat
+
+        UI->>AttendanceSvc: saveAttendance(sessionId, records)
+
+        AttendanceSvc->>HTTP: POST /api/attendance/save.php<br/>{session_id, records:[<br/>{student_id, status}, ...]}
+
+        HTTP->>AttendanceAPI: HTTP Request
+
+        AttendanceAPI->>AttendanceModel: updateBatch(records)
+
+        AttendanceModel->>DB: START TRANSACTION
+
+        loop Pentru fiecare student marcat present
+            AttendanceModel->>DB: UPDATE attendance<br/>SET status = 'present'<br/>WHERE student_id = ? AND session_id = ?
+        end
+
+        AttendanceModel->>DB: COMMIT TRANSACTION
+
+        AttendanceModel-->>AttendanceAPI: {success: true}
+
+        AttendanceAPI-->>HTTP: Success response
+
+        HTTP-->>AttendanceSvc: Attendance saved
+
+        AttendanceSvc-->>UI: Success
+
+        UI->>UI: Afișare mesaj succes<br/>"Prezența a fost înregistrată!"
+
+        UI->>UI: Reset formular
+
+        UI->>SessionSvc: Refresh istoric sesiuni
+
+        UI-->>Teacher: Dashboard actualizat
+    end
+
+    Note over Teacher,DB: Toată operația este<br/>tranzacțională pentru<br/>consistență date

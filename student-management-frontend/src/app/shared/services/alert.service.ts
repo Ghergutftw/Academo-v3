@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs';
 
 export interface AlertConfig {
   message: string;
@@ -16,7 +16,7 @@ export class AlertService {
   public alert$ = this.alertSubject.asObservable();
 
   show(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
-    this.alertSubject.next({ message, type });
+    this.alertSubject.next({message, type});
   }
 
   success(message: string) {
@@ -36,7 +36,7 @@ export class AlertService {
   }
 
   confirm(message: string, onConfirm: () => void, onCancel?: () => void) {
-    this.alertSubject.next({ message, type: 'confirm', onConfirm, onCancel });
+    this.alertSubject.next({message, type: 'confirm', onConfirm, onCancel});
   }
 
   hide() {

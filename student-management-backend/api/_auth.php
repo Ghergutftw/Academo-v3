@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../enums/UserRole.php';
+require_once __DIR__ . '/../models/Teacher.php';
+require_once __DIR__ . '/../models/Student.php';
 
 function getAuthUser($db) {
     $token = null;
@@ -24,20 +25,36 @@ function getAuthUser($db) {
     
     try {
         $decoded = json_decode(base64_decode($token), true);
-        if (!$decoded || !isset($decoded['id'])) {
+        if (!$decoded || !isset($decoded['id'], $decoded['role'])) {
             return null;
         }
         
-        $user = new User($db);
-        $userData = $user->getById($decoded['id']);
-        
-        if ($userData) {
-            return [
-                'id' => $userData['id'],
-                'email' => $userData['email'],
-                'role' => $userData['role'],
-                'user_type_id' => $userData['user_type_id']
-            ];
+        // Verify user still exists based on role
+        if ($decoded['role'] === UserRole::ADMIN || $decoded['role'] === UserRole::TEACHER) {
+            $teacherModel = new Teacher($db);
+            $teacher = $teacherModel->getById($decoded['id']);
+            if ($teacher) {
+                return [
+                    'id' => $teacher['id'],
+                    'email' => $teacher['email'],
+                    'role' => $teacher['is_admin'] ? UserRole::ADMIN : UserRole::TEACHER,
+                    'user_type_id' => $teacher['id'],
+                    'name' => $teacher['name'],
+                    'is_admin' => (bool)$teacher['is_admin']
+                ];
+            }
+        } else if ($decoded['role'] === UserRole::STUDENT) {
+            $studentModel = new Student($db);
+            $student = $studentModel->getById($decoded['id']);
+            if ($student) {
+                return [
+                    'id' => $student['id'],
+                    'email' => $student['email'],
+                    'role' => UserRole::STUDENT,
+                    'user_type_id' => $student['id'],
+                    'name' => $student['name']
+                ];
+            }
         }
     } catch (Exception $e) {
         error_log('Auth error: ' . $e->getMessage());
@@ -46,7 +63,8 @@ function getAuthUser($db) {
     return null;
 }
 
-function requireAuth($db) {
+function requireAuth($allowedRoles = []) {
+    global $db;
     $user = getAuthUser($db);
     
     if (!$user) {
@@ -54,18 +72,17 @@ function requireAuth($db) {
         exit;
     }
     
-    return $user;
-}
-
-function requireRole($db, $allowedRoles) {
-    $user = requireAuth($db);
-
-    if (!in_array($user['role'], $allowedRoles)) {
+    // Check roles if specified
+    if (!empty($allowedRoles) && !in_array($user['role'], $allowedRoles)) {
         respond(['error' => 'Forbidden. Insufficient permissions.'], 403);
         exit;
     }
-
+    
     return $user;
+}
+
+function requireRole($allowedRoles) {
+    return requireAuth($allowedRoles);
 }
 
 

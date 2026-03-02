@@ -1,0 +1,27 @@
+.form-control:not(.search-input), .form-select {
+  border-left: 5px solid #dc3545;
+}
+
+.form-control.ng-valid:not(.search-input), .form-select.ng-valid {
+  border-left: 5px solid #28a745;
+}
+
+.search-input {
+  border-left: none !important;
+}
+
+.lab-instructors-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.lab-instructors-list.required-lab {
+  border-left: 5px solid #dc3545;
+}
+
+.lab-instructors-list.valid-lab {
+  border-left: 5px solid #28a745;
+}

@@ -6,16 +6,19 @@ if (!isset($db)) {
 }
 
 $studentId = $_GET['student_id'] ?? null;
-if (!$studentId) respond(['error' => 'student_id is required'], 400);
+if (!$studentId) {
+    respond(['error' => 'student_id is required'], 400);
+}
 
-// Get courses for a student based on their group, including teacher names
-$sql = "SELECT c.*, t.name as teacher_name 
-        FROM courses c
-        JOIN group_courses gc ON gc.course_id = c.id
-        JOIN students s ON s.group_id = gc.group_id
-        LEFT JOIN teachers t ON t.id = c.teacher_id
-        WHERE s.id = ?
-        ORDER BY c.name";
-$stmt = $db->prepare($sql);
-$stmt->execute([$studentId]);
-respond($stmt->fetchAll(PDO::FETCH_ASSOC));
+$courseModel = new Courses($db);
+$courses = $courseModel->getStudentCoursesWithInstructors($studentId);
+
+// Normalize course_file in each course if present
+foreach ($courses as &$c) {
+    if (!empty($c['course_file'])) {
+        $c['course_file'] = basename($c['course_file']);
+    }
+    // also normalize lab_instructors subarray if needed (no change to their fields)
+}
+
+respond($courses);

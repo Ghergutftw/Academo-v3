@@ -1,22 +1,107 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="card">
     <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
-      <h2 class="mb-0">Groups</h2>
-      @if (isAdmin) {
-        <button class="btn btn-light" (click)="openAddModal()">Add Group</button>
-      }
+      <h2 class="mb-0">Grupe de studenți</h2>
+      <div class="d-flex gap-2">
+        <button
+          (click)="clearNameSearch(); clearYearFilter(); clearAcademicYearFilter()"
+          [class]="'btn ' + (searchText || selectedYearFilter !== null || selectedAcademicYearFilter ? 'btn-warning' : 'btn-outline-secondary')"
+          [disabled]="!searchText && selectedYearFilter === null && !selectedAcademicYearFilter"
+          title="Resetează filtrele">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Resetează
+        </button>
+        @if (isAdmin) {
+          <button (click)="openAddModal()" class="btn btn-light">Adaugă Grupă</button>
+        }
+      </div>
     </div>
     <div class="card-body bg-light">
       @if (groups.length) {
+        <!-- Filter Section -->
+        <div class="row mb-3 filter-row">
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Caută după Grupă</label>
+            <mat-form-field class="w-100">
+              <input
+                (ngModelChange)="applyFilters()"
+                [(ngModel)]="searchText"
+                [formControl]="nameSearchControl"
+                matInput
+                placeholder="Tastează numele grupei..."
+                type="text">
+              <button
+                (click)="clearNameSearch()"
+                *ngIf="searchText"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold"> An de Studiu</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="yearControl"
+                [matAutocomplete]="yearAuto"
+                matInput
+                placeholder="Selectează anul..."
+                type="text">
+              <button
+                (click)="clearYearFilter()"
+                *ngIf="selectedYearFilter !== null"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #yearAuto="matAutocomplete"
+                (optionSelected)="onYearSelected($event.option.value)"
+                [displayWith]="displayYear.bind(this)">
+                @for (year of getUniqueYears(); track year) {
+                  <mat-option [value]="year">{{ year }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold"> An Academic</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="academicYearControl"
+                [matAutocomplete]="ayAuto"
+                matInput
+                placeholder="Selectează anul academic..."
+                type="text">
+              <button
+                (click)="clearAcademicYearFilter()"
+                *ngIf="selectedAcademicYearFilter"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #ayAuto="matAutocomplete"
+                (optionSelected)="onAcademicYearSelected($event.option.value)"
+                [displayWith]="displayAcademicYear.bind(this)">
+                @for (ay of getUniqueAcademicYears(); track ay) {
+                  <mat-option [value]="ay">{{ ay }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table class="table table-striped table-hover table-soft">
             <thead class="table-light">
             <tr>
-              <th>Name</th>
-              <th>Year</th>
-              <th>Students</th>
+              <th style="width: 30%;">Nume</th>
+              <th style="width: 15%;">An de Studiu</th>
+              <th style="width: 20%;">An Academic</th>
+              <th style="width: 15%;">Studenți</th>
               @if (isAdmin) {
-                <th>Actions</th>
+                <th style="width: 20%;">Acțiuni</th>
               }
             </tr>
             </thead>
@@ -24,58 +109,59 @@
               @for (group of getPaginatedGroups(); track group.id) {
                 <tr>
                   <td>{{ group.name }}</td>
-                  <td>{{ group.year }}</td>
+                  <td>Anul {{ group.year }}</td>
+                  <td>{{ group.academic_year }}</td>
                   <td>
-                    <button class="btn btn-sm btn-outline-info" (click)="toggleStudents(group.id)">
-                      {{ expandedGroup === group.id ? 'Hide' : 'Show' }} Students
+                    <button (click)="toggleStudents(group.id)" class="btn btn-sm btn-outline-info">
+                      {{ expandedGroup === group.id ? 'Ascunde' : 'Arată' }} Studenții
                     </button>
                   </td>
                   @if (isAdmin) {
                     <td>
-                      <button class="btn btn-sm btn-outline-primary me-2" (click)="editGroup(group)">Edit</button>
-                      <button class="btn btn-sm btn-outline-danger" (click)="deleteGroup(group.id)">Delete</button>
+                      <button (click)="editGroup(group)" class="btn btn-sm btn-outline-primary me-2">Editează</button>
+                      <button (click)="deleteGroup(group.id)" class="btn btn-sm btn-outline-danger">Șterge</button>
                     </td>
                   }
                 </tr>
                 @if (expandedGroup === group.id) {
-                  <tr>
-                    <td [attr.colspan]="isAdmin ? 4 : 3">
-                      <div class="table-responsive">
-                        <table class="table table-bordered table-soft">
-                          <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            @if (isAdmin) {
-                              <th>Actions</th>
-                            }
-                          </tr>
-                          </thead>
-                          <tbody>
-                            @if (studentsMap[group.id] && studentsMap[group.id].length) {
+                  <tr class="students-expand-row">
+                    <td [attr.colspan]="isAdmin ? 5 : 4" class="p-0">
+                      <div class="students-panel">
+                        @if (studentsMap[group.id] && studentsMap[group.id].length) {
+                          <table class="table table-sm students-inner-table mb-0">
+                            <thead>
+                            <tr>
+                              <th>Nume</th>
+                              <th>Email</th>
+                              @if (isAdmin) { <th class="text-end">Acțiuni</th> }
+                            </tr>
+                            </thead>
+                            <tbody>
                               @for (student of studentsMap[group.id]; track student.id) {
                                 <tr>
-                                  <td>{{ student.name }}</td>
-                                  <td>{{ student.email }}</td>
+                                  <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                      <div class="student-avatar">{{ student?.name?.charAt(0) }}</div>
+                                      {{ student.name }}
+                                    </div>
+                                  </td>
+                                  <td class="text-muted">{{ student.email }}</td>
                                   @if (isAdmin) {
-                                    <td>
-                                      <button class="btn btn-sm btn-outline-primary me-2"
-                                              (click)="editStudent(student)">Edit
-                                      </button>
-                                      <button class="btn btn-sm btn-outline-danger" (click)="deleteStudent(student.id, group.id)">
-                                        Delete
-                                      </button>
+                                    <td class="text-end">
+                                      <button (click)="editStudent(student)" class="btn btn-xs btn-outline-primary me-1">Editează</button>
+                                      <button (click)="deleteStudent(student.id, group.id)" class="btn btn-xs btn-outline-danger">Șterge</button>
                                     </td>
                                   }
                                 </tr>
                               }
-                            } @else {
-                              <tr>
-                                <td [attr.colspan]="isAdmin ? 3 : 2" class="text-center">No students in this group.</td>
-                              </tr>
-                            }
-                          </tbody>
-                        </table>
+                            </tbody>
+                          </table>
+                        } @else {
+                          <div class="students-empty">
+                            <i class="bi bi-person-x fs-5 text-muted"></i>
+                            <span class="text-muted ms-2">Nu există studenți în această grupă.</span>
+                          </div>
+                        }
                       </div>
                     </td>
                   </tr>
@@ -86,16 +172,16 @@
         </div>
 
         <mat-paginator
-          [length]="groups.length"
-          [pageSize]="pageSize"
+          (page)="onPageChange($event)"
+          [length]="filteredGroups.length"
           [pageIndex]="pageIndex"
           [pageSizeOptions]="pageSizeOptions"
-          (page)="onPageChange($event)"
-          showFirstLastButtons
-          aria-label="Select page of groups">
+          [pageSize]="pageSize"
+          aria-label="Select page of groups"
+          showFirstLastButtons>
         </mat-paginator>
       } @else {
-        <div class="alert alert-info">No groups found.</div>
+        <div class="alert alert-info">Nu au fost găsite Grupe de studenți.</div>
       }
     </div>
   </div>

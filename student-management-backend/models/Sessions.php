@@ -5,22 +5,21 @@ class Session {
 
     public $id;
     public $course_id;
-    public $group_id;
+    public $study_group_id;
     public $laboratory_number;
     public $session_date;
     public $topic;
-    public $created_at;
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " (course_id, group_id, laboratory_number, session_date, topic, created_at) 
-                  VALUES (:course_id, :group_id, :laboratory_number, :session_date, :topic, NOW())";
+        $query = "INSERT INTO " . $this->table_name . " (course_id, study_group_id, laboratory_number, session_date, topic) 
+                  VALUES (:course_id, :study_group_id, :laboratory_number, :session_date, :topic)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":course_id", $this->course_id);
-        $stmt->bindParam(":group_id", $this->group_id);
+        $stmt->bindParam(":study_group_id", $this->study_group_id);
         $stmt->bindParam(":laboratory_number", $this->laboratory_number);
         $stmt->bindParam(":session_date", $this->session_date);
         $stmt->bindParam(":topic", $this->topic);
@@ -46,9 +45,11 @@ class Session {
     }
 
     public function getByCourse($courseId) {
-        $query = "SELECT * FROM " . $this->table_name . " 
-                 WHERE course_id = ? 
-                 ORDER BY session_date DESC";
+        $query = "SELECT s.*, sg.name as study_group_name 
+                 FROM " . $this->table_name . " s
+                 LEFT JOIN study_groups sg ON s.study_group_id = sg.id
+                 WHERE s.course_id = ? 
+                 ORDER BY s.session_date DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$courseId]);
         return $stmt;
