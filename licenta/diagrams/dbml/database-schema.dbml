@@ -1,5 +1,6 @@
 // Student Management System - Database Schema (ERD)
 // Folosește dbdiagram.io pentru vizualizare
+// Version: 2.0 (Optimized - 10 tables)
 // https://dbdiagram.io/
 
 // --- ENUMERĂRI ---
@@ -70,7 +71,7 @@ Table courses {
   id integer [pk, increment]
   name varchar [not null, note: 'Numele cursului']
   teacher_id integer [not null, note: 'Profesor titular']
-  year integer [default: 1, note: 'An studiu: 1-4']
+  year integer [default: 1, note: 'An studiu: 1-6']
   semester integer [default: 1, note: 'Semestru: 1 sau 2']
   is_optional boolean [default: false, note: 'Materie opțională?']
   course_file varchar [note: 'Cale fișier curs (PDF)']
@@ -158,6 +159,24 @@ Table attendance {
   Note: 'Prezența studenților la sesiuni'
 }
 
+// --- EXAMENE ---
+
+Table exam_schedules {
+  id integer [pk, increment]
+  file_name varchar [not null, note: 'Nume fișier (ex: Programare_Examene.xlsx)']
+  file_path varchar [not null, note: 'Path pe server (uploads/exams/2026/...)']
+  uploaded_by integer [not null, note: 'Profesor care a încărcat']
+  year integer [not null, default: 2026, note: 'Anul pentru care e programarea']
+  uploaded_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    year [unique, name: 'unique_year']
+  }
+
+  Note: 'Programarea examenelor per an academic'
+}
+
 // --- RELAȚII (FOREIGN KEYS) ---
 
 // Relații Cursuri
@@ -179,3 +198,7 @@ Ref: sessions.course_id > courses.id [delete: cascade]
 Ref: sessions.study_group_id > study_groups.id [delete: cascade]
 Ref: attendance.student_id > students.id [delete: cascade]
 Ref: attendance.session_id > sessions.id [delete: cascade]
+
+// Relații Examene
+Ref: exam_schedules.uploaded_by > teachers.id [delete: restrict]
+

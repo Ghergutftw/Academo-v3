@@ -120,7 +120,7 @@ class Attendance
               LEFT JOIN attendance a ON a.session_id = s.id AND a.student_id = sgm.student_id
               LEFT JOIN teachers t ON t.id = c.teacher_id
               WHERE sgm.student_id = ?
-              ORDER BY s.session_date DESC, s.laboratory_number DESC";
+              ORDER BY COALESCE(a.status, 'absent') ASC, s.session_date DESC, s.laboratory_number DESC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$studentId]);

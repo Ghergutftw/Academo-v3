@@ -1,0 +1,109 @@
+---
+title: "Sequence Diagram: Gestionarea Programării Examenelor"
+---
+sequenceDiagram
+    autonumber
+    actor Admin as Administrator
+    participant UI as Exam Schedule Component
+    participant ExamSvc as Exam Service
+    participant HTTP as HTTP Client
+    participant API as /api/exam-schedule/
+    participant FileHandler as File Handler
+    participant ExamModel as ExamSchedule Model
+    participant DB as MySQL Database
+
+    Admin->>UI: Navighează la "Programarea Examenelor"
+
+    UI->>ExamSvc: loadCurrentSchedule()
+
+    ExamSvc->>HTTP: GET /api/exam-schedule/read.php
+
+    HTTP->>ExamModel: getLatest()
+
+    ExamModel->>DB: SELECT * FROM exam_schedules<br/>ORDER BY uploaded_at DESC<br/>LIMIT 1
+
+    DB-->>ExamModel: Programarea curentă (dacă există)
+
+    ExamModel-->>HTTP: Fișier actual
+
+    HTTP-->>ExamSvc: Programare primită
+
+    ExamSvc-->>UI: Afișare Programare
+
+    UI-->>Admin: Tabel cu:<br/>- Fișier Excel<br/>- Data Încărcării<br/>- Anul<br/>- Admin care a încărcat
+
+    Admin->>UI: Click "Descarcă Programare"
+
+    UI->>ExamSvc: downloadSchedule(exam_id)
+
+    ExamSvc->>HTTP: GET /api/exam-schedule/download.php?id=X
+
+    HTTP->>FileHandler: openFile(file_path)
+
+    FileHandler->>FileHandler: Verificare permisiuni
+
+    alt Fișier găsit
+        FileHandler-->>HTTP: File Stream
+        HTTP-->>ExamSvc: File Blob
+        ExamSvc-->>UI: Download
+        UI-->>Admin: ⬇️ Descărcare Excel
+    else Fișier nu găsit
+        FileHandler-->>HTTP: {error: "File not found"}
+        HTTP-->>ExamSvc: Error
+        ExamSvc-->>UI: Eroare
+        UI-->>Admin: "Fișierul a fost șters"
+    end
+
+    Admin->>UI: Click "Încarcă Nouă Programare"
+
+    UI->>UI: Deschide File Picker
+
+    Admin->>UI: Selectează Fișier Excel
+
+    UI->>ExamSvc: uploadSchedule(file, year)
+
+    ExamSvc->>HTTP: POST /api/exam-schedule/upload.php<br/>{file, year}
+
+    HTTP->>FileHandler: validateFile(file)
+
+    alt Fișier Invalid
+        FileHandler-->>HTTP: {error: "Invalid format"}
+        HTTP-->>ExamSvc: Error
+        ExamSvc-->>UI: "Fișier invalid"
+        UI-->>Admin: "Folosiți template-ul Excel"
+    else Fișier Valid
+        FileHandler->>FileHandler: Creare Director<br/>uploads/exams/2026/
+
+        FileHandler->>FileHandler: Salvare Fișier<br/>cu Nume Standardizat
+
+        FileHandler-->>HTTP: file_path = uploads/exams/2026/Programare_Examene.xlsx
+
+        HTTP->>ExamModel: createOrUpdate(year, file_name, file_path, admin_id)
+
+        ExamModel->>DB: SELECT * FROM exam_schedules<br/>WHERE year = 2026
+
+        alt Deja Există
+            DB-->>ExamModel: Record existent
+            ExamModel->>DB: UPDATE exam_schedules<br/>SET file_path = ?, file_name = ?,<br/>uploaded_at = NOW()<br/>WHERE year = ?
+        else Nu Există
+            DB-->>ExamModel: Niciun record
+            ExamModel->>DB: INSERT INTO exam_schedules<br/>(file_name, file_path, uploaded_by, year)
+        end
+
+        DB-->>ExamModel: Success
+
+        ExamModel-->>HTTP: Confirm
+
+        HTTP-->>ExamSvc: ✅ Upload Successful
+
+        ExamSvc->>ExamSvc: Refresh Lista
+
+        ExamSvc-->>UI: Programare Actualizată
+
+        UI->>UI: Reload Tabel
+
+        UI-->>Admin: "✅ Programare Examene<br/>Încărcată cu Succes!"
+    end
+
+    Note over Admin,DB: Acces pentru Toți Roluri:<br/>- Studenți: Vizualizare + Descărcare<br/>- Profesori: Vizualizare + Descărcare<br/>- Admin: Upload + Update + Descărcare
+

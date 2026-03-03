@@ -51,6 +51,13 @@ rectangle "Student Management System" {
     usecase (Vizualizare Date Sensibile) as UC_A_ViewSensitive
     usecase (Asociere Asistenți Laborator) as UC_A_AssignInstructors
   }
+
+  ' === FUNCȚIONALITĂȚI EXAMENE ===
+  package "Funcționalități Examene" #lavender {
+    usecase (Vizualizare Programare Examene) as UC_E_ViewSchedule
+    usecase (Încărcare Fișier Programare) as UC_E_UploadSchedule
+    usecase (Descărcare Programare Examene) as UC_E_DownloadSchedule
+  }
 }
 
 ' === RELAȚII STUDENT ===
@@ -89,6 +96,15 @@ admin --> UC_A_ManageGroups
 admin --> UC_A_ManageStudyGroups
 admin --> UC_A_ViewSensitive
 admin --> UC_A_AssignInstructors
+admin --> UC_E_UploadSchedule
+
+' === RELAȚII EXAMENE ===
+student --> UC_E_ViewSchedule
+student --> UC_E_DownloadSchedule
+teacher --> UC_E_ViewSchedule
+teacher --> UC_E_DownloadSchedule
+admin --> UC_E_ViewSchedule
+admin --> UC_E_DownloadSchedule
 
 ' === DEPENDENȚE ÎNTRE USE CASES ===
 UC_S_EnrollOptional ..> UC_S_ViewCourses : <<include>>
@@ -108,6 +124,13 @@ note bottom of UC_A_ViewSensitive
   - Finanțare (Buget/Taxă)
   - Status student (Activ/Suspendat)
   - Anul de început studii
+end note
+
+note right of UC_E_UploadSchedule
+  Programarea examenelor se
+  încarcă ca fișier Excel cu
+  orarul și sala pentru fiecare
+  examen per an academic
 end note
 
 @enduml

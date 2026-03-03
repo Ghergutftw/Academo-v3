@@ -1,3 +1,4 @@
+
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -110,6 +111,16 @@ export class StudentDashboardComponent implements OnInit {
       const toDate = new Date(this.filterDateTo);
       filtered = filtered.filter(record => new Date(record.session_date) <= toDate);
     }
+
+    // Sortare: mai întâi după absent (status), apoi după timp (descrescător)
+    filtered.sort((a, b) => {
+      // Sortează după status: 'absent' apare prima (ASC)
+      if (a.status !== b.status) {
+        return a.status.localeCompare(b.status);
+      }
+      // Apoi sortează după dată: mai nouă primera (DESC)
+      return new Date(b.session_date).getTime() - new Date(a.session_date).getTime();
+    });
 
     this.filteredRecords = filtered;
     this.pageIndex = 0;
