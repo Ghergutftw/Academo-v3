@@ -76,13 +76,19 @@
   @if (groupYear !== null) {
     <div class="mb-3">
       <label class="form-label">{{ mode === 'add' ? 'Adaugă Studenți' : 'Gestionează Studenți' }} (Anul {{ groupYear }})</label>
-      <input
-        type="text"
-        class="form-control search-input mb-2"
-        placeholder="Căutare după nume sau email..."
-        [(ngModel)]="studentSearchText"
-        (ngModelChange)="filterDisplayedStudents()"
-      />
+      <div class="d-flex align-items-center mb-2">
+        <button type="button" class="btn btn-outline-primary btn-sm me-2" (click)="importExcelFile.click()">
+          <i class="bi bi-file-earmark-excel"></i> Import Excel
+        </button>
+        <input #importExcelFile type="file" accept=".xlsx,.xls,.csv" (change)="onExcelImport($event)" style="display: none;" />
+        <input
+          type="text"
+          class="form-control search-input mb-2"
+          placeholder="Căutare după nume sau email..."
+          [(ngModel)]="studentSearchText"
+          (ngModelChange)="filterDisplayedStudents()"
+        />
+      </div>
       <div class="student-selection" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px;">
         @if (loading) {
           <p class="text-muted">Se încarcă studenții...</p>

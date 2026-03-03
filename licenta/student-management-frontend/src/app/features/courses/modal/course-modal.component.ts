@@ -21,6 +21,7 @@ export class CourseModalComponent implements OnInit {
   @Input() teachers: Teacher[] = [];
 
   courseName: string = '';
+  courseAcronym: string = '';
   courseTeacherId: number | null = null;
   courseStudyCycle: StudyCycle | null = null;
   courseYear: number | null = null;
@@ -64,6 +65,7 @@ export class CourseModalComponent implements OnInit {
 
     if (this.mode === 'edit' && this.course) {
       this.courseName = this.course.name ?? '';
+      this.courseAcronym = this.course.acronym ?? '';
       this.courseTeacherId = this.course.teacher_id ?? null;
       this.courseYear = this.course.year ?? 1;
       this.courseSemester = this.course.semester ?? 1;
@@ -123,6 +125,7 @@ export class CourseModalComponent implements OnInit {
 
   isFormValid(): boolean {
     return !!(this.courseName &&
+      this.courseAcronym &&
       this.courseTeacherId &&
       this.courseStudyCycle &&
       this.courseYear &&
@@ -137,6 +140,7 @@ export class CourseModalComponent implements OnInit {
     }
     this.activeModal.close({
       name: this.courseName,
+      acronym: this.courseAcronym,
       teacher_id: this.courseTeacherId,
       year: this.courseYear,
       semester: this.courseSemester,
@@ -218,3 +222,4 @@ export class CourseModalComponent implements OnInit {
   }
 
 }
+

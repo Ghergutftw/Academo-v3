@@ -147,6 +147,7 @@ export class GroupsComponent implements OnInit {
   openAddModal(): void {
     const modalRef = this.modalService.open(GroupModalComponent, {size: 'lg'});
     modalRef.componentInstance.mode = 'add';
+    modalRef.componentInstance.allGroups = this.groups;
 
     modalRef.result.then((result) => {
       if (result) {
@@ -161,14 +162,14 @@ export class GroupsComponent implements OnInit {
             this.loadGroups();
             const studentCount = result.student_ids?.length || 0;
             if (studentCount > 0) {
-              this.alertService.success(`Group created with ${studentCount} student(s)`);
+              this.alertService.success(`Grupa a fost creata cu succes cu ${studentCount} student(i)`);
             } else {
-              this.alertService.success('Group created successfully');
+              this.alertService.success('Grupa a fost creata cu succes!');
             }
           },
           error: (error) => {
             console.error('Error creating group:', error);
-            this.alertService.error('Failed to create group');
+            this.alertService.error('Eroare la crearea grupului');
           }
         });
       }
@@ -179,6 +180,7 @@ export class GroupsComponent implements OnInit {
     const modalRef = this.modalService.open(GroupModalComponent, {size: 'lg'});
     modalRef.componentInstance.mode = 'edit';
     modalRef.componentInstance.group = group;
+    modalRef.componentInstance.allGroups = this.groups;
 
     modalRef.result.then((result) => {
       if (result) {
@@ -193,11 +195,11 @@ export class GroupsComponent implements OnInit {
           next: () => {
             this.loadGroups();
             const studentCount = result.student_ids?.length || 0;
-            this.alertService.success(`Group updated with ${studentCount} student(s)`);
+            this.alertService.success(`Grupa a fost actualizata cu succes cu ${studentCount} student(i)`);
           },
           error: (error) => {
             console.error('Error updating group:', error);
-            this.alertService.error('Failed to update group');
+            this.alertService.error('Eroare la actualizarea grupului');
           }
         });
       }
@@ -211,11 +213,11 @@ export class GroupsComponent implements OnInit {
         this.groupsService.delete(id).subscribe({
           next: () => {
             this.loadGroups();
-            this.alertService.success('Group deleted successfully!');
+            this.alertService.success('Grupa a fost ștearsă cu succes!');
           },
           error: (error) => {
             console.error('Failed to delete group:', error);
-            this.alertService.error('Failed to delete group. It may be linked to other records.');
+            this.alertService.error('Ștergerea grupei a eșuat. Poate fi legată de alte înregistrări.');
           }
         });
       }
@@ -251,17 +253,17 @@ export class GroupsComponent implements OnInit {
             this.studentsService.getByGroup(groupId).subscribe({
               next: (students: Student[]) => {
                 this.studentsMap[groupId] = students || [];
-                this.alertService.success('Student deleted successfully!');
+                this.alertService.success('Studentul a fost șters cu succes!');
               },
               error: (error) => {
                 console.error('Error reloading students for group', groupId, ':', error);
-                this.alertService.warning('Student deleted, but failed to refresh the group list. Please expand the group again.');
+                this.alertService.warning('Studentul a fost șters, dar nu s-au putut reîncărca studenții pentru grup. Te rog reîncarcă pagina.');
               }
             });
           },
           error: (error) => {
             console.error('Error deleting student:', error);
-            this.alertService.error('Failed to delete student. Please try again.');
+            this.alertService.error('Eroare la ștergerea studentului');
           }
         });
       }

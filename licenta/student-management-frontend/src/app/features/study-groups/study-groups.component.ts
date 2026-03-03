@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import * as XLSX from 'xlsx';
 import {StudyGroupService} from '../../shared/services/study-group.service';
 import {StudentGroupsService} from '../../shared/services/student-groups.service';
 import {StudentGroup} from '../../shared/models/student-groups.model';
@@ -10,6 +12,8 @@ import {StudentsService} from '../../shared/services/students.service';
 import {StudyGroup} from '../../shared/models/study-group.model';
 import {Student} from '../../shared/models/student.model';
 import {StudyCycle} from '../../shared/models/study-cycle.enum';
+import {StudyGroupModalComponent} from './modal/study-group-modal.component';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-study-groups',
@@ -44,14 +48,18 @@ export class StudyGroupsComponent implements OnInit {
   editingGroup: StudyGroup | null = null;
   groupForm = {
     name: '',
-    course_id: 0
+    course_id: 0,
+    lab_day: null,
+    lab_hour: null
   };
 
   constructor(
     private studyGroupService: StudyGroupService,
     private coursesService: CoursesService,
     private studentsService: StudentsService,
-    private groupsService: StudentGroupsService
+    private groupsService: StudentGroupsService,
+    private modalService: NgbModal,
+    private alertService: AlertService
   ) {
   }
 
@@ -219,26 +227,58 @@ export class StudyGroupsComponent implements OnInit {
   }
 
   openGroupForm(group?: StudyGroup) {
-    if (group) {
-      this.editingGroup = group;
-      this.groupForm = {
-        name: group.name || '',
-        course_id: group.course_id || 0
-      };
-    } else {
-      this.editingGroup = null;
-      this.groupForm = {
-        name: '',
-        course_id: this.selectedCourseId || 0
-      };
+    const modalRef = this.modalService.open(StudyGroupModalComponent, { size: 'lg' });
+    modalRef.componentInstance.mode = group ? 'edit' : 'add';
+    modalRef.componentInstance.group = group;
+    modalRef.componentInstance.courses = this.courses;
+    modalRef.componentInstance.studyGroups = this.studyGroups;
+    // Transmite materia selectată în modal
+    if (!group && this.selectedCourseId) {
+      modalRef.componentInstance.courseId = this.selectedCourseId;
     }
-    this.showGroupForm = true;
+
+    modalRef.result.then((result: any) => {
+      if (result) {
+        if (group) {
+          // Update existing group
+          const updateData = {
+            id: group.id!,
+            name: result.name,
+            course_id: result.course_id,
+            lab_day: result.lab_day,
+            lab_hour: result.lab_hour
+          };
+          this.studyGroupService.update(updateData).subscribe({
+            next: () => {
+              this.loadStudyGroups();
+            },
+            error: (error) => {
+              console.error('Error updating group:', error);
+              alert('Eroare la actualizarea grupei');
+            }
+          });
+        } else {
+          // Create new group
+          this.studyGroupService.create(result).subscribe({
+            next: () => {
+              this.loadStudyGroups();
+            },
+            error: (error) => {
+              console.error('Error creating group:', error);
+              alert('Eroare la crearea grupei');
+            }
+          });
+        }
+      }
+    }).catch(() => {
+      // Modal was dismissed
+    });
   }
 
   closeGroupForm() {
     this.showGroupForm = false;
     this.editingGroup = null;
-    this.groupForm = {name: '', course_id: 0};
+    this.groupForm = {name: '', course_id: 0, lab_day: null, lab_hour: null};
   }
 
   saveGroup() {
@@ -252,7 +292,9 @@ export class StudyGroupsComponent implements OnInit {
       const updateData = {
         id: this.editingGroup.id!,
         name: this.groupForm.name,
-        course_id: this.groupForm.course_id
+        course_id: this.groupForm.course_id,
+        lab_day: this.groupForm.lab_day,
+        lab_hour: this.groupForm.lab_hour
       };
       this.studyGroupService.update(updateData).subscribe({
         next: () => {
@@ -306,9 +348,11 @@ export class StudyGroupsComponent implements OnInit {
     this.studyGroupService.updateMembers(this.selectedGroupId, newIds).subscribe({
       next: () => {
         this.loadGroupStudents(this.selectedGroupId!);
+        // Actualizează contorul imediat
+        this.studentCountsMap[this.selectedGroupId!] = newIds.length;
+        // Nu mai afișa alert custom la succes
       },
-      error: (error) => {
-        console.error('Error adding student:', error);
+      error: () => {
         alert('Eroare la adăugarea studentului');
       }
     });
@@ -324,9 +368,11 @@ export class StudyGroupsComponent implements OnInit {
     this.studyGroupService.updateMembers(this.selectedGroupId, newIds).subscribe({
       next: () => {
         this.loadGroupStudents(this.selectedGroupId!);
+        // Actualizează contorul imediat
+        this.studentCountsMap[this.selectedGroupId!] = newIds.length;
+        // Nu mai afișa alert custom la succes
       },
-      error: (error) => {
-        console.error('Error removing student:', error);
+      error: () => {
         alert('Eroare la eliminarea studentului');
       }
     });
@@ -475,6 +521,107 @@ export class StudyGroupsComponent implements OnInit {
           next: (res) => { this.studentCountsMap[g.id!] = res.data?.length ?? 0; },
           error: () => {}
         });
+      }
+    });
+  }
+
+  onExcelImport(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!this.selectedGroupId) {
+      alert('Selectează mai întâi o grupă de studiu');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      try {
+        if (file.name.endsWith('.csv')) {
+          const data = e.target.result;
+          const lines = data.split('\n').filter((line: string) => line.trim());
+          this.processStudentData(lines);
+        } else {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const rows: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+          const lines: string[] = rows.map(row => {
+            if (Array.isArray(row)) {
+              return row.filter(cell => cell !== null && cell !== undefined && cell !== '').join(' ');
+            }
+            return '';
+          }).filter(line => line.trim());
+
+          this.processStudentData(lines);
+        }
+      } catch (error) {
+        alert('Eroare la parsarea fișierului');
+      }
+    };
+
+    if (file.name.endsWith('.csv')) {
+      reader.readAsText(file);
+    } else {
+      reader.readAsArrayBuffer(file);
+    }
+  }
+
+  processStudentData(lines: string[]): void {
+    if (!this.selectedGroupId) return;
+
+    const studentsToAdd: number[] = [];
+    const notFoundEmails: string[] = [];
+
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return;
+
+      if (index === 0 && (trimmedLine.toLowerCase().includes('email') || trimmedLine.toLowerCase().includes('nume'))) {
+        return;
+      }
+
+      const emailMatch = trimmedLine.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i);
+      if (!emailMatch) {
+        notFoundEmails.push(trimmedLine);
+        return;
+      }
+
+      const email = emailMatch[0].toLowerCase();
+      const student = this.availableStudents.find(s => s.email?.toLowerCase() === email);
+
+      if (student) {
+        if (!studentsToAdd.includes(student.id)) {
+          studentsToAdd.push(student.id);
+        }
+      } else {
+        notFoundEmails.push(email);
+      }
+    });
+
+    if (studentsToAdd.length === 0) {
+      this.alertService.error('Nu au fost găsiți studenți care să corespundă cu datele din fișier');
+      return;
+    }
+
+    const currentIds = this.groupStudents.map(s => s.id);
+    const allIds = [...new Set([...currentIds, ...studentsToAdd])];
+
+    this.studyGroupService.updateMembers(this.selectedGroupId, allIds).subscribe({
+      next: () => {
+        this.loadGroupStudents(this.selectedGroupId!);
+        // Actualizează contorul imediat
+        this.studentCountsMap[this.selectedGroupId!] = allIds.length;
+        let message = `${studentsToAdd.length} studenți au fost adăugați cu succes!`;
+        if (notFoundEmails.length > 0) {
+          message += `\n\n${notFoundEmails.length} email-uri/linii nu au fost găsite:\n${notFoundEmails.slice(0, 5).join('\n')}${notFoundEmails.length > 5 ? '\n...' : ''}`;
+        }
+        this.alertService.success(message);
+      },
+      error: () => {
+        this.alertService.error('Eroare la adăugarea studenților');
       }
     });
   }

@@ -116,12 +116,12 @@
                 @for (activity of getPaginatedActivities(); track activity.id) {
                   <tr>
                     <td>{{ activity.course_name }}</td>
-                    <td>Lab {{ activity.lab_number }}</td>
+                    <td>Laboratorul {{ activity.lab_number }}</td>
                     <td>{{ activity.group_name }}</td>
                     <td>{{ formatDate(activity.session_date) }}</td>
                     <td>{{ activity.topic || '-' }}</td>
-                    <td>{{ activity.year }}</td>
-                    <td>{{ activity.semester }}</td>
+                    <td>Anul {{ activity.year }}</td>
+                    <td>Semestrul {{ activity.semester }}</td>
                   </tr>
                 }
               </tbody>

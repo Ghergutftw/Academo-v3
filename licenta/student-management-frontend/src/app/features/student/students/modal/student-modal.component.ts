@@ -22,7 +22,7 @@ export class StudentModalComponent implements OnInit {
   studentEmail: string = '';
   studentGroupId: number | null = null;
   studentStartYear: number | null = null;
-  studentStudyCycle: StudyCycle = StudyCycle.LICENTA;
+  studentStudyCycle: StudyCycle | '' = '';
   studentStudyYear: number | null = null;
   studentFinancingType: string = '';
   studentStatus: string = '';
@@ -39,12 +39,15 @@ export class StudentModalComponent implements OnInit {
       this.studentEmail = this.student.email ?? '';
       this.studentGroupId = this.student.group_id ?? null;
       this.studentStartYear = this.student.start_year ?? null;
-      this.studentStudyCycle = this.student.study_cycle ?? StudyCycle.LICENTA;
+      this.studentStudyCycle = this.student.study_cycle ?? '';
       this.studentStudyYear = this.student.study_year ?? null;
       this.studentFinancingType = this.student.financing_type ?? '';
       this.studentStatus = this.student.student_status ?? '';
       this.updateAvailableStudyYears();
       this.updateFilteredGroups();
+    } else {
+      this.studentStudyCycle = '';
+      this.studentStudyYear = null;
     }
   }
 

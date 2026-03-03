@@ -5,6 +5,7 @@ class Courses {
 
     public $id;
     public $name;
+    public $acronym;
     public $teacher_id;
     public $year;
     public $semester;
@@ -48,10 +49,11 @@ class Courses {
         return $stmt;
     }
 
-    public function create($name, $teacher_id, $year = 1, $semester = 1, $is_optional = false) {
-        $query = "INSERT INTO " . $this->table_name . " (name, teacher_id, year, semester, is_optional) VALUES (:name, :teacher_id, :year, :semester, :is_optional)";
+    public function create($name, $acronym, $teacher_id, $year = 1, $semester = 1, $is_optional = false) {
+        $query = "INSERT INTO " . $this->table_name . " (name, acronym, teacher_id, year, semester, is_optional) VALUES (:name, :acronym, :teacher_id, :year, :semester, :is_optional)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":name", $name);
+        $stmt->bindParam(":acronym", $acronym);
         $stmt->bindParam(":teacher_id", $teacher_id);
         $stmt->bindParam(":year", $year, PDO::PARAM_INT);
         $stmt->bindParam(":semester", $semester, PDO::PARAM_INT);
@@ -77,10 +79,11 @@ class Courses {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $name, $teacher_id, $year = 1, $semester = 1, $is_optional = false) {
-        $query = "UPDATE " . $this->table_name . " SET name = :name, teacher_id = :teacher_id, year = :year, semester = :semester, is_optional = :is_optional WHERE id = :id";
+    public function update($id, $name, $acronym, $teacher_id, $year = 1, $semester = 1, $is_optional = false) {
+        $query = "UPDATE " . $this->table_name . " SET name = :name, acronym = :acronym, teacher_id = :teacher_id, year = :year, semester = :semester, is_optional = :is_optional WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":name", $name);
+        $stmt->bindParam(":acronym", $acronym);
         $stmt->bindParam(":teacher_id", $teacher_id);
         $stmt->bindParam(":year", $year, PDO::PARAM_INT);
         $stmt->bindParam(":semester", $semester, PDO::PARAM_INT);
@@ -157,3 +160,4 @@ class Courses {
         return $courses;
     }
 }
+

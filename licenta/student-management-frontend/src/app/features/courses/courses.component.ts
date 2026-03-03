@@ -37,6 +37,8 @@ export class CoursesComponent implements OnInit {
   selectedYear: number | null = null;
   selectedSemester: number | null = null;
   selectedTeacher: number | null = null;
+  selectedAcronym: string = '';
+  selectedCourseType: 'obligatoriu' | 'optional' | null = null;
 
   // Teacher autocomplete
   teacherControl = new FormControl<string | Teacher>('');
@@ -113,6 +115,9 @@ export class CoursesComponent implements OnInit {
       // name filter
       const nameMatch = course.name && course.name.toLowerCase().includes(searchLower);
 
+      // acronym filter
+      const acronymMatch = !this.selectedAcronym || (course.acronym && course.acronym.toLowerCase().includes(this.selectedAcronym.toLowerCase()));
+
       // teacher filter
       const teacherMatch = this.selectedTeacher ? course.teacher_id === this.selectedTeacher : true;
 
@@ -142,7 +147,18 @@ export class CoursesComponent implements OnInit {
       // semester filter
       const semesterMatch = this.selectedSemester ? course.semester === this.selectedSemester : true;
 
-      return (!this.searchText || nameMatch) && teacherMatch && cycleMatch && yearMatch && semesterMatch;
+      // course type filter (optional/obligatory)
+      let courseTypeMatch = true;
+      if (this.selectedCourseType) {
+        const isOptional = course.is_optional ? 1 : 0;
+        if (this.selectedCourseType === 'optional') {
+          courseTypeMatch = isOptional === 1;
+        } else if (this.selectedCourseType === 'obligatoriu') {
+          courseTypeMatch = isOptional === 0;
+        }
+      }
+
+      return (!this.searchText || nameMatch) && acronymMatch && teacherMatch && cycleMatch && yearMatch && semesterMatch && courseTypeMatch;
     });
 
     this.pageIndex = 0;
@@ -164,6 +180,7 @@ export class CoursesComponent implements OnInit {
       if (result) {
         const newCourse: Partial<Course> & Omit<Course, 'id'> = {
           name: result.name,
+          acronym: result.acronym,
           teacher_id: result.teacher_id,
           year: result.year,
           semester: result.semester,
@@ -213,6 +230,7 @@ export class CoursesComponent implements OnInit {
         const updatedCourse: Course = {
           id: course.id,
           name: result.name,
+          acronym: result.acronym,
           teacher_id: result.teacher_id,
           year: result.year,
           semester: result.semester,
@@ -247,11 +265,11 @@ export class CoursesComponent implements OnInit {
             next: () => {
               this.courses = this.courses.filter(c => c.id !== id);
               this.applySearch();
-              this.alertService.success('Course deleted successfully!');
+              this.alertService.success('Cursul a fost șters cu succes.');
             },
             error: (error) => {
               console.error('Error deleting course:', error);
-              this.alertService.error('Failed to delete course. Please try again.');
+              this.alertService.error('Ștergerea cursului a eșuat. Încercați din nou.');
             }
           });
         }
@@ -303,6 +321,11 @@ export class CoursesComponent implements OnInit {
 
   clearSearchText(): void {
     this.searchText = '';
+    this.applySearch();
+  }
+
+  clearAcronymFilter(): void {
+    this.selectedAcronym = '';
     this.applySearch();
   }
 

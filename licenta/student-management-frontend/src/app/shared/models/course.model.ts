@@ -9,6 +9,7 @@ export interface LabInstructor {
 export interface Course {
   id: number;
   name: string;
+  acronym?: string;
   teacher_id: number;
   year: number;
   semester: number;

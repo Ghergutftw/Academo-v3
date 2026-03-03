@@ -70,6 +70,7 @@ Table student_groups {
 Table courses {
   id integer [pk, increment]
   name varchar [not null, note: 'Numele cursului']
+  acronym varchar [not null, unique, note: 'Acronim materie']
   teacher_id integer [not null, note: 'Profesor titular']
   year integer [default: 1, note: 'An studiu: 1-6']
   semester integer [default: 1, note: 'Semestru: 1 sau 2']

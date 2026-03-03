@@ -23,6 +23,19 @@
       type="email"
     />
   </div>
+  <div class="mb-3">
+    <div class="form-check">
+      <input
+        [(ngModel)]="teacherIsAdmin"
+        class="form-check-input"
+        id="teacherIsAdmin"
+        type="checkbox"
+      />
+      <label class="form-check-label" for="teacherIsAdmin">
+        Administrator
+      </label>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">Anulează</button>

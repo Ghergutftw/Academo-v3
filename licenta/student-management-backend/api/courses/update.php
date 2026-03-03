@@ -6,8 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
-if (!isset($input['id'], $input['name'], $input['teacher_id'], $input['year'], $input['semester'])) {
-    respond(['error' => 'Missing required fields: id, name, teacher_id, year, semester'], 400);
+if (!isset($input['id'], $input['name'], $input['acronym'], $input['teacher_id'], $input['year'], $input['semester'])) {
+    respond(['error' => 'Missing required fields: id, name, acronym, teacher_id, year, semester'], 400);
+}
+
+$acronym = trim($input['acronym']);
+if ($acronym === '' || strlen($acronym) > 16) {
+    respond(['error' => 'Acronym is required and must be max 16 chars'], 400);
 }
 
 $year = (int)$input['year'];
@@ -23,7 +28,7 @@ if ($semester < 1 || $semester > 2) {
 }
 
 $course = new Courses($db);
-$success = $course->update($input['id'], $input['name'], $input['teacher_id'], $year, $semester, $is_optional);
+$success = $course->update($input['id'], $input['name'], $acronym, $input['teacher_id'], $year, $semester, $is_optional);
 
 if ($success) {
     respond(['success' => true]);

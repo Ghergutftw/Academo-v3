@@ -4,9 +4,9 @@
       <h2 class="mb-0">Materii</h2>
       <div class="d-flex gap-2">
         <button
-          (click)="clearSearchText(); clearTeacherFilter(); clearYearFilter(); clearSemesterFilter(); clearStudyCycleFilter()"
-          [class]="'btn btn-sm ' + (searchText || selectedTeacher || selectedYear || selectedSemester || selectedStudyCycle ? 'btn-warning' : 'btn-outline-secondary')"
-          [disabled]="!searchText && !selectedTeacher && !selectedYear && !selectedSemester && !selectedStudyCycle"
+          (click)="clearSearchText(); clearAcronymFilter(); clearTeacherFilter(); clearYearFilter(); clearSemesterFilter(); clearStudyCycleFilter(); selectedCourseType = null; applySearch()"
+          [class]="'btn btn-sm ' + (searchText || selectedAcronym || selectedTeacher || selectedYear || selectedSemester || selectedStudyCycle || selectedCourseType ? 'btn-warning' : 'btn-outline-secondary')"
+          [disabled]="!searchText && !selectedAcronym && !selectedTeacher && !selectedYear && !selectedSemester && !selectedStudyCycle && !selectedCourseType"
           title="Resetează filtrele">
           <i class="bi bi-arrow-counterclockwise me-1"></i> Resetează
         </button>
@@ -17,8 +17,8 @@
       @if (courses.length) {
         <!-- Search and Filters -->
         <div class="row mb-3 filter-row">
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Caută după Nume</label>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">Nume</label>
             <mat-form-field class="w-100">
               <input
                 (input)="applySearch()"
@@ -29,6 +29,24 @@
               <button
                 (click)="clearSearchText()"
                 *ngIf="searchText"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">Acronim</label>
+            <mat-form-field class="w-100">
+              <input
+                (input)="applySearch()"
+                [(ngModel)]="selectedAcronym"
+                matInput
+                placeholder="Tastează acronimul..."
+                type="text">
+              <button
+                (click)="clearAcronymFilter()"
+                *ngIf="selectedAcronym"
                 mat-icon-button
                 matSuffix>
                 ✕
@@ -119,7 +137,7 @@
               </mat-autocomplete>
             </mat-form-field>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label class="form-label fw-bold">Profesor</label>
             <mat-form-field class="w-100">
               <input
@@ -147,6 +165,26 @@
               </mat-autocomplete>
             </mat-form-field>
           </div>
+          <div class="col-md-2">
+            <label class="form-label fw-bold">Tip</label>
+            <mat-form-field class="w-100">
+              <mat-select
+                (selectionChange)="applySearch()"
+                [(ngModel)]="selectedCourseType"
+                placeholder="Selectează tipul">
+                <mat-option [value]="null">Toate</mat-option>
+                <mat-option [value]="'obligatoriu'">Obligatoriu</mat-option>
+                <mat-option [value]="'optional'">Opțional</mat-option>
+              </mat-select>
+              <button
+                (click)="selectedCourseType = null; applySearch()"
+                *ngIf="selectedCourseType"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
         </div>
 
         <div class="table-responsive">
@@ -154,10 +192,12 @@
             <thead class="table-light">
             <tr>
               <th>Nume</th>
+              <th>Acronim</th>
               <th>Profesor</th>
               <th>Ciclu</th>
               <th>An</th>
               <th>Semestru</th>
+              <th>Tip</th>
               <th style="width: 300px;">Acțiuni</th>
             </tr>
             </thead>
@@ -165,6 +205,9 @@
               @for (course of getPaginatedCourses(); track course.id) {
                 <tr>
                   <td>{{ course.name }}</td>
+                  <td>
+                    {{ course.acronym || 'N/A' }}
+                  </td>
                   <td>{{ getTeacherName(course.teacher_id) }}</td>
                   <td>
                     @if (course.year && course.year <= 4) {
@@ -176,6 +219,11 @@
                   </td>
                   <td>{{ displayYear(course.year || 0) || 'N/A' }}</td>
                   <td>Semestrul {{ course.semester || 'N/A' }}</td>
+                  <td>
+                    <span [class]="(course.is_optional ? 1 : 0) === 1 ? 'badge bg-warning' : 'badge bg-success'">
+                      {{ (course.is_optional ? 1 : 0) === 1 ? 'Opțional' : 'Obligatoriu' }}
+                    </span>
+                  </td>
                   <td>
                     <div class="d-flex gap-2">
                       <button (click)="editCourse(course)" class="btn btn-sm btn-outline-primary">

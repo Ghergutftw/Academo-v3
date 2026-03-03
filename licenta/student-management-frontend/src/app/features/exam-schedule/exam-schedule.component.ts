@@ -45,7 +45,7 @@ export class ExamScheduleComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
-        this.alertService.error('Please select an Excel file (.xlsx or .xls)');
+        this.alertService.error('Te rog selecteaza un fisier .xlsx sau .xls');
         return;
       }
       this.selectedFile = file;
@@ -54,14 +54,14 @@ export class ExamScheduleComponent implements OnInit {
 
   uploadFile(): void {
     if (!this.selectedFile) {
-      this.alertService.error('Please select a file first');
+      this.alertService.error('Te rog selecteaza un fisier');
       return;
     }
 
     this.loading = true;
     this.scheduleService.uploadScheduleFile(this.selectedFile).subscribe({
       next: () => {
-        this.alertService.success('Exam schedule uploaded successfully!');
+        this.alertService.success('Programul a fost incarcat cu succes');
         this.selectedFile = null;
         this.fileExists = true;
         this.loading = false;
@@ -92,7 +92,7 @@ export class ExamScheduleComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.alertService.error('Failed to download file');
+        this.alertService.error('Eroare la descarcarea fisierului');
         this.loading = false;
       }
     });

@@ -212,10 +212,22 @@
 
               <!-- Available students (only for optional courses) -->
               <div *ngIf="!isObligatoryCourse()" class="p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                   <span class="fw-semibold text-info">
                     <i class="bi bi-plus-circle me-1"></i>Disponibili ({{ availableStudents.length }})
                   </span>
+                  <button
+                    (click)="importExcelFile.click()"
+                    class="btn btn-sm btn-outline-primary"
+                    title="Import din Excel">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Import Excel
+                  </button>
+                  <input
+                    #importExcelFile
+                    (change)="onExcelImport($event)"
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                    style="display: none">
                   <input
                     [(ngModel)]="studentSearchText"
                     (ngModelChange)="filterAvailableStudents()"
@@ -268,34 +280,3 @@
 
 </div>
 
-<!-- Modal -->
-<div [class.show]="showGroupForm" [style.display]="showGroupForm ? 'block' : 'none'" class="modal fade" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ editingGroup ? 'Editează Grupa' : 'Creează Grupă Nouă' }}</h5>
-        <button (click)="closeGroupForm()" class="btn-close" type="button"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label">Nume Grupă</label>
-          <input [(ngModel)]="groupForm.name" class="form-control" placeholder="Ex: Grupa A" type="text">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Materie</label>
-          <select [(ngModel)]="groupForm.course_id" class="form-select">
-            <option [ngValue]="0">Selectează materia</option>
-            <option *ngFor="let course of courses" [ngValue]="course.id">
-              {{ course.name }} ({{ course.is_optional ? 'Opțională' : 'Obligatorie' }})
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button (click)="closeGroupForm()" class="btn btn-secondary">Anulează</button>
-        <button (click)="saveGroup()" class="btn btn-primary">{{ editingGroup ? 'Actualizează' : 'Creează' }}</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div *ngIf="showGroupForm" class="modal-backdrop fade show"></div>

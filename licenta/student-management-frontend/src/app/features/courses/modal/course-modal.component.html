@@ -16,6 +16,23 @@
         />
       </div>
       <div class="mb-4">
+        <label class="form-label" for="courseAcronym">Acronim</label>
+        <input
+          [(ngModel)]="courseAcronym"
+          class="form-control"
+          [class.is-invalid]="courseAcronym.trim() === '' && showLabError"
+          [class.is-valid]="courseAcronym.trim() !== '' && showLabError"
+          id="courseAcronym"
+          placeholder="ex: PAI"
+          type="text"
+          maxlength="10"
+          required
+        />
+        <div *ngIf="courseAcronym.trim() === '' && showLabError" class="invalid-feedback">
+          Acronimul este obligatoriu.
+        </div>
+      </div>
+      <div class="mb-4">
         <label class="form-label" for="courseStudyCycle">Ciclu de Studiu</label>
         <select
           (change)="onStudyCycleChange()"
@@ -78,10 +95,8 @@
           id="courseTeacher"
           required
         >
-          <option [value]="null" disabled selected>Selectați un profesor</option>
-          @for (teacher of teachers; track teacher.id) {
-            <option [value]="teacher.id">{{ teacher.name }}</option>
-          }
+          <option [value]="null" disabled selected>Selectați profesorul titular</option>
+          <option *ngFor="let teacher of teachers" [value]="teacher.id">{{ teacher.name }}</option>
         </select>
       </div>
       <div class="mb-4">
@@ -127,6 +142,7 @@
                 />
                 <label [for]="'lab-' + teacher.id" class="form-check-label">
                   {{ teacher.name }}
+                  <div *ngIf="teacher.email" class="text-muted small" style="font-size: 0.8em; margin-top: -2px;">{{ teacher.email }}</div>
                 </label>
               </div>
             }

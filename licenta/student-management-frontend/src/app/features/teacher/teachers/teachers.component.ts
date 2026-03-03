@@ -202,11 +202,11 @@ export class TeachersComponent {
                 teachers.filter(t => t.id !== id)
               );
               this.applyFilterAndSort();
-              this.alertService.success('Teacher deleted successfully!');
+              this.alertService.success('Profesorul a fost șterse cu succes.');
             },
             error: (error: any) => {
               console.error('Error deleting teacher:', error);
-              this.alertService.error('Failed to delete teacher. Please try again.');
+              this.alertService.error('Eroare la ștergerea profesorului. Asigurați-vă că profesorul nu are cursuri sau laboratoare asociate.');
             }
           });
         }
@@ -223,7 +223,8 @@ export class TeachersComponent {
         const newTeacher: Teacher = {
           id: 0,
           name: result.name,
-          email: result.email
+          email: result.email,
+          is_admin: result.is_admin
         };
         this.teachersService.create(newTeacher).subscribe(newTeacherObj => {
           this.teachers.update(list => [...list, newTeacherObj]);
@@ -243,7 +244,8 @@ export class TeachersComponent {
         const updatedTeacher: Teacher = {
           id: teacher.id,
           name: result.name,
-          email: result.email
+          email: result.email,
+          is_admin: result.is_admin
         };
         this.teachersService.update(updatedTeacher).subscribe(updatedTeacherObj => {
           this.teachers.update(list => list.map(t => t.id === updatedTeacherObj.id ? updatedTeacherObj : t));

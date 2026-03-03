@@ -180,7 +180,7 @@ export class StudentsListComponent implements OnInit {
             },
             error: (error: any) => {
               console.error('Error deleting student:', error);
-              this.alertService.error('Failed to delete student. Please try again.');
+              this.alertService.error('Eroare la ștergerea studentului!');
             }
           });
         }
@@ -404,7 +404,7 @@ export class StudentsListComponent implements OnInit {
     }
 
     if (studentsToImport.length === 0) {
-      this.alertService.warning('No valid students found in the Excel file.');
+      this.alertService.warning('Nu sau gasit studenti pentru import.');
       return;
     }
 

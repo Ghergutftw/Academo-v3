@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ mode === 'add' ? 'Creează Grupă Nouă' : 'Editează Grupa' }}</h5>
+  <button (click)="activeModal.dismiss()" class="btn-close" type="button"></button>
+</div>
+<div class="modal-body">
+  <div class="mb-3">
+    <label class="form-label">Materie</label>
+    <select [(ngModel)]="courseId" (ngModelChange)="onCourseChange()" class="form-select">
+      <option [ngValue]="0">Selectează materia</option>
+      <option *ngFor="let course of courses" [ngValue]="course.id">
+        {{ course.name }} ({{ course.is_optional ? 'Opțională' : 'Obligatorie' }})
+      </option>
+    </select>
+  </div>
+  <div class="mb-3" *ngIf="isOptional()">
+    <label class="form-label">Zi laborator</label>
+    <select [(ngModel)]="labDay" (ngModelChange)="onLabDayChange()" class="form-select" [disabled]="!courseId">
+      <option [ngValue]="null">Selectează ziua</option>
+      <option [ngValue]="'Luni'">Luni</option>
+      <option [ngValue]="'Marți'">Marți</option>
+      <option [ngValue]="'Miercuri'">Miercuri</option>
+      <option [ngValue]="'Joi'">Joi</option>
+      <option [ngValue]="'Vineri'">Vineri</option>
+    </select>
+  </div>
+  <div class="mb-3" *ngIf="isOptional()">
+    <label class="form-label">Interval orar laborator</label>
+    <select [(ngModel)]="labHour" (ngModelChange)="onLabHourChange()" class="form-select" [disabled]="!labDay">
+      <option [ngValue]="null">Selectează ora</option>
+      <option *ngFor="let hour of getAvailableLabHours()" [ngValue]="hour">{{ hour }}</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Nume Grupă</label>
+    <input [(ngModel)]="groupName"  class="form-control" placeholder="Ex: Grupa A" type="text">
+    <small class="text-muted" *ngIf="mode === 'add'">Nume generat automat pe baza materiei, zilei și orei</small>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.dismiss()" class="btn btn-secondary">Anulează</button>
+  <button (click)="save()" class="btn btn-primary">{{ mode === 'add' ? 'Creează' : 'Actualizează' }}</button>
+</div>
