@@ -1,0 +1,10 @@
+Options -Indexes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/student-management-backend/
+    RewriteRule ^(?!student-management-backend).*$ index.html [L,QSA]
+</IfModule>
+
