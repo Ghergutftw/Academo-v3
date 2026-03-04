@@ -348,41 +348,35 @@
   margin-bottom: 20px;
 }
 
-.filters-section .form-label {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
 }
 
-.filters-section .form-select,
-.filters-section .form-control {
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+.filter-field {
+  flex: 1 1 200px;
+  min-width: 180px;
 }
 
-.filters-section .form-select:focus,
-.filters-section .form-control:focus {
-  border-color: #0d6efd;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+.reset-btn {
+  flex-shrink: 0;
+  height: 56px;
+  align-self: flex-start;
+  margin-top: 4px;
 }
 
-.filters-section .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  padding: 0.5rem 1rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: all 0.15s ease-in-out;
-}
+@media (max-width: 768px) {
+  .filters-row {
+    flex-direction: column;
+  }
 
-.filters-section .btn-secondary:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
+  .filter-field,
+  .reset-btn {
+    width: 100%;
+    flex: unset;
+  }
 }
 
 /* Material Paginator Customization */
@@ -396,75 +390,4 @@
   min-height: 56px;
 }
 
-/* Bootstrap Grid Helper Classes */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -0.75rem;
-  margin-left: -0.75rem;
-}
-
-.g-3 > * {
-  padding-right: 0.75rem;
-  padding-left: 0.75rem;
-}
-
-.col-md-2,
-.col-md-3,
-.col-md-4 {
-  flex: 0 0 auto;
-  padding-right: 0.75rem;
-  padding-left: 0.75rem;
-}
-
-@media (min-width: 768px) {
-  .col-md-2 {
-    flex: 0 0 16.666667%;
-    max-width: 16.666667%;
-  }
-
-  .col-md-3 {
-    flex: 0 0 25%;
-    max-width: 25%;
-  }
-
-  .col-md-4 {
-    flex: 0 0 33.333333%;
-    max-width: 33.333333%;
-  }
-}
-
-.d-flex {
-  display: flex !important;
-}
-
-.align-items-end {
-  align-items: flex-end !important;
-}
-
-.justify-content-between {
-  justify-content: space-between !important;
-}
-
-.align-items-center {
-  align-items: center !important;
-}
-
-.w-100 {
-  width: 100% !important;
-}
-
-@media (max-width: 768px) {
-  .filters-section .row {
-    flex-direction: column;
-  }
-
-  .col-md-2,
-  .col-md-3,
-  .col-md-4 {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-  }
-}
-
+/* Bootstrap-like helpers */

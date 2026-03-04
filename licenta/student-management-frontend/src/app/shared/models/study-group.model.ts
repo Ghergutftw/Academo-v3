@@ -17,3 +17,10 @@ export interface StudyGroupMember {
   group_id?: number;
   group_name?: string;
 }
+
+export interface GroupOrStudyGroup {
+  id: number;
+  name: string;
+  isRegularGroup?: boolean;
+}
+

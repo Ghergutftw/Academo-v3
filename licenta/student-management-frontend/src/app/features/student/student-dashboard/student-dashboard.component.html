@@ -26,15 +26,15 @@
                   <div class="stat-body">
                     <div class="progress mb-2" style="height: 24px;">
                       <div class="progress-bar" role="progressbar"
-                        [style.width.%]="stat.attendance_percentage === 0 ? 100 : stat.attendance_percentage"
-                        [ngClass]="{
+                           [style.width.%]="stat.attendance_percentage === 0 ? 100 : stat.attendance_percentage"
+                           [ngClass]="{
                           'bg-success': stat.attendance_percentage >= 80,
                           'bg-warning': stat.attendance_percentage >= 50 && stat.attendance_percentage < 80,
                           'bg-danger': stat.attendance_percentage < 50
                         }"
-                        [attr.aria-valuenow]="stat.attendance_percentage"
-                        aria-valuemin="0"
-                        aria-valuemax="100">
+                           [attr.aria-valuenow]="stat.attendance_percentage"
+                           aria-valuemin="0"
+                           aria-valuemax="100">
                         {{ stat.attendance_percentage }}%
                       </div>
                     </div>
@@ -65,46 +65,44 @@
           <h4>Toate Prezențele Mele</h4>
         </div>
         <div class="card-body">
-          <!-- Filtre -->
+
           <div class="filters-section mb-4">
-            <div class="row g-3">
-              <div class="col-md-4">
-                <label class="form-label" for="courseFilter">Materie</label>
-                <select (change)="onFilterChange()"
-                        [(ngModel)]="filterCourseId"
-                        class="form-select"
-                        id="courseFilter">
-                  <option [ngValue]="null">Toate materiile</option>
+            <div class="filters-row">
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Materie</mat-label>
+                <mat-select [(ngModel)]="filterCourseId" (selectionChange)="onFilterChange()">
+                  <mat-option [value]="null">Toate materiile</mat-option>
                   @for (course of availableCourses; track course.id) {
-                    <option [ngValue]="course.id">{{ course.name }}</option>
+                    <mat-option [value]="course.id">{{ course.name }}</mat-option>
                   }
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label" for="dateFrom">De la</label>
-                <input (change)="onFilterChange()"
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>De la</mat-label>
+                <input matInput
+                       [matDatepicker]="pickerFrom"
                        [(ngModel)]="filterDateFrom"
-                       [max]="filterDateTo || undefined"
-                       class="form-control"
-                       id="dateFrom"
-                       type="date">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label" for="dateTo">Până la</label>
-                <input (change)="onFilterChange()"
+                       [max]="filterDateTo || null"
+                       (dateChange)="onFilterChange()">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Până la</mat-label>
+                <input matInput
+                       [matDatepicker]="pickerTo"
                        [(ngModel)]="filterDateTo"
-                       [min]="filterDateFrom || undefined"
-                       class="form-control"
-                       id="dateTo"
-                       type="date">
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <button (click)="clearFilters()"
-                        class="btn btn-secondary w-100"
-                        type="button">
-                  Resetează
-                </button>
-              </div>
+                       [min]="filterDateFrom || null"
+                       (dateChange)="onFilterChange()">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+              </mat-form-field>
+
+              <button mat-stroked-button color="warn" (click)="clearFilters()" class="reset-btn">
+                Resetează
+              </button>
             </div>
           </div>
 
@@ -119,8 +117,8 @@
               </div>
             } @else {
               <div class="table-responsive">
-                <table class="table table-hover table-soft align-middle">
-                  <thead class="table-light">
+                <table class="attendance-table">
+                  <thead>
                   <tr>
                     <th>#</th>
                     <th>Data</th>
@@ -154,7 +152,6 @@
                 </table>
               </div>
 
-              <!-- Paginare Angular Material -->
               <mat-paginator
                 (page)="onPageChange($event)"
                 [length]="filteredRecords.length"
@@ -171,4 +168,3 @@
     }
   </div>
 </div>
-

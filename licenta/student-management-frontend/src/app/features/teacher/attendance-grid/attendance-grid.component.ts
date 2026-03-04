@@ -13,32 +13,11 @@ import {Session, SessionService} from '../../../shared/services/session.service'
 import {AttendanceRecord, AttendanceService} from '../../../shared/services/attendance.service';
 import {StudentGroupsService} from '../../../shared/services/student-groups.service';
 import {StudentGroup} from '../../../shared/models/student-groups.model';
+import {StudyGroup, GroupOrStudyGroup} from '../../../shared/models/study-group.model';
+import {Student} from '../../../shared/models/student.model';
+import {Laboratory} from '../../../shared/models/laboratory.model';
 import {firstValueFrom} from 'rxjs';
 
-interface StudyGroup {
-  id: number;
-  name: string;
-  course_id: number;
-}
-
-interface GroupOrStudyGroup {
-  id: number;
-  name: string;
-  isRegularGroup?: boolean;
-}
-
-interface Student {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface Laboratory {
-  id: number;
-  course_id: number;
-  lab_number: number;
-  topic: string;
-}
 
 @Component({
   selector: 'app-attendance-grid',

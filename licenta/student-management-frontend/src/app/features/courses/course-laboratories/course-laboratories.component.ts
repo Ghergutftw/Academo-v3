@@ -4,8 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {LaboratoryService} from '../../../shared/services/laboratory.service';
-import {CoursesService} from '../../../shared/services/courses.service';
-import {Course} from '../../../shared/models/course.model';
+import {CoursesService, CourseWithTeacher} from '../../../shared/services/courses.service';
 import {Laboratory} from '../../../shared/models/laboratory.model';
 import { FileOriginalNamePipe } from '../../../shared/pipes/file-original-name.pipe';
 import { FileUploadDatePipe } from '../../../shared/pipes/file-upload-date.pipe';
@@ -14,9 +13,6 @@ import { EditLabModalComponent } from './modals/edit/edit-lab-modal.component';
 import { DeleteLabModalComponent } from './modals/delete/delete-lab-modal.component';
 import { ToArrayPipe } from '../../../shared/pipes/to-array.pipe';
 
-interface CourseWithTeacher extends Course {
-  teacher_name?: string;
-}
 
 @Component({
   selector: 'app-course-laboratories',

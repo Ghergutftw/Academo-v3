@@ -4,20 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../../shared/services/auth.service';
 import {StudentsService} from '../../../shared/services/students.service';
 import {CoursesService} from '../../../shared/services/courses.service';
-
-interface Activity {
-  id: number;
-  course_name: string;
-  course_id: number;
-  group_name: string;
-  group_id: number;
-  lab_number: number;
-  topic: string;
-  activity_date: string;
-  attendance_status: 'present' | 'absent';
-  semester: number;
-  year: number;
-}
+import {Activity} from '../../../shared/models/activity.model';
 
 @Component({
   selector: 'app-previous-activities',

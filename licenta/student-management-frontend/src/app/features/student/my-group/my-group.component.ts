@@ -2,20 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AuthService} from '../../../shared/services/auth.service';
 import {StudentsService} from '../../../shared/services/students.service';
-
-interface Groupmate {
-  id: number;
-  name: string;
-  email: string;
-  group_id: number;
-  group_name: string;
-}
-
-interface GroupmatesResponse {
-  group_id: number;
-  group_name: string;
-  students: Groupmate[];
-}
+import {Groupmate, GroupmatesResponse} from '../../../shared/models/groupmate.model';
 
 @Component({
   selector: 'app-my-group',

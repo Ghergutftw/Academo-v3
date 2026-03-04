@@ -10,19 +10,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatInputModule} from '@angular/material/input';
 import {AuthService} from '../../../shared/services/auth.service';
 import {environment} from '../../../environments/environment';
-
-interface TeacherActivity {
-  id: number;
-  course_name: string;
-  course_id: number;
-  group_name: string;
-  group_id: number;
-  lab_number: number;
-  topic: string;
-  session_date: string;
-  semester: number;
-  year: number;
-}
+import {TeacherActivity} from '../../../shared/models/activity.model';
 
 @Component({
   selector: 'app-teacher-previous-activities',
