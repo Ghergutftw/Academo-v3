@@ -15,6 +15,11 @@ export const routes: Routes = [
   },
 
   {
+    path: 'schedule',
+    loadComponent: () => import('./features/student/schedule/schedule.component').then(m => m.ScheduleComponent)
+  },
+
+  {
     path: 'admin',
     canActivate: [roleGuard([UserRole.ADMIN])],
     children: [

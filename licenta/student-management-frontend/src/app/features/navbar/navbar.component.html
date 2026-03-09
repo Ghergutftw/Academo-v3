@@ -1,6 +1,6 @@
 <nav class="navbar">
   <div class="navbar-brand">
-    <img ngSrc="/assets/logo.png" alt="Logo" class="brand-logo-image" height="190" width=190 priority>
+    <img ngSrc="/assets/logo.png" alt="Logo" class="brand-logo-image" href="https://ac.tuiasi.ro/" height="190" width=190 priority>
     <span class="brand-text"></span>
   </div>
 
@@ -13,6 +13,7 @@
         <li><a routerLink="/admin/courses" routerLinkActive="active">Materii</a></li>
         <li><a routerLink="/admin/groups" routerLinkActive="active">Grupe de Studenți</a></li>
         <li><a routerLink="/admin/study-groups" routerLinkActive="active">Grupe de Studiu</a></li>
+        <li><a routerLink="/schedule" routerLinkActive="active">Orar</a></li>
       }
 
       @if (isTeacher) {
@@ -21,7 +22,7 @@
         <li><a routerLink="/teacher/previous-activities" routerLinkActive="active">Activități Anterioare</a></li>
         <li><a routerLink="/teacher/students" routerLinkActive="active">Studenți</a></li>
         <li><a routerLink="/teacher/groups" routerLinkActive="active">Grupe de Studenți</a></li>
-        <li><a href="https://docs.google.com/spreadsheets/d/12IFQFiq0IWS0S8ohucNU1jOXiMHeFMcdC4_4idStfG4/edit?gid=1355420507#gid=1355420507" target="_blank" rel="noopener noreferrer">Orar</a></li>
+        <li><a routerLink="/schedule" routerLinkActive="active">Orar</a></li>
 
       }
 
@@ -32,10 +33,7 @@
         <li><a routerLink="/student/courses" routerLinkActive="active">Materiile Mele</a></li>
         <li><a routerLink="/student/my-group" routerLinkActive="active">Grupa Mea</a></li>
         <li>
-          <a
-            [href]="getScheduleUrl()"
-            target="_blank"
-            rel="noopener noreferrer">
+          <a routerLink="/schedule" routerLinkActive="active">
             Orar
           </a>
         </li>

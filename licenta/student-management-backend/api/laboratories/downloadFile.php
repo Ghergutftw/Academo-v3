@@ -23,13 +23,43 @@ if (!file_exists($filepath)) {
 }
 
 $downloadName = basename($filepath);
-header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . $downloadName . '"');
-header('Expires: 0');
-header('Cache-Control: must-revalidate');
-header('Pragma: public');
-header('Content-Length: ' . filesize($filepath));
-readfile($filepath);
+
+// Disable output buffering completely and clear any existing buffers
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+// Turn off output buffering completely
+if (ini_get('output_buffering')) {
+    ini_set('output_buffering', 'off');
+}
+if (ini_get('zlib.output_compression')) {
+    ini_set('zlib.output_compression', 'off');
+}
+
+// Ensure no whitespace or output before headers
+if (!headers_sent()) {
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $downloadName . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($filepath));
+}
+
+// Clean the output buffer and send the file
+if (ob_get_level()) {
+    ob_clean();
+}
+
+// Use fpassthru for better memory handling with large files
+$handle = fopen($filepath, 'rb');
+if ($handle) {
+    fpassthru($handle);
+    fclose($handle);
+} else {
+    readfile($filepath);
+}
 exit;
 

@@ -82,15 +82,6 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  getScheduleUrl(): string {
-    // Check if user is a student and has study_cycle property
-    if (this.currentUser?.study_cycle === 'Master') {
-      // Return Master schedule URL for Master students
-      return 'https://docs.google.com/document/d/1c2s5HcCT08Dwmp_ztdAtvIUN9zJ9QeJ1RqnQmk7CMxs/edit?tab=t.0';
-    }
-    // Default to Licență schedule for Bachelor students
-    return 'https://docs.google.com/spreadsheets/d/12IFQFiq0IWS0S8ohucNU1jOXiMHeFMcdC4_4idStfG4/edit?gid=1355420507#gid=1355420507';
-  }
 
 }
 

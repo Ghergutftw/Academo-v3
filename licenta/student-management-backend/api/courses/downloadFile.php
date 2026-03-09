@@ -52,13 +52,40 @@ $mimeTypes = [
 ];
 $contentType = $mimeTypes[$ext] ?? 'application/octet-stream';
 
-// Set headers for download
-header('Content-Type: ' . $contentType);
-header('Content-Disposition: attachment; filename="' . $downloadName . '"');
-header('Content-Length: ' . filesize($filePath));
-header('Cache-Control: no-cache, must-revalidate');
-header('Pragma: public');
+// Disable output buffering completely and clear any existing buffers
+while (ob_get_level()) {
+    ob_end_clean();
+}
 
-// Output file
-readfile($filePath);
+// Turn off output buffering completely
+if (ini_get('output_buffering')) {
+    ini_set('output_buffering', 'off');
+}
+if (ini_get('zlib.output_compression')) {
+    ini_set('zlib.output_compression', 'off');
+}
+
+// Ensure no whitespace or output before headers
+if (!headers_sent()) {
+    // Set headers for download
+    header('Content-Type: ' . $contentType);
+    header('Content-Disposition: attachment; filename="' . $downloadName . '"');
+    header('Content-Length: ' . filesize($filePath));
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Pragma: public');
+}
+
+// Clean the output buffer and send the file
+if (ob_get_level()) {
+    ob_clean();
+}
+
+// Use fpassthru for better memory handling with large files
+$handle = fopen($filePath, 'rb');
+if ($handle) {
+    fpassthru($handle);
+    fclose($handle);
+} else {
+    readfile($filePath);
+}
 exit;

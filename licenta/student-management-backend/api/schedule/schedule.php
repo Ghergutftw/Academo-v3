@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['info']) && $_GET['info'] === '1') {
         // Return schedule info without downloading
         $currentYear = date('Y');
-        $scheduleModel = new ExamSchedule($db);
+        $scheduleModel = new Schedule($db);
         $schedule = $scheduleModel->getByYear($currentYear);
 
         if ($schedule) {
@@ -40,10 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // Otherwise, download the file
     $currentYear = date('Y');
-    $scheduleModel = new ExamSchedule($db);
+    $scheduleModel = new Schedule($db);
     $schedule = $scheduleModel->getByYear($currentYear);
 
     if (!$schedule) {
+        http_response_code(404);
         echo json_encode(['error' => 'Schedule file not found']);
         exit;
     }
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (file_exists($filePath)) {
         // Verify file is readable and get actual size
         if (!is_readable($filePath)) {
+            header('Content-Type: application/json');
             http_response_code(500);
             echo json_encode(['error' => 'File is not readable']);
             exit;
@@ -99,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         exit;
     } else {
+        header('Content-Type: application/json');
         http_response_code(404);
         echo json_encode(['error' => 'Schedule file not found on disk']);
         exit;
@@ -107,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // Handle POST request - upload the schedule file
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
 
     // Check if user is authenticated and is admin using token-based auth
     $currentUser = getAuthUser($db);
@@ -133,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $currentYear = date('Y');
-    $uploadDir = __DIR__ . '/../../uploads/exam-schedules/' . $currentYear . '/';
+    $uploadDir = __DIR__ . '/../../uploads/schedules/' . $currentYear . '/';
 
     // Create directory if it doesn't exist
     if (!is_dir($uploadDir)) {
@@ -145,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $file = $_FILES['file'];
-    $fileName = 'Programare_Examene.xlsx';
+    $fileName = 'Orar.xlsx';
     $filePath = $uploadDir . $fileName;
 
     // Validate file type
@@ -183,8 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (move_uploaded_file($file['tmp_name'], $filePath)) {
         // Save to database
         try {
-            $scheduleModel = new ExamSchedule($db);
-            $relativePath = 'uploads/exam-schedules/' . $currentYear . '/' . $fileName;
+            $scheduleModel = new Schedule($db);
+            $relativePath = 'uploads/schedules/' . $currentYear . '/' . $fileName;
             $scheduleModel->save($fileName, $relativePath, $currentUser['id'], $currentYear);
 
             http_response_code(200);
@@ -210,6 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Handle other methods
+header('Content-Type: application/json');
 http_response_code(405);
 echo json_encode(['error' => 'Method not allowed']);
 exit;
