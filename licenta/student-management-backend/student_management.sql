@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 04, 2026 at 09:19 AM
+-- Generation Time: Mar 09, 2026 at 09:06 AM
 -- Server version: 8.4.7
 -- PHP Version: 8.3.28
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_attendance_student_session` (`student_id`,`session_id`),
   KEY `fk_attendance_session` (`session_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=361 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=365 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `attendance`
@@ -398,7 +398,11 @@ INSERT INTO `attendance` (`id`, `student_id`, `session_id`, `status`, `recorded_
 (357, 5, 86, 'present', '2026-03-04 09:00:49'),
 (358, 44, 86, 'present', '2026-03-04 09:00:49'),
 (359, 62, 86, 'present', '2026-03-04 09:00:49'),
-(360, 63, 86, 'present', '2026-03-04 09:00:49');
+(360, 63, 86, 'present', '2026-03-04 09:00:49'),
+(361, 7, 64, 'present', '2026-03-07 18:58:41'),
+(362, 8, 64, 'present', '2026-03-07 18:58:41'),
+(363, 10, 64, 'present', '2026-03-07 18:58:41'),
+(364, 69, 64, 'present', '2026-03-07 18:58:41');
 
 -- --------------------------------------------------------
 
@@ -1862,7 +1866,7 @@ CREATE TABLE IF NOT EXISTS `study_groups` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_study_groups_course` (`course_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `study_groups`
@@ -1871,6 +1875,7 @@ CREATE TABLE IF NOT EXISTS `study_groups` (
 INSERT INTO `study_groups` (`id`, `name`, `course_id`, `created_at`) VALUES
 (60, 'CM1 Marti 10-12', 11, '2026-02-10 01:10:40'),
 (61, '1101A', 1, '2026-02-10 01:10:50'),
+(97, 'EI Marți 10-12', 26, '2026-03-07 18:55:49'),
 (63, 'RC Joi 14-16', 55, '2026-02-10 10:54:07'),
 (90, 'PAI Marți 08-10', 59, '2026-03-03 21:17:56'),
 (65, '1101A', 3, '2026-02-10 21:09:04'),

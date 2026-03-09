@@ -1,1 +1,0 @@
-group-course.service.ts a fost șters pentru că tabela groups și group_courses au fost eliminate din aplicație.
