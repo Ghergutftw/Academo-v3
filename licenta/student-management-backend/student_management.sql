@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 09, 2026 at 09:06 AM
+-- Generation Time: Mar 09, 2026 at 05:29 PM
 -- Server version: 8.4.7
 -- PHP Version: 8.3.28
 
@@ -32,12 +32,12 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
   `session_id` int NOT NULL,
-  `status` varchar(20) NOT NULL COMMENT 'present, absent, late, excused',
+  `status` varchar(20) COLLATE utf8mb4_bin NOT NULL COMMENT 'present, absent, late, excused',
   `recorded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_attendance_student_session` (`student_id`,`session_id`),
   KEY `fk_attendance_session` (`session_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=365 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=365 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `attendance`
@@ -413,17 +413,17 @@ INSERT INTO `attendance` (`id`, `student_id`, `session_id`, `status`, `recorded_
 DROP TABLE IF EXISTS `courses`;
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `acronym` varchar(10) DEFAULT NULL,
+  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
+  `acronym` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL,
   `teacher_id` int NOT NULL,
   `year` int DEFAULT '1' COMMENT '1-4 for bachelor years, 5-6 for master years',
   `semester` int DEFAULT '1' COMMENT '1 or 2',
   `is_optional` tinyint(1) DEFAULT '0',
-  `course_file` varchar(255) DEFAULT NULL COMMENT 'Path to course syllabus Excel file',
+  `course_file` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Path to course syllabus Excel file',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_courses_teacher` (`teacher_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `courses`
@@ -515,7 +515,7 @@ CREATE TABLE IF NOT EXISTS `course_lab_instructors` (
   UNIQUE KEY `uq_course_lab_instructor` (`course_id`,`teacher_id`),
   KEY `fk_courseinstructor_course` (`course_id`),
   KEY `fk_courseinstructor_teacher` (`teacher_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `course_lab_instructors`
@@ -677,41 +677,22 @@ INSERT INTO `course_lab_instructors` (`id`, `course_id`, `teacher_id`, `created_
 DROP TABLE IF EXISTS `exam_schedules`;
 CREATE TABLE IF NOT EXISTS `exam_schedules` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `file_path` varchar(500) COLLATE utf8mb4_bin NOT NULL,
   `uploaded_by` int NOT NULL COMMENT 'teacher_id who uploaded',
   `year` int NOT NULL DEFAULT '2026',
   `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_exam_schedules_year` (`year`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `exam_schedules`
 --
 
 INSERT INTO `exam_schedules` (`id`, `file_name`, `file_path`, `uploaded_by`, `year`, `uploaded_at`, `updated_at`) VALUES
-(1, 'Programare_Examene.xlsx', 'uploads/exam-schedules/2026/Programare_Examene.xlsx', 20, 2026, '2026-03-02 21:55:12', '2026-03-02 21:55:12');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `schedules`
---
-
-DROP TABLE IF EXISTS `schedules`;
-CREATE TABLE IF NOT EXISTS `schedules` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
-  `uploaded_by` int NOT NULL COMMENT 'user_id who uploaded',
-  `year` int NOT NULL DEFAULT '2026',
-  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_schedules_year` (`year`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+(2, 'Programare_Examene.xlsx', 'uploads/exam-schedules/2026/Programare_Examene.xlsx', 20, 2026, '2026-03-09 18:07:39', '2026-03-09 18:23:41');
 
 -- --------------------------------------------------------
 
@@ -724,13 +705,13 @@ CREATE TABLE IF NOT EXISTS `laboratories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `course_id` int NOT NULL,
   `lab_number` int NOT NULL COMMENT '1-14',
-  `topic` varchar(255) NOT NULL DEFAULT 'Laboratory',
+  `topic` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT 'Laboratory',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_course_lab_number` (`course_id`,`lab_number`),
   KEY `idx_course` (`course_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=967 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=967 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `laboratories`
@@ -1625,6 +1606,32 @@ INSERT INTO `laboratories` (`id`, `course_id`, `lab_number`, `topic`, `created_a
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `schedules`
+--
+
+DROP TABLE IF EXISTS `schedules`;
+CREATE TABLE IF NOT EXISTS `schedules` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `file_path` varchar(500) COLLATE utf8mb4_bin NOT NULL,
+  `uploaded_by` int NOT NULL COMMENT 'user_id who uploaded',
+  `year` int NOT NULL DEFAULT '2026',
+  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_schedules_year` (`year`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `schedules`
+--
+
+INSERT INTO `schedules` (`id`, `file_name`, `file_path`, `uploaded_by`, `year`, `uploaded_at`, `updated_at`) VALUES
+(1, 'Orar.xlsx', 'uploads/schedules/2026/Orar.xlsx', 20, 2026, '2026-03-09 17:58:48', '2026-03-09 18:24:12');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sessions`
 --
 
@@ -1635,12 +1642,12 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `laboratory_number` int NOT NULL DEFAULT '1' COMMENT '1-12 laboratories per course',
   `study_group_id` int NOT NULL,
   `session_date` datetime NOT NULL,
-  `topic` varchar(255) DEFAULT NULL,
+  `topic` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_sessions_study_group` (`study_group_id`),
   KEY `idx_sessions_course_lab` (`course_id`,`laboratory_number`)
-) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `sessions`
@@ -1743,20 +1750,20 @@ INSERT INTO `sessions` (`id`, `course_id`, `laboratory_number`, `study_group_id`
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL COMMENT 'Bcrypt hashed password',
+  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
   `group_id` int NOT NULL,
   `start_year` int DEFAULT NULL COMMENT 'Year student started studies',
-  `study_cycle` enum('Licenta','Master') DEFAULT 'Licenta' COMMENT 'Study cycle: Licenta or Master',
+  `study_cycle` enum('Licenta','Master') COLLATE utf8mb4_bin DEFAULT 'Licenta' COMMENT 'Study cycle: Licenta or Master',
   `study_year` int DEFAULT '1' COMMENT 'Current year of study (1,2,3,4)',
-  `financing_type` enum('Buget','Taxa') DEFAULT 'Buget' COMMENT 'Financing type: Buget or Taxa',
-  `student_status` enum('Activ','Suspendat','Exmatriculat') DEFAULT 'Activ' COMMENT 'Student status',
+  `financing_type` enum('Buget','Taxa') COLLATE utf8mb4_bin DEFAULT 'Buget' COMMENT 'Financing type: Buget or Taxa',
+  `student_status` enum('Activ','Suspendat','Exmatriculat') COLLATE utf8mb4_bin DEFAULT 'Activ' COMMENT 'Student status',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_students_email` (`email`),
   KEY `fk_students_group` (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `students`
@@ -1841,12 +1848,12 @@ INSERT INTO `students` (`id`, `name`, `email`, `password`, `group_id`, `start_ye
 DROP TABLE IF EXISTS `student_groups`;
 CREATE TABLE IF NOT EXISTS `student_groups` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
   `year` int DEFAULT NULL,
-  `academic_year` varchar(9) NOT NULL,
+  `academic_year` varchar(9) COLLATE utf8mb4_bin NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `student_groups`
@@ -1880,12 +1887,12 @@ INSERT INTO `student_groups` (`id`, `name`, `year`, `academic_year`, `created_at
 DROP TABLE IF EXISTS `study_groups`;
 CREATE TABLE IF NOT EXISTS `study_groups` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL COMMENT 'Ex: Grupa 1210 - Materie X sau Pseudo-Grupa Optional Y',
+  `name` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Ex: Grupa 1210 - Materie X sau Pseudo-Grupa Optional Y',
   `course_id` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_study_groups_course` (`course_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `study_groups`
@@ -1941,7 +1948,7 @@ CREATE TABLE IF NOT EXISTS `study_group_members` (
   UNIQUE KEY `uq_study_group_student` (`study_group_id`,`student_id`),
   KEY `fk_study_group_members_group` (`study_group_id`),
   KEY `fk_study_group_members_student` (`student_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=486 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=486 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `study_group_members`
@@ -2269,14 +2276,14 @@ INSERT INTO `study_group_members` (`id`, `study_group_id`, `student_id`) VALUES
 DROP TABLE IF EXISTS `teachers`;
 CREATE TABLE IF NOT EXISTS `teachers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL COMMENT 'Bcrypt hashed password',
+  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
   `is_admin` tinyint(1) DEFAULT '0' COMMENT 'Admin flag for teacher',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_teachers_email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `teachers`
