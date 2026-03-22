@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 09, 2026 at 05:29 PM
+-- Generation Time: Mar 22, 2026 at 07:15 PM
 -- Server version: 8.4.7
 -- PHP Version: 8.3.28
 
@@ -32,12 +32,12 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
   `session_id` int NOT NULL,
-  `status` varchar(20) COLLATE utf8mb4_bin NOT NULL COMMENT 'present, absent, late, excused',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'present, absent, late, excused',
   `recorded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_attendance_student_session` (`student_id`,`session_id`),
   KEY `fk_attendance_session` (`session_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=365 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=398 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `attendance`
@@ -402,7 +402,40 @@ INSERT INTO `attendance` (`id`, `student_id`, `session_id`, `status`, `recorded_
 (361, 7, 64, 'present', '2026-03-07 18:58:41'),
 (362, 8, 64, 'present', '2026-03-07 18:58:41'),
 (363, 10, 64, 'present', '2026-03-07 18:58:41'),
-(364, 69, 64, 'present', '2026-03-07 18:58:41');
+(364, 69, 64, 'present', '2026-03-07 18:58:41'),
+(365, 11, 87, 'present', '2026-03-22 18:27:39'),
+(366, 12, 87, 'present', '2026-03-22 18:27:39'),
+(367, 13, 87, 'present', '2026-03-22 18:27:39'),
+(368, 14, 87, 'present', '2026-03-22 18:27:39'),
+(369, 15, 87, 'present', '2026-03-22 18:27:39'),
+(370, 17, 87, 'present', '2026-03-22 18:27:39'),
+(371, 11, 88, 'present', '2026-03-22 18:27:39'),
+(372, 12, 88, 'present', '2026-03-22 18:27:39'),
+(373, 13, 88, 'present', '2026-03-22 18:27:39'),
+(374, 14, 88, 'present', '2026-03-22 18:27:39'),
+(375, 3, 38, 'present', '2026-03-22 19:11:23'),
+(376, 5, 38, 'present', '2026-03-22 19:11:23'),
+(377, 62, 38, 'present', '2026-03-22 19:11:23'),
+(378, 63, 38, 'present', '2026-03-22 19:11:23'),
+(379, 3, 39, 'present', '2026-03-22 19:11:23'),
+(380, 62, 39, 'present', '2026-03-22 19:11:23'),
+(381, 63, 39, 'present', '2026-03-22 19:11:23'),
+(382, 3, 40, 'present', '2026-03-22 19:11:23'),
+(383, 4, 40, 'present', '2026-03-22 19:11:23'),
+(384, 5, 40, 'present', '2026-03-22 19:11:23'),
+(385, 62, 40, 'present', '2026-03-22 19:11:23'),
+(386, 63, 40, 'present', '2026-03-22 19:11:23'),
+(387, 1, 41, 'present', '2026-03-22 19:11:23'),
+(388, 4, 41, 'present', '2026-03-22 19:11:23'),
+(389, 5, 41, 'present', '2026-03-22 19:11:23'),
+(390, 62, 41, 'present', '2026-03-22 19:11:23'),
+(391, 63, 41, 'present', '2026-03-22 19:11:23'),
+(392, 1, 89, 'present', '2026-03-22 19:11:41'),
+(393, 3, 89, 'present', '2026-03-22 19:11:41'),
+(394, 4, 89, 'present', '2026-03-22 19:11:41'),
+(395, 5, 89, 'present', '2026-03-22 19:11:41'),
+(396, 62, 89, 'present', '2026-03-22 19:11:41'),
+(397, 63, 89, 'present', '2026-03-22 19:11:41');
 
 -- --------------------------------------------------------
 
@@ -413,13 +446,13 @@ INSERT INTO `attendance` (`id`, `student_id`, `session_id`, `status`, `recorded_
 DROP TABLE IF EXISTS `courses`;
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
-  `acronym` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `acronym` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `teacher_id` int NOT NULL,
   `year` int DEFAULT '1' COMMENT '1-4 for bachelor years, 5-6 for master years',
   `semester` int DEFAULT '1' COMMENT '1 or 2',
   `is_optional` tinyint(1) DEFAULT '0',
-  `course_file` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Path to course syllabus Excel file',
+  `course_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Path to course syllabus Excel file',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_courses_teacher` (`teacher_id`)
@@ -515,7 +548,7 @@ CREATE TABLE IF NOT EXISTS `course_lab_instructors` (
   UNIQUE KEY `uq_course_lab_instructor` (`course_id`,`teacher_id`),
   KEY `fk_courseinstructor_course` (`course_id`),
   KEY `fk_courseinstructor_teacher` (`teacher_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=197 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `course_lab_instructors`
@@ -531,8 +564,7 @@ INSERT INTO `course_lab_instructors` (`id`, `course_id`, `teacher_id`, `created_
 (7, 2, 10, '2026-02-10 22:19:47'),
 (166, 55, 9, '2026-03-03 10:28:20'),
 (165, 55, 11, '2026-03-03 10:28:20'),
-(186, 1, 2, '2026-03-03 23:39:32'),
-(185, 1, 8, '2026-03-03 23:39:32'),
+(194, 1, 18, '2026-03-22 19:07:26'),
 (43, 3, 11, '2026-03-02 13:05:01'),
 (45, 3, 10, '2026-03-02 13:05:01'),
 (44, 3, 9, '2026-03-02 13:05:01'),
@@ -666,7 +698,9 @@ INSERT INTO `course_lab_instructors` (`id`, `course_id`, `teacher_id`, `created_
 (180, 73, 5, '2026-03-03 23:02:25'),
 (181, 74, 21, '2026-03-03 23:10:30'),
 (182, 74, 8, '2026-03-03 23:10:30'),
-(187, 1, 13, '2026-03-03 23:39:32');
+(193, 1, 3, '2026-03-22 19:07:26'),
+(195, 1, 2, '2026-03-22 19:07:26'),
+(196, 1, 16, '2026-03-22 19:07:26');
 
 -- --------------------------------------------------------
 
@@ -677,8 +711,8 @@ INSERT INTO `course_lab_instructors` (`id`, `course_id`, `teacher_id`, `created_
 DROP TABLE IF EXISTS `exam_schedules`;
 CREATE TABLE IF NOT EXISTS `exam_schedules` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `file_path` varchar(500) COLLATE utf8mb4_bin NOT NULL,
+  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `file_path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `uploaded_by` int NOT NULL COMMENT 'teacher_id who uploaded',
   `year` int NOT NULL DEFAULT '2026',
   `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -697,6 +731,347 @@ INSERT INTO `exam_schedules` (`id`, `file_name`, `file_path`, `uploaded_by`, `ye
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `group_courses`
+--
+
+DROP TABLE IF EXISTS `group_courses`;
+CREATE TABLE IF NOT EXISTS `group_courses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_groupcourses_group` (`group_id`),
+  KEY `fk_groupcourses_course` (`course_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=319 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `group_courses`
+--
+
+INSERT INTO `group_courses` (`id`, `group_id`, `course_id`, `created_at`) VALUES
+(1, 1, 1, '2025-11-02 23:16:43'),
+(2, 2, 1, '2025-11-02 23:16:43'),
+(3, 3, 1, '2025-11-02 23:16:43'),
+(4, 4, 1, '2025-11-02 23:16:43'),
+(5, 5, 1, '2025-11-02 23:16:43'),
+(6, 6, 1, '2025-11-02 23:16:43'),
+(7, 1, 2, '2025-11-02 23:16:43'),
+(8, 2, 2, '2025-11-02 23:16:43'),
+(9, 3, 2, '2025-11-02 23:16:43'),
+(10, 4, 2, '2025-11-02 23:16:43'),
+(11, 5, 2, '2025-11-02 23:16:43'),
+(12, 6, 2, '2025-11-02 23:16:43'),
+(13, 1, 3, '2025-11-02 23:16:43'),
+(14, 2, 3, '2025-11-02 23:16:43'),
+(15, 3, 3, '2025-11-02 23:16:43'),
+(16, 4, 3, '2025-11-02 23:16:43'),
+(17, 5, 3, '2025-11-02 23:16:43'),
+(18, 6, 3, '2025-11-02 23:16:43'),
+(19, 1, 4, '2025-11-02 23:16:43'),
+(20, 2, 4, '2025-11-02 23:16:43'),
+(21, 3, 4, '2025-11-02 23:16:43'),
+(22, 4, 4, '2025-11-02 23:16:43'),
+(23, 5, 4, '2025-11-02 23:16:43'),
+(24, 6, 4, '2025-11-02 23:16:43'),
+(25, 1, 5, '2025-11-02 23:16:43'),
+(26, 2, 5, '2025-11-02 23:16:43'),
+(27, 3, 5, '2025-11-02 23:16:43'),
+(28, 4, 5, '2025-11-02 23:16:43'),
+(29, 5, 5, '2025-11-02 23:16:43'),
+(30, 6, 5, '2025-11-02 23:16:43'),
+(31, 1, 6, '2025-11-02 23:16:43'),
+(32, 2, 6, '2025-11-02 23:16:43'),
+(33, 3, 6, '2025-11-02 23:16:43'),
+(34, 4, 6, '2025-11-02 23:16:43'),
+(35, 5, 6, '2025-11-02 23:16:43'),
+(36, 6, 6, '2025-11-02 23:16:43'),
+(37, 1, 7, '2025-11-02 23:16:43'),
+(38, 2, 7, '2025-11-02 23:16:43'),
+(39, 3, 7, '2025-11-02 23:16:43'),
+(40, 4, 7, '2025-11-02 23:16:43'),
+(41, 5, 7, '2025-11-02 23:16:43'),
+(42, 6, 7, '2025-11-02 23:16:43'),
+(43, 1, 8, '2025-11-02 23:16:43'),
+(44, 2, 8, '2025-11-02 23:16:43'),
+(45, 3, 8, '2025-11-02 23:16:43'),
+(46, 4, 8, '2025-11-02 23:16:43'),
+(47, 5, 8, '2025-11-02 23:16:43'),
+(48, 6, 8, '2025-11-02 23:16:43'),
+(49, 1, 9, '2025-11-02 23:16:43'),
+(50, 2, 9, '2025-11-02 23:16:43'),
+(51, 3, 9, '2025-11-02 23:16:43'),
+(52, 4, 9, '2025-11-02 23:16:43'),
+(53, 5, 9, '2025-11-02 23:16:43'),
+(54, 6, 9, '2025-11-02 23:16:43'),
+(55, 1, 10, '2025-11-02 23:16:43'),
+(56, 2, 10, '2025-11-02 23:16:43'),
+(57, 3, 10, '2025-11-02 23:16:43'),
+(58, 4, 10, '2025-11-02 23:16:43'),
+(59, 5, 10, '2025-11-02 23:16:43'),
+(60, 6, 10, '2025-11-02 23:16:43'),
+(61, 7, 11, '2025-11-02 23:16:43'),
+(62, 8, 11, '2025-11-02 23:16:43'),
+(63, 9, 11, '2025-11-02 23:16:43'),
+(64, 10, 11, '2025-11-02 23:16:43'),
+(65, 11, 11, '2025-11-02 23:16:43'),
+(66, 12, 11, '2025-11-02 23:16:43'),
+(67, 7, 12, '2025-11-02 23:16:43'),
+(68, 8, 12, '2025-11-02 23:16:43'),
+(69, 9, 12, '2025-11-02 23:16:43'),
+(70, 10, 12, '2025-11-02 23:16:43'),
+(71, 11, 12, '2025-11-02 23:16:43'),
+(72, 12, 12, '2025-11-02 23:16:43'),
+(73, 7, 13, '2025-11-02 23:16:43'),
+(74, 8, 13, '2025-11-02 23:16:43'),
+(75, 9, 13, '2025-11-02 23:16:43'),
+(76, 10, 13, '2025-11-02 23:16:43'),
+(77, 11, 13, '2025-11-02 23:16:43'),
+(78, 12, 13, '2025-11-02 23:16:43'),
+(79, 7, 14, '2025-11-02 23:16:43'),
+(80, 8, 14, '2025-11-02 23:16:43'),
+(81, 9, 14, '2025-11-02 23:16:43'),
+(82, 10, 14, '2025-11-02 23:16:43'),
+(83, 11, 14, '2025-11-02 23:16:43'),
+(84, 12, 14, '2025-11-02 23:16:43'),
+(85, 7, 15, '2025-11-02 23:16:43'),
+(86, 8, 15, '2025-11-02 23:16:43'),
+(87, 9, 15, '2025-11-02 23:16:43'),
+(88, 10, 15, '2025-11-02 23:16:43'),
+(89, 11, 15, '2025-11-02 23:16:43'),
+(90, 12, 15, '2025-11-02 23:16:43'),
+(91, 7, 16, '2025-11-02 23:16:43'),
+(92, 8, 16, '2025-11-02 23:16:43'),
+(93, 9, 16, '2025-11-02 23:16:43'),
+(94, 10, 16, '2025-11-02 23:16:43'),
+(95, 11, 16, '2025-11-02 23:16:43'),
+(96, 12, 16, '2025-11-02 23:16:43'),
+(97, 7, 17, '2025-11-02 23:16:43'),
+(98, 8, 17, '2025-11-02 23:16:43'),
+(99, 9, 17, '2025-11-02 23:16:43'),
+(100, 10, 17, '2025-11-02 23:16:43'),
+(101, 11, 17, '2025-11-02 23:16:43'),
+(102, 12, 17, '2025-11-02 23:16:43'),
+(103, 7, 18, '2025-11-02 23:16:43'),
+(104, 8, 18, '2025-11-02 23:16:43'),
+(105, 9, 18, '2025-11-02 23:16:43'),
+(106, 10, 18, '2025-11-02 23:16:43'),
+(107, 11, 18, '2025-11-02 23:16:43'),
+(108, 12, 18, '2025-11-02 23:16:43'),
+(109, 7, 19, '2025-11-02 23:16:43'),
+(110, 8, 19, '2025-11-02 23:16:43'),
+(111, 9, 19, '2025-11-02 23:16:43'),
+(112, 10, 19, '2025-11-02 23:16:43'),
+(113, 11, 19, '2025-11-02 23:16:43'),
+(114, 12, 19, '2025-11-02 23:16:43'),
+(115, 7, 20, '2025-11-02 23:16:43'),
+(116, 8, 20, '2025-11-02 23:16:43'),
+(117, 9, 20, '2025-11-02 23:16:43'),
+(118, 10, 20, '2025-11-02 23:16:43'),
+(119, 11, 20, '2025-11-02 23:16:43'),
+(120, 12, 20, '2025-11-02 23:16:43'),
+(121, 7, 21, '2025-11-02 23:16:43'),
+(122, 8, 21, '2025-11-02 23:16:43'),
+(123, 9, 21, '2025-11-02 23:16:43'),
+(124, 10, 21, '2025-11-02 23:16:43'),
+(125, 11, 21, '2025-11-02 23:16:43'),
+(126, 12, 21, '2025-11-02 23:16:43'),
+(127, 13, 22, '2025-11-02 23:16:43'),
+(128, 14, 22, '2025-11-02 23:16:43'),
+(129, 15, 22, '2025-11-02 23:16:43'),
+(130, 16, 22, '2025-11-02 23:16:43'),
+(131, 17, 22, '2025-11-02 23:16:43'),
+(132, 18, 22, '2025-11-02 23:16:43'),
+(133, 13, 23, '2025-11-02 23:16:43'),
+(134, 14, 23, '2025-11-02 23:16:43'),
+(135, 15, 23, '2025-11-02 23:16:43'),
+(136, 16, 23, '2025-11-02 23:16:43'),
+(137, 17, 23, '2025-11-02 23:16:43'),
+(138, 18, 23, '2025-11-02 23:16:43'),
+(139, 13, 24, '2025-11-02 23:16:43'),
+(140, 14, 24, '2025-11-02 23:16:43'),
+(141, 15, 24, '2025-11-02 23:16:43'),
+(142, 16, 24, '2025-11-02 23:16:43'),
+(143, 17, 24, '2025-11-02 23:16:43'),
+(144, 18, 24, '2025-11-02 23:16:43'),
+(145, 13, 25, '2025-11-02 23:16:43'),
+(146, 14, 25, '2025-11-02 23:16:43'),
+(147, 15, 25, '2025-11-02 23:16:43'),
+(148, 16, 25, '2025-11-02 23:16:43'),
+(149, 17, 25, '2025-11-02 23:16:43'),
+(150, 18, 25, '2025-11-02 23:16:43'),
+(151, 13, 26, '2025-11-02 23:16:43'),
+(152, 14, 26, '2025-11-02 23:16:43'),
+(153, 15, 26, '2025-11-02 23:16:43'),
+(154, 16, 26, '2025-11-02 23:16:43'),
+(155, 17, 26, '2025-11-02 23:16:43'),
+(156, 18, 26, '2025-11-02 23:16:43'),
+(157, 13, 27, '2025-11-02 23:16:43'),
+(158, 14, 27, '2025-11-02 23:16:43'),
+(159, 15, 27, '2025-11-02 23:16:43'),
+(160, 16, 27, '2025-11-02 23:16:43'),
+(161, 17, 27, '2025-11-02 23:16:43'),
+(162, 18, 27, '2025-11-02 23:16:43'),
+(163, 13, 28, '2025-11-02 23:16:43'),
+(164, 14, 28, '2025-11-02 23:16:43'),
+(165, 15, 28, '2025-11-02 23:16:43'),
+(166, 16, 28, '2025-11-02 23:16:43'),
+(167, 17, 28, '2025-11-02 23:16:43'),
+(168, 18, 28, '2025-11-02 23:16:43'),
+(169, 13, 29, '2025-11-02 23:16:43'),
+(170, 14, 29, '2025-11-02 23:16:43'),
+(171, 15, 29, '2025-11-02 23:16:43'),
+(172, 16, 29, '2025-11-02 23:16:43'),
+(173, 17, 29, '2025-11-02 23:16:43'),
+(174, 18, 29, '2025-11-02 23:16:43'),
+(175, 13, 30, '2025-11-02 23:16:43'),
+(176, 14, 30, '2025-11-02 23:16:43'),
+(177, 15, 30, '2025-11-02 23:16:43'),
+(178, 16, 30, '2025-11-02 23:16:43'),
+(179, 17, 30, '2025-11-02 23:16:43'),
+(180, 18, 30, '2025-11-02 23:16:43'),
+(181, 13, 31, '2025-11-02 23:16:43'),
+(182, 14, 31, '2025-11-02 23:16:43'),
+(183, 15, 31, '2025-11-02 23:16:43'),
+(184, 16, 31, '2025-11-02 23:16:43'),
+(185, 17, 31, '2025-11-02 23:16:43'),
+(186, 18, 31, '2025-11-02 23:16:43'),
+(187, 13, 32, '2025-11-02 23:16:43'),
+(188, 14, 32, '2025-11-02 23:16:43'),
+(189, 15, 32, '2025-11-02 23:16:43'),
+(190, 16, 32, '2025-11-02 23:16:43'),
+(191, 17, 32, '2025-11-02 23:16:43'),
+(192, 18, 32, '2025-11-02 23:16:43'),
+(193, 13, 33, '2025-11-02 23:16:43'),
+(194, 14, 33, '2025-11-02 23:16:43'),
+(195, 15, 33, '2025-11-02 23:16:43'),
+(196, 16, 33, '2025-11-02 23:16:43'),
+(197, 17, 33, '2025-11-02 23:16:43'),
+(198, 18, 33, '2025-11-02 23:16:43'),
+(199, 19, 34, '2025-11-02 23:16:43'),
+(200, 20, 34, '2025-11-02 23:16:43'),
+(201, 21, 34, '2025-11-02 23:16:43'),
+(202, 22, 34, '2025-11-02 23:16:43'),
+(203, 23, 34, '2025-11-02 23:16:43'),
+(204, 24, 34, '2025-11-02 23:16:43'),
+(205, 25, 34, '2025-11-02 23:16:43'),
+(206, 26, 34, '2025-11-02 23:16:43'),
+(207, 27, 34, '2025-11-02 23:16:43'),
+(208, 28, 34, '2025-11-02 23:16:43'),
+(209, 19, 35, '2025-11-02 23:16:43'),
+(210, 20, 35, '2025-11-02 23:16:43'),
+(211, 21, 35, '2025-11-02 23:16:43'),
+(212, 22, 35, '2025-11-02 23:16:43'),
+(213, 23, 35, '2025-11-02 23:16:43'),
+(214, 24, 35, '2025-11-02 23:16:43'),
+(215, 25, 35, '2025-11-02 23:16:43'),
+(216, 26, 35, '2025-11-02 23:16:43'),
+(217, 27, 35, '2025-11-02 23:16:43'),
+(218, 28, 35, '2025-11-02 23:16:43'),
+(219, 19, 36, '2025-11-02 23:16:43'),
+(220, 20, 36, '2025-11-02 23:16:43'),
+(221, 21, 36, '2025-11-02 23:16:43'),
+(222, 22, 36, '2025-11-02 23:16:43'),
+(223, 23, 36, '2025-11-02 23:16:43'),
+(224, 24, 36, '2025-11-02 23:16:43'),
+(225, 25, 36, '2025-11-02 23:16:43'),
+(226, 26, 36, '2025-11-02 23:16:43'),
+(227, 27, 36, '2025-11-02 23:16:43'),
+(228, 28, 36, '2025-11-02 23:16:43'),
+(229, 19, 37, '2025-11-02 23:16:43'),
+(230, 20, 37, '2025-11-02 23:16:43'),
+(231, 21, 37, '2025-11-02 23:16:43'),
+(232, 22, 37, '2025-11-02 23:16:43'),
+(233, 23, 37, '2025-11-02 23:16:43'),
+(234, 24, 37, '2025-11-02 23:16:43'),
+(235, 25, 37, '2025-11-02 23:16:43'),
+(236, 26, 37, '2025-11-02 23:16:43'),
+(237, 27, 37, '2025-11-02 23:16:43'),
+(238, 28, 37, '2025-11-02 23:16:43'),
+(239, 19, 38, '2025-11-02 23:16:43'),
+(240, 20, 38, '2025-11-02 23:16:43'),
+(241, 21, 38, '2025-11-02 23:16:43'),
+(242, 22, 38, '2025-11-02 23:16:43'),
+(243, 23, 38, '2025-11-02 23:16:43'),
+(244, 24, 38, '2025-11-02 23:16:43'),
+(245, 25, 38, '2025-11-02 23:16:43'),
+(246, 26, 38, '2025-11-02 23:16:43'),
+(247, 27, 38, '2025-11-02 23:16:43'),
+(248, 28, 38, '2025-11-02 23:16:43'),
+(249, 19, 39, '2025-11-02 23:16:43'),
+(250, 20, 39, '2025-11-02 23:16:43'),
+(251, 21, 39, '2025-11-02 23:16:43'),
+(252, 22, 39, '2025-11-02 23:16:43'),
+(253, 23, 39, '2025-11-02 23:16:43'),
+(254, 24, 39, '2025-11-02 23:16:43'),
+(255, 25, 39, '2025-11-02 23:16:43'),
+(256, 26, 39, '2025-11-02 23:16:43'),
+(257, 27, 39, '2025-11-02 23:16:43'),
+(258, 28, 39, '2025-11-02 23:16:43'),
+(259, 19, 40, '2025-11-02 23:16:43'),
+(260, 20, 40, '2025-11-02 23:16:43'),
+(261, 21, 40, '2025-11-02 23:16:43'),
+(262, 22, 40, '2025-11-02 23:16:43'),
+(263, 23, 40, '2025-11-02 23:16:43'),
+(264, 24, 40, '2025-11-02 23:16:43'),
+(265, 25, 40, '2025-11-02 23:16:43'),
+(266, 26, 40, '2025-11-02 23:16:43'),
+(267, 27, 40, '2025-11-02 23:16:43'),
+(268, 28, 40, '2025-11-02 23:16:43'),
+(269, 19, 41, '2025-11-02 23:16:43'),
+(270, 20, 41, '2025-11-02 23:16:43'),
+(271, 21, 41, '2025-11-02 23:16:43'),
+(272, 22, 41, '2025-11-02 23:16:43'),
+(273, 23, 41, '2025-11-02 23:16:43'),
+(274, 24, 41, '2025-11-02 23:16:43'),
+(275, 25, 41, '2025-11-02 23:16:43'),
+(276, 26, 41, '2025-11-02 23:16:43'),
+(277, 27, 41, '2025-11-02 23:16:43'),
+(278, 28, 41, '2025-11-02 23:16:43'),
+(279, 19, 42, '2025-11-02 23:16:43'),
+(280, 20, 42, '2025-11-02 23:16:43'),
+(281, 21, 42, '2025-11-02 23:16:43'),
+(282, 22, 42, '2025-11-02 23:16:43'),
+(283, 23, 42, '2025-11-02 23:16:43'),
+(284, 24, 42, '2025-11-02 23:16:43'),
+(285, 25, 42, '2025-11-02 23:16:43'),
+(286, 26, 42, '2025-11-02 23:16:43'),
+(287, 27, 42, '2025-11-02 23:16:43'),
+(288, 28, 42, '2025-11-02 23:16:43'),
+(289, 19, 43, '2025-11-02 23:16:43'),
+(290, 20, 43, '2025-11-02 23:16:43'),
+(291, 21, 43, '2025-11-02 23:16:43'),
+(292, 22, 43, '2025-11-02 23:16:43'),
+(293, 23, 43, '2025-11-02 23:16:43'),
+(294, 24, 43, '2025-11-02 23:16:43'),
+(295, 25, 43, '2025-11-02 23:16:43'),
+(296, 26, 43, '2025-11-02 23:16:43'),
+(297, 27, 43, '2025-11-02 23:16:43'),
+(298, 28, 43, '2025-11-02 23:16:43'),
+(299, 19, 44, '2025-11-02 23:16:43'),
+(300, 20, 44, '2025-11-02 23:16:43'),
+(301, 21, 44, '2025-11-02 23:16:43'),
+(302, 22, 44, '2025-11-02 23:16:43'),
+(303, 23, 44, '2025-11-02 23:16:43'),
+(304, 24, 44, '2025-11-02 23:16:43'),
+(305, 25, 44, '2025-11-02 23:16:43'),
+(306, 26, 44, '2025-11-02 23:16:43'),
+(307, 27, 44, '2025-11-02 23:16:43'),
+(308, 28, 44, '2025-11-02 23:16:43'),
+(309, 19, 45, '2025-11-02 23:16:43'),
+(310, 20, 45, '2025-11-02 23:16:43'),
+(311, 21, 45, '2025-11-02 23:16:43'),
+(312, 22, 45, '2025-11-02 23:16:43'),
+(313, 23, 45, '2025-11-02 23:16:43'),
+(314, 24, 45, '2025-11-02 23:16:43'),
+(315, 25, 45, '2025-11-02 23:16:43'),
+(316, 26, 45, '2025-11-02 23:16:43'),
+(317, 27, 45, '2025-11-02 23:16:43'),
+(318, 28, 45, '2025-11-02 23:16:43');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `laboratories`
 --
 
@@ -705,7 +1080,7 @@ CREATE TABLE IF NOT EXISTS `laboratories` (
   `id` int NOT NULL AUTO_INCREMENT,
   `course_id` int NOT NULL,
   `lab_number` int NOT NULL COMMENT '1-14',
-  `topic` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT 'Laboratory',
+  `topic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'Laboratory',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -1612,8 +1987,8 @@ INSERT INTO `laboratories` (`id`, `course_id`, `lab_number`, `topic`, `created_a
 DROP TABLE IF EXISTS `schedules`;
 CREATE TABLE IF NOT EXISTS `schedules` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `file_path` varchar(500) COLLATE utf8mb4_bin NOT NULL,
+  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `file_path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `uploaded_by` int NOT NULL COMMENT 'user_id who uploaded',
   `year` int NOT NULL DEFAULT '2026',
   `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1642,12 +2017,12 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `laboratory_number` int NOT NULL DEFAULT '1' COMMENT '1-12 laboratories per course',
   `study_group_id` int NOT NULL,
   `session_date` datetime NOT NULL,
-  `topic` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `topic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_sessions_study_group` (`study_group_id`),
   KEY `idx_sessions_course_lab` (`course_id`,`laboratory_number`)
-) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `sessions`
@@ -1739,7 +2114,10 @@ INSERT INTO `sessions` (`id`, `course_id`, `laboratory_number`, `study_group_id`
 (83, 11, 1, 82, '2026-03-04 08:59:53', 'Elemente de logică matematică și teoria mulțimilor', '2026-03-04 08:59:53'),
 (84, 11, 2, 82, '2026-03-04 08:59:53', 'Relații binare, relații de echivalență și de ordine', '2026-03-04 08:59:53'),
 (85, 61, 1, 86, '2026-03-04 09:00:49', 'Recapitulare concepte de bază: șiruri și limite', '2026-03-04 09:00:49'),
-(86, 61, 2, 86, '2026-03-04 09:00:49', 'Serii numerice și criterii avansate', '2026-03-04 09:00:49');
+(86, 61, 2, 86, '2026-03-04 09:00:49', 'Serii numerice și criterii avansate', '2026-03-04 09:00:49'),
+(87, 19, 1, 98, '2026-03-22 18:27:39', 'Introducere în limba engleză tehnică. Evaluare inițială a cunoștințelor', '2026-03-22 18:27:39'),
+(88, 19, 2, 98, '2026-03-22 18:27:39', 'Vocabular tehnic: Descrierea componentelor hardware și a arhitecturilor de calcul', '2026-03-22 18:27:39'),
+(89, 1, 5, 61, '2026-03-22 19:11:41', 'Diagonalizarea matricilor', '2026-03-22 19:11:41');
 
 -- --------------------------------------------------------
 
@@ -1750,15 +2128,15 @@ INSERT INTO `sessions` (`id`, `course_id`, `laboratory_number`, `study_group_id`
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_bin NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
   `group_id` int NOT NULL,
   `start_year` int DEFAULT NULL COMMENT 'Year student started studies',
-  `study_cycle` enum('Licenta','Master') COLLATE utf8mb4_bin DEFAULT 'Licenta' COMMENT 'Study cycle: Licenta or Master',
+  `study_cycle` enum('Licenta','Master') CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'Licenta' COMMENT 'Study cycle: Licenta or Master',
   `study_year` int DEFAULT '1' COMMENT 'Current year of study (1,2,3,4)',
-  `financing_type` enum('Buget','Taxa') COLLATE utf8mb4_bin DEFAULT 'Buget' COMMENT 'Financing type: Buget or Taxa',
-  `student_status` enum('Activ','Suspendat','Exmatriculat') COLLATE utf8mb4_bin DEFAULT 'Activ' COMMENT 'Student status',
+  `financing_type` enum('Buget','Taxa') CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'Buget' COMMENT 'Financing type: Buget or Taxa',
+  `student_status` enum('Activ','Suspendat','Exmatriculat') CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'Activ' COMMENT 'Student status',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_students_email` (`email`),
@@ -1848,9 +2226,9 @@ INSERT INTO `students` (`id`, `name`, `email`, `password`, `group_id`, `start_ye
 DROP TABLE IF EXISTS `student_groups`;
 CREATE TABLE IF NOT EXISTS `student_groups` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `year` int DEFAULT NULL,
-  `academic_year` varchar(9) COLLATE utf8mb4_bin NOT NULL,
+  `academic_year` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -1887,12 +2265,12 @@ INSERT INTO `student_groups` (`id`, `name`, `year`, `academic_year`, `created_at
 DROP TABLE IF EXISTS `study_groups`;
 CREATE TABLE IF NOT EXISTS `study_groups` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Ex: Grupa 1210 - Materie X sau Pseudo-Grupa Optional Y',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Ex: Grupa 1210 - Materie X sau Pseudo-Grupa Optional Y',
   `course_id` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_study_groups_course` (`course_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `study_groups`
@@ -1931,7 +2309,8 @@ INSERT INTO `study_groups` (`id`, `name`, `course_id`, `created_at`) VALUES
 (93, 'PAI Marți 10-12', 59, '2026-03-03 21:24:11'),
 (94, 'ISP Marți 10-12', 41, '2026-03-03 21:29:46'),
 (95, '1201B', 15, '2026-03-04 08:59:59'),
-(96, 'CM1 Luni 12-14', 11, '2026-03-04 09:11:39');
+(96, 'CM1 Luni 12-14', 11, '2026-03-04 09:11:39'),
+(98, '1201A', 19, '2026-03-22 18:27:33');
 
 -- --------------------------------------------------------
 
@@ -1948,7 +2327,7 @@ CREATE TABLE IF NOT EXISTS `study_group_members` (
   UNIQUE KEY `uq_study_group_student` (`study_group_id`,`student_id`),
   KEY `fk_study_group_members_group` (`study_group_id`),
   KEY `fk_study_group_members_student` (`student_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=486 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=492 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `study_group_members`
@@ -2265,7 +2644,13 @@ INSERT INTO `study_group_members` (`id`, `study_group_id`, `student_id`) VALUES
 (483, 96, 10),
 (480, 96, 1),
 (482, 96, 8),
-(485, 96, 7);
+(485, 96, 7),
+(486, 98, 11),
+(487, 98, 12),
+(488, 98, 13),
+(489, 98, 14),
+(490, 98, 15),
+(491, 98, 17);
 
 -- --------------------------------------------------------
 
@@ -2276,9 +2661,9 @@ INSERT INTO `study_group_members` (`id`, `study_group_id`, `student_id`) VALUES
 DROP TABLE IF EXISTS `teachers`;
 CREATE TABLE IF NOT EXISTS `teachers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) COLLATE utf8mb4_bin NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_bin NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Bcrypt hashed password',
   `is_admin` tinyint(1) DEFAULT '0' COMMENT 'Admin flag for teacher',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -2299,7 +2684,7 @@ INSERT INTO `teachers` (`id`, `name`, `email`, `password`, `is_admin`, `created_
 (7, 'Lect. Dr. Mihai Stanciu', 'mihai.stanciu@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
 (9, 'Asist. Drd. Alexandru Marin', 'alexandru.marin@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
 (10, 'Asist. Drd. Diana Radu', 'diana.radu@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
-(11, 'Asist. Daniela Stoica', 'daniela.stoica@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 1, '2025-11-02 23:16:43'),
+(11, 'Asist. Daniela Stoica', 'daniela.stoica@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
 (12, 'Ing. Bogdan Petrescu', 'bogdan.petrescu@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
 (13, 'Ing. Carmen Iliescu', 'carmen.iliescu@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
 (14, 'Ing. Victor Dumitru', 'victor.dumitru@academic.tuiasi.ro', '$2y$10$VSHu2dk4xgOotdQeEKSGXOlcmQVTnEd0.HH3LYfznf1MNZVE/vU62', 0, '2025-11-02 23:16:43'),
