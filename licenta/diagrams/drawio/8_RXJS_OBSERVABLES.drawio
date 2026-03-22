@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-22" agent="5.0" version="24.1.0" type="device">
+  <diagram id="rxjs_pattern" name="8. RxJS Observables Pattern">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="RxJS Observables - Data Flow Pattern" style="text;html=1;align=center;fontSize=14;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="10" width="500" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- HTTP Service -->
+        <mxCell id="http_service" value="HttpService" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFE6B3;strokeColor#FF9800;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Observable Creation -->
+        <mxCell id="obs_create" value="getStudents(): Observable&lt;Student[]&gt;&#10;{&#10;  return this.http.get(...)&#10;}" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="80" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow -->
+        <mxCell id="arr1" edge="1" parent="1" source="http_service" target="obs_create" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;endArrow=classic;" />
+        <mxCell id="arr1_label" value="returns" style="text;html=1;fontSize=9;fillColor=none;" vertex="1" connectedEdges="arr1" parent="1">
+          <mxGeometry x="145" y="65" width="60" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Component -->
+        <mxCell id="component" value="StudentListComponent" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow component receives observable -->
+        <mxCell id="arr2" edge="1" parent="1" source="obs_create" target="component" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;endArrow=classic;" />
+        <mxCell id="arr2_label" value="receives Observable" style="text;html=1;fontSize=9;fillColor=none;" vertex="1" connectedEdges="arr2" parent="1">
+          <mxGeometry x="360" y="65" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Subscription Pattern -->
+        <mxCell id="subscribe_box" value="SUBSCRIPTION PATTERN" style="text;html=1;fontSize=12;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="50" y="200" width="200" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- .subscribe() -->
+        <mxCell id="subscribe" value=".subscribe(&#10;  (data) =&gt; { /* next */ },&#10;  (err) =&gt; { /* error */ },&#10;  () =&gt; { /* complete */ }&#10;)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E8F5E9;strokeColor#388E3C;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="240" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Async Pipe Alternative -->
+        <mxCell id="async_pipe" value="ASYNC PIPE (Recommended)&#10;&#10;&lt;div *ngIf=&quot;students$ | async as students&quot;&gt;&#10;  &lt;!-- Automat subscribe &amp; unsubscribe --&gt;&#10;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E8F5E9;strokeColor#388E3C;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="300" y="240" width="250" height="80" as="geometry" />
+

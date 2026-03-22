@@ -1,0 +1,580 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\lstset{literate=%
+    {├}{{\textSFviii}}1
+    {─}{{\textSFx}}1
+    {│}{{\textSFxi}}1
+    {└}{{\textSFii}}1
+}
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    string=[s]{"}{"},
+    stringstyle=\color{blue},
+    comment=[l]{:},
+    commentstyle=\color{black},
+}
+
+\lstdefinelanguage{TypeScript}{
+    keywords={abstract, any, as, break, case, catch, class, const, continue, debugger, declare, default, delete,
+    do, else, enum, export, extends, false, finally, for, from, function, get, if, implements, import, in, 
+    instanceof, interface, let, module, namespace, new, null, number, of, package, private, protected, public,
+    readonly, require, return, set, static, string, super, switch, symbol, this, throw, true, try, type, typeof,
+    var, void, while, with, yield},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={boolean, number, string, any, void, never},
+    ndkeywordstyle=\color{purple}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=false,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{gray}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    morestring=[b]',
+    morestring=[b]",
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+}
+
+\setlength{\textfloatsep}{3pt plus 1.0pt minus 1.0pt} 
+\setlength{\floatsep}{3pt plus 1.0pt minus 1.0pt} 
+\setlength{\intextsep}{3pt plus 1.0pt minus 1.0pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{3pt}
+
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\tablename}{Tabel}
+\renewcommand{\refname}{Bibliografie}
+
+\begin{document}
+
+\title{Proiectarea și implementarea unei platforme web pentru managementul fluxurilor studențești utilizând Angular și PHP}
+
+\author{
+    \IEEEauthorblockN{Student: Gherguț Mădălin}
+    \IEEEauthorblockA{Grupa: 1405A \\
+        \textit{Facultatea de Automatică și Calculatoare} \\
+        \textit{Universitatea Tehnică ``Gheorghe Asachi'' din Iași}}
+    \textit{email: madalin.ghergut@student.tuiasi.ro}
+    \and
+    \IEEEauthorblockN{Îndrumător: Ș.l.dr.ing. Cătălin Brăescu}
+    \IEEEauthorblockA{\textit{Facultatea de Automatică și Calculatoare} \\
+        \textit{Universitatea Tehnică ``Gheorghe Asachi'' din Iași}}
+    \textit{email: florin-catalin.braescu@academic.tuiasi.ro}
+
+}
+
+\maketitle
+
+\begin{abstract}
+    Raportul documentează studiul si construirea unei platforme web pentru managementul studenților și urmărirea prezenței pentru semestrul I.
+    Activitățile principale au cuprins: (1) însuşirea conceptelor fundamentale privind arhitectura SPA și API-urile RESTful;
+    (2) familiarizarea cu Angular 19 --- componente, servicii, rutare; (3) documentarea creării API-uri REST în PHP cu gestionarea
+    securizată a cererilor HTTP și conexiuni MySQL; (4) proiectarea schemei bazei de date relaționale cu diagrama E-R;
+    (5) design preliminar al interfeței utilizator. Tehnologiile principale sunt Angular 19.2.0 pentru frontend,
+    PHP cu PDO pentru backend, și MySQL pentru persistență. Documentul prezintă conceptele teoretice fundamentale
+    (Client-Server, HTTP/REST, JSON, Reactive Programming, DI), arhitectura aplicației, patternuri de design și
+    planning pentru Semestrul II inclusiv testare comprehensivă și funcționalități avansate.
+\end{abstract}
+
+\begin{IEEEkeywords}
+    Angular 19, REST API, PHP, Student Management System, Attendance Tracking, Single Page Application, MySQL, Web Application,
+    Database Design, Role-Based Access Control.
+\end{IEEEkeywords}
+
+\section{Introducere}
+În era digitalizării instituțiilor de învățământ, transformarea proceselor administrative și academice prin intermediul tehnologiei
+informației a devenit o necesitate. Sistemele tradiționale de urmărire a prezenței, bazate pe registre fizice și calcule manuale,
+se confruntă cu limitări evidente: proastă scalabilitate, erori umane frecvente, dificultăți în generarea rapoartelor.
+Dezvoltarea aplicațiilor web moderne a deschis noi oportunități pentru modernizarea acestor procese, permitând instituțiilor să ofere soluții eficiente,
+transparente și accesibile din orice loc și oricând.
+
+În contextul acestui proiect, am identificat necesitatea creării unei platforme digitale care să consolideze toate aspectele management-ului studenților
+și urmărirea prezenței într-o singură aplicație cohesivă. Tehnologiile web moderne, în special paradigma Single Page Application (SPA)
+combinată cu API-uri RESTful, oferă arhitectura ideală pentru a realiza această viziune. Alegerea Angular 19 ca
+framework frontend și PHP ca limbaj backend reflectă un echilibru între maturitate tehnologică, disponibilitate de resurse și
+ușurință de întreținere pe termen lung. Conform sondajului Stack Overflow Developer Survey 2025, Angular este folosit de 18.2\%
+dintre dezvoltatorii web profesioniști~\cite{StackOverflow2025}, demonstrând adoptarea largă și comunitatea activă în jurul acestui framework.
+
+Obiectivul principal al proiectului este crearea unei platforme care să
+faciliteze:
+
+\begin{itemize}
+    \item Gestionarea centralizată a studenților, profesorilor și grupelor de curs
+    \item Urmărirea automată a prezenței studenților la sesiuni
+    \item Managementul laboratoarelor și al programului de curs
+    \item Control de acces bazat pe roluri (admin, profesor, student)
+    \item Vizualizare în timp real a datelor și rapoarte
+    \item Scalabilitate pentru instituții cu sute de studenți și profesori
+\end{itemize}
+
+Arhitectura aleasă este de tip client-server, cu o interfață frontend modulară
+construită în Angular 19~\cite{Angular2024} și un backend RESTful implementat
+în PHP cu bază de date MySQL~\cite{MySQL2024}.
+
+\section{Arhitectura Sistemului și Tehnologii}
+O înțelegere solidă a arhitecturii sistemului și a conceptelor fundamentale
+este esențială pentru proiectarea unei aplicații web moderne și scalabile. În
+această secțiune, prezentăm conceptele teoretice pe care se construiește
+întregul proiect.
+
+\subsection{Arhitectura Client-Server}
+Modelul client-server este o paradigmă arhitectural fundamental în tehnologie
+web. În acest model:
+
+\begin{itemize}
+    \item Client: O aplicație (browser, mobil, desktop) care inițiază cererile către
+          server
+    \item Server: O aplicație care primește cererile, le procesează și trimite răspunsuri
+    \item Comunicație: Se realizează prin protocoale standardizate (HTTP/HTTPS)
+\end{itemize}
+
+Pentru proiectul nostru:
+\begin{itemize}
+    \item Client: Aplicația Angular care rulează în browserul utilizatorului
+    \item Server: Backend-ul PHP care gestiunează baza de date și logica de business
+    \item Protocol: HTTP/REST pentru comunicare
+\end{itemize}
+
+Avantajele acestui model includ:
+\begin{itemize}
+    \item Separarea responsabilităților: Frontend și backend pot evolua independent
+    \item Scalabilitate: Serverul poate gestiona multiple clienți
+\end{itemize}
+
+Comunicarea client-server se realizează conform diagramei prezentate în Figura
+~\ref{fig:client_server_arch}, unde clientul trimite cereri HTTP iar serverul
+răspunde cu date în format JSON.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/arhitecture.png}
+    \caption{Arhitectura de ansamblu a sistemului, ilustrând separarea între clientul Single Page Application (Angular)
+        și serverul backend (PHP și MySQL). Comunicarea se realizează asincron prin cereri HTTP, utilizând formatul JSON pentru transferul datelor.}%
+    \label{fig:client_server_arch}
+\end{figure}
+
+\subsection{Protocolul HTTP și Metodele RESTful}
+HTTP (Hypertext Transfer Protocol) este protocolul fundamental al web-ului.
+Este un protocol stateless, ceea ce înseamnă că fiecare cerere este
+independentă și nu ține minte starea cererilor anterioare.
+
+Metodele HTTP principale utilizate în API-urile RESTful sunt:
+
+\begin{itemize}
+    \item GET: Recuperează resurse fără a modifica serverul (idempotent)
+    \item POST: Creează o nouă resursă pe server
+    \item PUT: Actualizează complet o resursă existentă
+    \item PATCH: Actualizare parțială a unei resurse
+    \item DELETE: Șterge o resursă
+\end{itemize}
+
+Exemplu de cereri HTTP în contextul proiectului:
+\begin{itemize}
+    \item \texttt{GET /api/courses} --- Listă toate cursurile
+    \item \texttt{POST /api/students} --- Creează un student nou
+    \item \texttt{PUT /api/attendance/1} --- Actualizează un record de prezență
+    \item \texttt{DELETE /api/courses/5} --- Șterge un curs
+\end{itemize}
+
+\subsection{JSON --- Formatul de Schimb de Date}
+
+JSON (JavaScript Object Notation) este un format ușor și text-based pentru
+reprezentarea datelor structurate. Este limbajul standard pentru comunicarea în
+API-urile RESTful moderne.
+
+Exemplu de răspuns JSON din aplicația noastră:
+
+\begin{lstlisting}[language=json]
+{
+  "id": 1,
+  "name": "Structuri de Date",
+  "teacher_id": 5,
+  "description": "Introducere in structuri...",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+\end{lstlisting}
+
+Avantajele JSON:
+\begin{itemize}
+    \item Ușor de citit pentru oameni și ușor de parsat de mașini
+    \item Suport nativ în JavaScript și TypeScript
+    \item Format text, independent de platformă
+    \item Suport pentru tipuri de date complexe (obiecte, matrici)
+\end{itemize}
+
+\subsection{Modelul de Date Relațional}
+
+Baza de date a proiectului utilizează modelul relațional, propus de E.F. Codd
+în 1970~\cite{Codd1970}. În acest model:
+
+\begin{itemize}
+    \item Datele sunt organizate în tabele (relații)
+    \item Fiecare tabel are coloane (atribute) și rânduri (înregistrări)
+    \item Chei primare identifică unic fiecare înregistrare
+    \item Chei străine stabilesc relații între tabele
+    \item Constrângeri de integritate asigură consistența datelor
+\end{itemize}
+
+Figura~\ref{fig:rdb_model} ilustrează conceptele fundamentale ale modelului
+relațional, prezentând modul în care datele sunt structurate în tabele cu chei
+primare și străine, precum și relațiile dintre entități.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/RDB.png}
+    \caption{Modelul de date relațional. Ilustrează conceptele fundamentale: tabele,
+        atribute, chei primare (PK), chei străine (FK) și relațiile dintre entități.}%
+    \label{fig:rdb_model}
+\end{figure}
+
+\subsection{Programarea Reactivă și Observables}
+
+Programarea reactivă este un paradim de programare care se concentrează pe
+fluxurile de date asincrone și propagarea schimbărilor. În Angular, aceasta se
+realizează prin RxJS Observables~\cite{RxJS2024}.
+
+Un Observable este o reprezentare a unei serii de valori care pot fi emise în
+timp, permițându-ți să te abonezi pentru a primi aceste valori pe măsură ce
+sunt disponibile.
+
+\begin{itemize}
+    \item Asincron: Valorile sunt emise în viitor, nu imediat
+    \item Lazy: Observable-ul nu se execută până când nu este abonat
+    \item Cancellable: Abonamentul poate fi anulat în orice moment
+\end{itemize}
+
+Exemplu de caz de folosință: Obținerea listei de studenți de la server și
+afișandule în consolă:
+
+\begin{lstlisting}[language=TypeScript]
+this.studentService.getStudents()
+  .subscribe(students => {
+    console.log(students);
+  });
+\end{lstlisting}
+
+\subsection{Injectarea dependențelor}
+
+Injectarea dependențelor este un model de proiectare care promovează decuplarea
+componentelor. În loc ca o clasă să creeze obiectele de care are nevoie,
+aceasta le primește de la exterior.
+
+Beneficii ale injectării dependențelor:
+\begin{itemize}
+    \item Reutilizabilitate: Componentele devin mai independente și reutilizabile
+    \item Modularitate: Codul este mai bine organizat
+    \item Flexibilitate: Modificări ușoare în implementare fără afectarea consumatorilor
+\end{itemize}
+
+Angular are un sistem de injectare a dependențelor încorporat care gestionează
+automatica injectarea dependențelor în componente și servicii.
+
+\section{Arhitectura Aplicațiilor SPA și API-uri RESTful}
+
+\subsection{Concepte SPA și Avantaje în Contextul Actual}
+
+O aplicație Single Page Application (SPA) este o aplicație web care se încarcă
+o singură dată în browser și apoi interacționează cu utilizatorul prin
+intermediul JavaScript, fără reîncărcări complete de pagină~\cite{SPABook2024}.
+În contextul actual, SPA-urile au devenit standard în dezvoltarea web modernă
+din cauza avantajelor semnificative pe care le oferă.
+
+Caracteristicile principale ale unei SPA includ:
+
+\begin{itemize}
+    \item Interacțiune fluidă: Interfața răspunde instantaneu, oferind o experiență
+          similară aplicațiilor clasice instalate pe calculator.
+    \item Actualizare dinamică: Datele se transferă în fundal, permițând reîmprospătarea
+          informațiilor fără reîncărcarea paginii.
+    \item Navigare locală: Trecerea între secțiuni se face direct în browser, reducând
+          solicitarea serverului și timpul de așteptare.
+    \item Gestiune locală a datelor: Stocarea informațiilor în memoria browserului
+          permite accesul rapid și stabilitatea în cazul unei conexiuni slabe.
+    \item Arhitectură modulară: Separarea clară între interfață și logica de procesare a
+          datelor facilitează întreținerea sistemului.
+\end{itemize}
+
+\subsection{API-uri RESTful}
+
+Arhitectura REST (Representational State Transfer) definește un set de
+principii pentru proiectarea serviciilor web~\cite{AWSRESTful2024}. În
+contextul proiectului, backend-ul expone endpoint-uri care respectă standardele
+REST:
+
+\begin{itemize}
+    \item Resurse: Entități principale (utilizatori, cursuri, prezențe)
+    \item Operații HTTP: GET (citire), POST (creare), PUT (actualizare), DELETE
+          (ștergere)
+    \item Reprezentare JSON: Schimb de date structurat
+    \item Coduri de stare HTTP: Comunicarea rezultatelor operațiilor prin coduri
+          standardizate:
+          \begin{itemize}
+              \item 200 OK: Cererea a fost procesată cu succes
+              \item 201 Created: Resursa a fost creată cu succes
+              \item 400 Bad Request: Cererea este invalidă sau malformată
+              \item 404 Not Found: Resursa solicitată nu a fost găsită
+              \item 500 Internal Server Error: Eroare pe server la procesarea cererii
+          \end{itemize}
+\end{itemize}
+
+\section{Proiectare și Implementare}
+
+\subsection{Framework Angular 19 --- Implementare}
+
+Angular este un framework TypeScript open-source, dezvoltat și întreținut de
+Google, destinat construirii aplicațiilor web scalabile și
+performante~\cite{Angular2024}. Angular oferă o soluție completă pentru
+dezvoltarea SPA-urilor, incluzând:
+
+\begin{itemize}
+    \item Sistem de componente: Arhitectură bazată pe componente reutilizabile
+    \item Rutare: Navigator integrat pentru aplicații multi-pagină (pe client)
+    \item Gestionarea formularelor: Suport pentru validare complexă și legare
+          bidirecțională a datelor
+    \item Servicii: Injecție de dependență pentru cod modular și testabil
+    \item HTTP Client: Comunicație ușoară cu backend-ul
+    \item RxJS Reactive Extensions: Programare reactivă și gestionarea evenimentelor
+\end{itemize}
+
+\subsection{Componente și Servicii}
+
+Componentele Angular sunt blocuri reutilizabile ce încapsulează logica,
+template-ul și stilurile. Serviciile furnizează funcționalități partajate și
+comunicația cu API-ul. Relația dintre componente și servicii este ilustrată în
+Figura~\ref{fig:angular_internal_arch}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/angular-architecture.png}
+    \caption{Arhitectura modulară a frontend-ului Angular. Sunt ilustrate ierarhia componentelor (gestionată de Router),
+        separarea logicii de prezentare de cea de business prin intermediul serviciilor, și integrarea acestora folosind
+        mecanismul de injectare a dependențelor (Dependency Injection).}%
+    \label{fig:angular_internal_arch}
+\end{figure}
+
+\subsection{Rutare și Managementul Stării}
+
+Aplicația utilizează sistemul de rutare Angular pentru navigarea între
+secțiuni, configurat în fișierul \texttt{app.routes.ts}. Rutele principale ale
+aplicației includ:
+
+\begin{itemize}
+    \item \texttt{/login} --- Autentificare și validare credențiale
+    \item \texttt{/dashboard} --- Panou principal cu statistici generale
+    \item \texttt{/courses} --- Gestionare cursuri (vizualizare, creare, editare)
+    \item \texttt{/students} --- Administrare studenți (operații CRUD)
+    \item \texttt{/attendance} --- Înregistrare și monitorizare prezență
+\end{itemize}
+
+\subsection{Arhitectura Backend}
+
+Backend-ul a fost construit în PHP~\cite{PHP2024} cu utilizarea PDO (PHP Data
+Objects) pentru conexiunile securizate la baza de date. Structura proiectului
+organizează endpoint-urile după resurse, cu API-uri CRUD pentru gestionarea
+studenților, cursurilor, grupelor și prezențelor:
+
+\begin{lstlisting}[language=bash]
+api/
+|-- auth/
+|   |-- login.php
+|   +-- verify.php
+|-- courses/
+|   |-- getAll.php
+|   |-- create.php
+|   |-- update.php
+|   +-- delete.php
+|-- students/
+|   |-- getAll.php
+|   |-- create.php
+|   |-- update.php
+|   +-- delete.php
++-- attendance/
+    |-- save.php
+    |-- getByStudent.php
+    +-- getStatsByCourse.php
+\end{lstlisting}
+
+\subsection{Schema Bazei de Date}
+
+Baza de date a fost proiectată urmând modelul relațional, cu entități
+principale și relații dintre ele:
+
+\begin{itemize}
+    \item Users: Credențiale de autentificare pentru toți utilizatorii
+    \item Teachers: Informații profesori (ref. Users)
+    \item Students: Informații studenți și grup (ref. Users, Groups)
+    \item Groups: Grupe de studenți
+    \item Courses: Cursuri universitare (ref. Teachers)
+    \item GroupCourses: Relație M:N între grupe și cursuri
+    \item Sessions: Sesiuni de curs (ref. GroupCourses)
+    \item Laboratories: Laboratoare per curs (1--14 per curs)
+    \item Attendance: Prezența studenților la sesiuni (ref. Students, Sessions)
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/database-er-diagram.png}
+    \caption{Diagrama Entitate-Relație (ERD) a bazei de date. Schema definește entitățile și relațiile de
+        cardinalitate necesare pentru gestionarea studenților, cursurilor, sesiunilor și prezenței.}%
+    \label{fig:er_diagram}
+\end{figure}
+
+\subsection{Relații între Tabele}
+
+Schema este normalizată la a treia formă normală (3NF), cu constrângeri de
+integritate referențială care asigură consistența datelor:
+
+\begin{itemize}
+    \item Un profesor are mai multe cursuri (1:N)
+    \item Un curs are mai multe sesiuni (1:N)
+    \item O grupă participă la mai multe cursuri prin GroupCourses (M:N)
+    \item Un student aparține unei grupe (N:1)
+    \item O sesiune are mai multe prezențe (1:N)
+    \item Tabelul GroupCourses permite unui curs să fie oferit mai multor grupe
+\end{itemize}
+
+\subsection{Interfața Utilizator și Funcționalități}
+
+Aplicația include interfețe dedicate pentru fiecare rol. Secțiunile de monitorizare 
+prezențe este destinată studenților, iar interfața 
+de creare sesiuni laborator este destinată profesorilor.
+
+
+\subsubsection{Autentificare și Securitate}
+
+Sistemul implementează autentificare securizată care verifică credențialele
+utilizatorului și atribuie roluri corespunzătoare (student, profesor, admin).
+Utilizatorii se autentifică cu email și parolă, iar sistemul redirecționează
+automat către dashboard-ul personalizat în funcție de rolul lor.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/login-page.png}
+    \caption{Pagina de autentificare a platformei. Interfață simplă și intuitivă cu validare pe client.}%
+    \label{fig:login_page_alt}
+\end{figure}
+
+\subsubsection{Monitorizare Prezențe --- Situație Generală}
+
+În partea superioară a dashboard-ului, sistemul oferă studenților o vizualizare agregată a situației
+lor de prezență la toate cursurile. Această secțiune afișează statistici generale prin grafice pie
+chart pentru fiecare materie, procentaje de prezență și numărul total de sesiuni la care au participat.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/attendace-overview.png}
+    \caption{Secțiunea situație generală prezențe din dashboard-ul studentului. Afișează grafice pie chart pentru fiecare curs, prezentând vizual situația prezenței (prezent/absent).}%
+    \label{fig:attendance_overview}
+\end{figure}
+
+\subsubsection{Monitorizare Prezențe --- Lista Cronologică}
+
+În partea inferioară a dashboard-ului, studenții pot consulta lista detaliată
+și cronologică a tuturor sesiunilor de laborator la care au participat sau
+au fost absenți.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/cronological-overview.png}
+    \caption{Lista cronologică a prezențelor din dashboard-ul studentului.}%
+    \label{fig:attendance_list}
+\end{figure}
+
+\subsubsection{Interfața Profesor --- Creare Sesiune Laborator}
+
+Profesorii dispun de o interfață pentru crearea și gestionarea sesiunilor de 
+laborator. Funcționalitățile principale includ selectarea cursului, grupei și 
+laboratoarelor specifice, precum și 
+flexibilitatea de a adăuga studenți din alte grupe pentru recuperări sau situații speciale.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/creating-laboratory.png}
+    \caption{Interfața de creare sesiune laborator pentru profesori.}%
+    \label{fig:teacher_create_session}
+\end{figure}
+
+\subsubsection{Interfața Profesor --- Lista Studenți}
+
+Profesorii au acces la o interfață de vizualizare a listei complete de studenți, 
+cu posibilitatea de filtrare după grupă și paginare pentru navigare eficientă.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{images/student-list-profesor-view.png}
+    \caption{Interfața de vizualizare studenți pentru profesori cu filtrare după grupă și paginare.}%
+    \label{fig:student-list-profesor-view}
+\end{figure}
+
+\section{Direcții de Dezvoltare}
+
+\subsection{Planul pentru Semestrul II}
+
+Extinderi și îmbunătățiri planificate pentru Semestrul II:
+
+\begin{itemize}
+    \item Modelare baza de date pentru a respecta cursurile opționale
+    \item Aprofundare CLI Angular
+    \item Teste unitare cu Jasmine și Karma
+    \item Teste end-to-end cu Cypress
+    \item Control de acces bazat pe roluri (RBAC)
+    \item Route guards și protejarea rutelor
+    \item Optimizare frontend: lazy loading, change detection, caching
+    \item Optimizare backend: database indexing, query optimization
+    \item Documentare deployment pe un server local
+    \item Imbunatarire interfata utilizator
+\end{itemize}
+\begin{thebibliography}{99}
+
+    \bibitem{Angular2024}
+    Google, \textit{Angular v19 Overview}, https://v19.angular.dev/overview, 2024.
+
+    \bibitem{RxJS2024}
+    RxJS Team, \textit{RxJS Documentation}, https://rxjs.dev/, 2024.
+
+    \bibitem{PHP2024}
+    PHP Group, \textit{PHP Manual}, https://www.php.net/manual/, 2024.
+
+    \bibitem{MySQL2024}
+    Oracle, \textit{MySQL Documentation}, https://dev.mysql.com/doc/, 2024.
+
+    \bibitem{Codd1970}
+    E.F. Codd, \textit{A Relational Model of Data for Large Shared Data Banks},
+    Communications of the ACM, vol. 13, no. 6, pp. 377--387, 1970.
+    doi:10.1145/362384.362685.
+
+    \bibitem{AWSRESTful2024}
+    Amazon Web Services, \textit{What is a RESTful API?},
+    https://aws.amazon.com/what-is/restful-api/, 2024.
+
+    \bibitem{SPABook2024}
+    Miško Hevery and others, \textit{Single Page Application Book},
+    https://singlepageappbook.com/, 2024.
+
+    \bibitem{StackOverflow2025}
+    Stack Overflow, \textit{Stack Overflow Developer Survey 2025}, https://survey.stackoverflow.co/2025/, 2025.
+
+\end{thebibliography}
+
+\end{document}

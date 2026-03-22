@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 
@@ -62,7 +62,7 @@ export class AttendanceService {
     group_name: string;
     is_mandatory_course: boolean;
     students: any[];
-  }): Observable<any> {
+  }): Observable<HttpResponse<Blob>> {
     return this.http.post(`${this.apiUrl}/exportExcel.php`, exportData, {
       responseType: 'blob',
       headers: {

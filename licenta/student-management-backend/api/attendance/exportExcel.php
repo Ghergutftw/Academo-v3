@@ -1,26 +1,65 @@
 <?php
-require_once '../../vendor/autoload.php';
+// Always send CORS headers first, including for preflight requests.
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    'http://localhost:4200',
+    'http://127.0.0.1:4200'
+];
+
+if (in_array($origin, $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+} else {
+    header('Access-Control-Allow-Origin: http://localhost:4200');
+}
+
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Max-Age: 86400');
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
+function sendJsonError(string $message, int $statusCode = 500): void
+{
+    http_response_code($statusCode);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['error' => $message], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$autoloadCandidates = [
+    __DIR__ . '/../../vendor/autoload.php',
+    __DIR__ . '/../../../vendor/autoload.php'
+];
+
+$autoloadPath = null;
+foreach ($autoloadCandidates as $candidate) {
+    if (is_file($candidate)) {
+        $autoloadPath = $candidate;
+        break;
+    }
+}
+
+if ($autoloadPath === null) {
+    sendJsonError('Lipseste autoload Composer. Ruleaza `composer install` in `student-management-backend`.', 500);
+}
+
+require_once $autoloadPath;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-// Headers CORS pentru Angular
-header('Access-Control-Allow-Origin: http://localhost:4200');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Credentials: true');
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
 // Opresc orice output anterior
-if (ob_get_level()) {
+while (ob_get_level()) {
     ob_end_clean();
 }
 
@@ -30,9 +69,9 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     error_log("Export Excel: Input data = " . json_encode($input));
     
-    if (!$input) {
+    if (!is_array($input)) {
         error_log("Export Excel: Date de intrare invalide");
-        throw new Exception('Date de intrare invalide');
+        sendJsonError('Date de intrare invalide', 400);
     }
     
     $courseId = $input['course_id'] ?? null;
@@ -132,13 +171,15 @@ try {
     $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $filename);
     
     // Headers pentru descărcare
+    if (headers_sent()) {
+        throw new RuntimeException('Headers already sent before file output');
+    }
+
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
-    header('Cache-Control: max-age=0');
-    header('Cache-Control: max-age=1');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
     header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-    header('Cache-Control: cache, must-revalidate');
     header('Pragma: public');
     
     // Salvez direct
@@ -146,14 +187,13 @@ try {
     error_log("Export Excel: Generez fisierul Excel...");
     $writer->save('php://output');
     error_log("Export Excel: Fisier generat cu succes");
-    
-} catch (Exception $e) {
+    exit;
+
+} catch (Throwable $e) {
     error_log("Export Excel: EROARE - " . $e->getMessage());
     error_log("Export Excel: Stack trace - " . $e->getTraceAsString());
-    
-    // În caz de eroare, întorc JSON
-    header('Content-Type: application/json');
-    http_response_code(500);
-    echo json_encode(['error' => 'Eroare: ' . $e->getMessage()]);
+
+    if (!headers_sent()) {
+        sendJsonError('Eroare export Excel: ' . $e->getMessage(), 500);
+    }
 }
-?>

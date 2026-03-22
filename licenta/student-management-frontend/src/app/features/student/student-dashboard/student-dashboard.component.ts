@@ -121,7 +121,7 @@ export class StudentDashboardComponent implements OnInit {
 
   updatePagination(): void {
     const start = this.pageIndex * this.pageSize;
-    this.paginatedRecords = this.filteredRecords.slice(start, start + this.pageSize);
+    this.paginatedRecords = this.filteredRecords.filter(value => value.id != 0).slice(start, start + this.pageSize)
   }
 
   onFilterChange(): void { this.applyFilters(); }

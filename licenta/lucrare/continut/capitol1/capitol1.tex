@@ -1,0 +1,1690 @@
+\chapter{Tehnologii Folosite}
+\label{cap:tehnologii}
+
+\section{Angular 19 – Prezentare Generală și Justificare}
+
+Angular este un framework modern și complet pentru construirea aplicațiilor web monopagină (SPA – Single Page Application), construit și menținut de echipa Angular din cadrul Google. În esență, Angular oferă o framework end-to-end care rezolvă probleme fundamentale ale dezvoltării web frontend: gestionarea stării aplicației, rutarea și navigarea, comunicarea cu backend-ul, validarea formularelor, și construirea de interfețe interactive și responsive. Angular 19, cea mai recentă versiune majoră la momentul dezvoltării acestei aplicații, aduce o serie de îmbunătățiri semnificative în ceea ce privește performance, developer experience, și aderența la standardele web moderne.
+
+Motivația alegerii Angular pentru platforma de management al fluxurilor studențești este multiplu. În primul rând, Angular este un framework complet și integrat, ceea ce înseamnă că aceasta oferă, din start, soluții pentru probleme care în alte framework-uri ar necesita instalarea și integrarea de biblioteci externe: sistemul de rutare este încorporat, validarea formularelor este o caracteristică de primă clasă, comunicarea HTTP cu backend-ul are suport nativ prin HttpClient, și dependency injection este o caracteristică fundamentală a arhitecturii sale. În al doilea rând, TypeScript nativ—limbajul în care se scrie Angular—oferă tipizare statică și detecție de erori la momentul compilării, nu la runtime, ceea ce reduce semnificativ clasele de buguri și îmbunătățește mentenabilitatea codului pe termen lung. În al treilea rând, Angular promovează și aplică arhitecturi software solide: component-based design, service-oriented architecture, și dependency injection sunt principii fundamentale, nu practici opționale, ceea ce înseamnă că o aplicație Angular este încurajată din design să evolueze către cod modular, testabil, și reutilizabil. În fine, Angular CLI—toolul de linie de comandă oficială—oferă scaffolding și automatizări care respectă best practices-urile comunității și facilitează lucrul în paralel pe proiecte mari.
+
+\section{Angular CLI – Instrumentul de Bază al Dezvoltării}
+
+Angular CLI (Command Line Interface) este toolul oficial pentru inițializarea, dezvoltarea, și construirea aplicațiilor Angular. Acesta merge mult dincolo de o simplă mașină de generat template-uri: este o orchestrator inteligent care automatizează fluxurile de lucru și impune standarde de calitate și structură pe întreg ciclul de viață al proiectului.
+
+Atunci când se rulează comanda \texttt{ng new student-management-system}, Angular CLI creează o arhitectură de proiect complet și opinionată. Structura generată nu este arbitrară: aceasta reflectă ani de experiență și best practices din comunitatea Angular. Directoarele sunt organizate semantic: în \texttt{src/app} se află logica de aplicație, în \texttt{src/assets} se stochează resursele statice (imagini, fonturi), în \texttt{src/environment} se configurează variabilele de mediu pentru dev și prod. Fișierul \texttt{angular.json} servește ca blueprint al întregului proiect, specificând ce trebuie compilat, cum trebuie compilat, și unde să fie plasat output-ul. Fișierul \texttt{tsconfig.json} configureaza compilatorul TypeScript cu setări de strictitate și țintă de versiune JavaScript.
+
+Unul din cele mai importante avantaje ale Angular CLI este că acesta automatizează generarea de componente, servicii, module și alte artefacte cu \texttt{ng generate} (pe scurt \texttt{ng g}). De exemplu, comanda \texttt{ng g component features/student/student-list} va crea automat:
+\begin{itemize}
+  \item Directorul \texttt{src/app/features/student/student-list/}
+  \item Fișierul TypeScript cu clasa componentului \texttt{StudentListComponent}
+  \item Template-ul HTML asociat
+  \item Foaia de stiluri CSS/SCSS
+  \item Un fișier de test (spec.ts)
+\end{itemize}
+
+Toate aceste fișiere sunt deja conectate corect și urmează convenții de naming și organizare. Această automatizare nu este pur și simplu o comoditate: ea asigură consistență în codebase, reduce erori de configurare, și accelerează foarte mult iterația de dezvoltare.
+
+Angular CLI integrează și orchestreaza în spatele scenei o serie de tool-uri sofisticate: TypeScript compiler (tsc), webpack pentru bundling și module resolution, terser pentru minificare, și SASS pentru preprocessing CSS. Pentru dezvoltare, comanda \texttt{ng serve} pornește un server de dezvoltare cu hot module replacement, ceea ce înseamnă că atunci când se salvează o schimbare în cod, browserul se reîmprospătează automat cu versiunea nouă, fără a pierde starea aplicației. Pentru producție, comanda \texttt{ng build} execută o serie de optimizări avansate: Ahead-of-Time (AOT) compilation transformă template-urile în cod JavaScript înainte de deployment, tree shaking elimină codul neutilizat din bundle, code splitting separă codul pe module logice pentru a permite lazy loading, și minificare reduce dramatist dimensiunea fișierelor transmise browserului.
+
+\subsection{Comenzi Angular CLI Principale}
+
+\textbf{1. ng new – Inițializarea Unui Proiect}
+
+Comanda \texttt{ng new student-management-system} creează un proiect Angular complet cu structura recomandată:
+
+\begin{lstlisting}[language=bash]
+ng new student-management-system --routing --style=scss
+\end{lstlisting}
+
+Flaguri importante:
+\begin{itemize}
+  \item \texttt{--routing} – adaugă RouterModule și app.routes.ts inițial
+  \item \texttt{--style=scss} – folosește SCSS în loc de CSS
+  \item \texttt{--package-manager=npm} – specifică package manager-ul (npm, yarn, pnpm)
+\end{itemize}
+
+Aceasta generează următoarea structură:
+
+\begin{lstlisting}[language=bash]
+student-management-system/
+├── src/
+│   ├── app/                    # Codul aplicației
+│   │   ├── app.component.*     # Component root
+│   │   ├── app.config.ts       # Configurație providers
+│   │   └── app.routes.ts       # Definirea rutelor
+│   ├── assets/                 # Resurse statice
+│   ├── environments/           # Variabile mediu
+│   ├── index.html              # HTML root
+│   ├── main.ts                 # Entry point
+│   └── styles.scss             # Stiluri globale
+├── angular.json                # Configurație Angular CLI
+├── tsconfig.json               # Configurație TypeScript
+├── package.json                # Dependencies Node.js
+└── README.md
+\end{lstlisting}
+
+Fișiere critice create:
+
+\begin{itemize}
+  \item \texttt{package.json} – declară dependențele npm (Angular, RxJS, TypeScript)
+  \item \texttt{angular.json} – configurează build targets, paths, assets
+  \item \texttt{tsconfig.json} – setări TypeScript: strict mode, target ES version, paths mapping
+  \item \texttt{app.component.ts} – componentul rădăcină al aplicației
+  \item \texttt{app.routes.ts} – define rutele principale
+\end{itemize}
+
+\textbf{2. ng add – Adăugarea de Biblioteci și Dependențe}
+
+Comanda \texttt{ng add} nu doar instalează un package npm, ci executează și schema makers (transformări) specifice pentru a integra biblioteca în proiect:
+
+\begin{lstlisting}[language=bash]
+ng add @angular/material              # Adaugă Angular Material
+ng add @ng-bootstrap/ng-bootstrap     # Adaugă ng-bootstrap
+ng add bootstrap                      # Adaugă Bootstrap
+\end{lstlisting}
+
+Pentru Angular Material, \texttt{ng add} execută:
+\begin{itemize}
+  \item Instalează pachetul @angular/material din npm
+  \item Adaugă import-urile în app.config.ts
+  \item Configurează teme și fonts
+  \item Adaugă BrowserAnimationsModule (necesar pentru animații Material)
+  \item Actualizează tsconfig.json cu path mappings
+\end{itemize}
+
+Comparație: dacă ai folosi \texttt{npm install @angular/material} direct, ai obține doar pachetul, dar ar trebui să configurezi manual integrarea în aplicație. \texttt{ng add} automatizează toate aceste pasuri.
+
+\textbf{3. ng generate – Generarea Artefactelor}
+
+\texttt{ng generate} creează componente, servicii, directivey, pipe-uri și alte artefacte conform convenției Angular:
+
+\begin{lstlisting}[language=bash]
+# Generare component
+ng generate component features/student/student-list
+ng g c features/student/student-form  # shorthand
+
+# Generare service
+ng generate service shared/services/student
+
+# Generare directive
+ng generate directive shared/directives/highlight
+
+# Generare pipe
+ng generate pipe shared/pipes/uppercase-first
+\end{lstlisting}
+
+Atunci când rulezi \texttt{ng g component features/student/student-list}, CLI-ul:
+
+\begin{enumerate}
+  \item \textbf{Citește} tsconfig.json pentru path mappings și configurație
+  \item \textbf{Citește} angular.json pentru locația default a componentelor
+  \item \textbf{Creează} dosarul \texttt{src/app/features/student/student-list/}
+  \item \textbf{Generează} patru fișiere:
+  \begin{itemize}
+    \item \texttt{student-list.component.ts} – clasa cu decorator @Component
+    \item \texttt{student-list.component.html} – template gol
+    \item \texttt{student-list.component.scss} – foaie de stiluri goală
+    \item \texttt{student-list.component.spec.ts} – test suite-ul
+  \end{itemize}
+  \item \textbf{Actualizează} dosarul parent (dacă este în modul), adăugând import-ul în declarations
+  \item \textbf{Urmează} convenții: naming (kebab-case pentru fișiere, PascalCase pentru clase)
+\end{enumerate}
+
+Componentul generat arată così:
+
+\begin{lstlisting}[language=TypeScript]
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-student-list',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './student-list.component.html',
+  styleUrls: ['./student-list.component.scss']
+})
+export class StudentListComponent implements OnInit {
+  constructor() { }
+
+  ngOnInit(): void { }
+}
+\end{lstlisting}
+
+Observație: \texttt{standalone: true} în Angular 19 înseamnă că componenta nu necesită modul pentru a fi folosită; poate fi importată direct în alte componente.
+
+\textbf{4. ng serve – Development Server}
+
+Comanda \texttt{ng serve} pornește serverul de dezvoltare local și compilează aplicația pentru testare:
+
+\begin{lstlisting}[language=bash]
+ng serve
+ng serve --open                   # Deschide automat browserul
+ng serve --port 4300              # Port custom
+ng serve --ssl                    # HTTPS local
+\end{lstlisting}
+
+Ce se întâmplă atunci când pornești serverul:
+
+\begin{enumerate}
+  \item \textbf{Citește} angular.json și tsconfig.json
+  \item \textbf{Citește} fișierul main.ts (entry point-ul aplicației)
+  \item \textbf{Compilare} TypeScript în JavaScript (compatibil cu browserul)
+  \item \textbf{Bundling} – webpack combină modulele în bundle-uri
+  \item \textbf{Serving} – pornește HTTP server pe localhost:4200
+  \item \textbf{Watch mode} – monitorizează fișierele pentru schimbări
+  \item \textbf{Hot Module Replacement (HMR)}– La salvarea unui fișier, browserul se actualizează instant
+\end{enumerate}
+
+main.ts este entry point-ul:
+
+\begin{lstlisting}[language=TypeScript]
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch(err => console.error(err));
+\end{lstlisting}
+
+Aceasta:
+\begin{itemize}
+  \item Importă \texttt{AppComponent} (component root)
+  \item Importă \texttt{appConfig} (configurație cu providers)
+  \item Pornește aplicația Angular cu \texttt{bootstrapApplication}
+\end{itemize}
+
+Beneficii ale \texttt{ng serve}:
+\begin{itemize}
+  \item \textbf{Development rapida:} Modificări sunt instantaneu reflectate (HMR)
+  \item \textbf{Debugging:} Browser DevTools funcționează direct pe cod TypeScript (source maps)
+  \item \textbf{Error reporting:} Erorile de compilare sunt afișate în browser și terminal
+  \item \textbf{Lazy loading:} Module se descarcă pe cale asincronă când navighezi
+\end{itemize}
+
+\textbf{5. ng build – Compilarea pentru Producție}
+
+Comanda \texttt{ng build} compilează și optimizează aplicația pentru deployment:
+
+\begin{lstlisting}[language=bash]
+ng build
+ng build --configuration production   # prod optimizations
+ng build --aot                        # Ahead-of-Time compilation
+\end{lstlisting}
+
+Procesul de build:
+
+\begin{enumerate}
+  \item \textbf{Citire} angular.json şi tsconfig.json
+  \item \textbf{Compilare TypeScript → JavaScript} cu AOT (Ahead-of-Time)
+  \item \textbf{Template compilation} – template-urile HTML sunt compilate în funcții Angular
+  \item \textbf{Tree-shaking} – codul nefolosit este eliminat
+  \item \textbf{Code splitting} – modulele lazy-loaded sunt separate în chunks
+  \item \textbf{Bundling} – webpack combină fișierele în mai puțini bundle-uri mari
+  \item \textbf{Minificare} – JavaScript, CSS, HTML sunt comprimate
+  \item \textbf{Output} – fișierele finale se plasmează în directorul \texttt{dist/}
+\end{enumerate}
+
+Directorul de output după build:
+
+\begin{lstlisting}[language=bash]
+dist/student-management-system/
+├── index.html              # HTML root
+├── main.HASH.js            # Bundle-ul principal
+├── polyfills.HASH.js       # Polyfills pentru browsere vechi
+├── styles.HASH.css         # CSS global
+├── assets/                 # Resurse statice kopiate
+└── 0.HASH.js               # Module lazy-loaded (chunk 0)
+\end{lstlisting}
+
+Optimizări de producție:
+\begin{itemize}
+  \item \textbf{Minificare:} main.HASH.js poate fi 250KB → 80KB după minificare/gzip
+  \item \textbf{Tree-shaking:} Codul RxJS nefolosit este eliminat (ex., operatori neutilizati)
+  \item \textbf{Lazy loading chunks:} Routele cu loadChildren se descarcă ca fișiere separate
+  \item \textbf{HASH în numefișierelor:} Permite cache-ul browser să expire când codul se schimbă
+\end{itemize}
+
+Exemplu de versiune complactă cu toți flaguri importanți:
+
+\begin{lstlisting}[language=bash]
+ng build --configuration production \
+  --aot \
+  --build-optimizer \
+  --source-map=false \
+  --named-chunks=false \
+  --output-hashing=all
+\end{lstlisting}
+
+\textbf{6. ng test și ng e2e – Testing}
+
+\begin{lstlisting}[language=bash]
+ng test                      # Rulează unit tests (Jasmine/Karma)
+ng e2e                       # Rulează end-to-end tests (Cypress)
+\end{lstlisting}
+
+Unit tests (componente, servicii):
+
+\begin{lstlisting}[language=TypeScript]
+describe('StudentListComponent', () => {
+  let component: StudentListComponent;
+  let fixture: ComponentFixture<StudentListComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [StudentListComponent],
+      providers: [StudentService]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(StudentListComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should load students', () => {
+    expect(component.students$).toBeDefined();
+  });
+});
+\end{lstlisting}
+
+E2E tests (scenarii complete de utilizare):
+
+\begin{lstlisting}[language=TypeScript]
+describe('Student Management', () => {
+  it('should login and create a student', () => {
+    cy.visit('localhost:4200/login');
+    cy.get('input[name="email"]').type('admin@test.com');
+    cy.get('input[name="password"]').type('password');
+    cy.get('button[type="submit"]').click();
+    cy.contains('Dashboard').should('be.visible');
+  });
+});
+\end{lstlisting}
+
+\subsection{Fluxul de Dezvoltare Tipic}
+
+Într-un ciclu de zi cu zi, dezvoltatorul:
+
+\begin{enumerate}
+  \item Pornește serverul: \texttt{ng serve}
+  \item Generează componentă nouă: \texttt{ng g c features/students/student-form}
+  \item Modifică codul; browserul se actualizează automat
+  \item Scrie teste; rulează \texttt{ng test}
+  \item Atunci când e gata: \texttt{ng build} pentru producție
+  \item Deployează \texttt{dist/} pe server
+\end{enumerate}
+
+Angular CLI face toț aceste procese ușor și conform best practices, fără necesitatea configurării webpack, TypeScript, sau altor tool-uri.
+
+\section{Arhitectura pe Componente – Blourile de Construcție}
+
+Arhitectura Angular se construiește pe conceptul de \textbf{componente}. O componentă în Angular este unitatea minimă și independentă a interfeței utilizatorului. Fiecare componentă este compusă din patru piese: o clasă TypeScript care conține logica, un template HTML care descrie structura, o foaie de stiluri CSS/SCSS care aplică imagine vizuală, și metadate care furnizează informații framework-ului despre cum să instanțieze și să configureze componenta.
+
+O componentă se definește cu decoratorul \texttt{@Component}:
+
+\begin{lstlisting}[language=TypeScript]
+@Component({
+  selector: 'app-student-list',
+  templateUrl: './student-list.component.html',
+  styleUrls: ['./student-list.component.css']
+})
+export class StudentListComponent implements OnInit {
+  students$ = this.studentService.getStudents();
+
+  constructor(private studentService: StudentService) {}
+
+  ngOnInit() {
+    // Logica de inițializare a componentei
+  }
+}
+\end{lstlisting}
+
+Detaliul important aici este că \texttt{students\$} nu este un array tradițional, ci un Observable—o reprezentare a unui flux de date asincron. Notația cu \texttt{\$} la sfârșitul numelui este o convenție în comunitatea RxJS care semnalizează că acea variabilă ține o referință la un Observable, nu la datele în sine. Aceasta este o caracteristică fundamentală a arhitecturii Angular moderne: operațiile asincrone—fetch-uri HTTP, interacțiuni cu utilizatorul, timeri—sunt modelate ca Observable-uri, care sunt apoi consumate in template-uri cu ajutorul operatorului \texttt{async}.
+
+Template-ul HTML asociat poate accesa Observable-ul direct:
+
+\begin{lstlisting}[language=HTML]
+<div *ngIf="students$ | async as students">
+  <ul>
+    <li *ngFor="let student of students">
+      {{ student.name }} ({{ student.email }})
+    </li>
+  </ul>
+</div>
+\end{lstlisting}
+
+Pipe-ul \texttt{async} dintr-Angular subscrie automat la Observable, extrage valoarea, și se dezabonează atunci când componenta este distrusă. Aceasta este o abordare elegantă și sigură, care evită memory leaks și reduce cod de plumb (boilerplate).
+
+Componetele din SMS sunt organizate ierarhic: componente de top-level (\texttt{AppComponent}) care conțin componente de pagină (\texttt{StudentPageComponent}), care conțin componente de module (\texttt{StudentListComponent}, \texttt{StudentFormComponent}), care conțin eventual componente de utilitate (\texttt{FormFieldComponent}, \texttt{AlertComponent}). Această stratificare permite reutilizare și testare independentă.
+
+\section{Rutarea și Lazy Loading – Optimizarea Navigării}
+
+Rutarea în Angular este mecanismul prin care aplicația navighează între diferite pagini și stări. Rutele principale ale SMS sunt:
+
+\begin{itemize}
+  \item \texttt{/login} – pagina de autentificare (publică)
+  \item \texttt{/dashboard} – hub central după login (protejat)
+  \item \texttt{/students} – modulul de gestionare a studenților (lazy-loaded, protejat)
+  \item \texttt{/courses} – modulul de gestionare a cursurilor (lazy-loaded, protejat)
+  \item \texttt{/attendance} – modulul de marcare a prezenței (lazy-loaded, protejat)
+\end{itemize}
+
+Rutele sunt definite în fișierul \texttt{app.routes.ts}:
+
+\begin{lstlisting}[language=TypeScript]
+export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'students',
+    loadChildren: () => import('./features/student/student.routes')
+                          .then(m => m.STUDENT_ROUTES),
+    canActivate: [authGuard]
+  },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+];
+\end{lstlisting}
+
+Conceptul crucial aici este \textbf{lazy loading}. În loc de a include codul tuturor modulelor în bundle-ul principal, Angular permite ca module să fie încărcate pe cale asincronă doar atunci când utilizatorul navighează la acea rută. Aceasta înseamnă că bundle-ul inițial care se descarcă browserul este mult mai mic, iar aplicația se pornește mai repede. Modulele se descarcă în background când sunt necesare. Pentru un sistem de management al studenților cu zeci de pagini și sute de componente, lazy loading este o diferență critic importantă în performance.
+
+\textbf{Route Guards} sunt funcții care gestionează accesul la rutele protejate. \texttt{authGuard} din exemplul de mai sus verifică dacă utilizatorul este autentificat; dacă nu, redirecționează la login:
+
+\begin{lstlisting}[language=TypeScript]
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  } else {
+    router.navigate(['/login']);
+    return false;
+  }
+};
+\end{lstlisting}
+
+Guards sunt executate înainte ca ruta să fie activă, oferind un loc central pentru a impune restricții de acces și pentru a efectua alte verificări preventive.
+
+\section{Services și Dependency Injection – Separation of Concerns}
+
+Un service în Angular este o clasă care encapsulează logica de business: comunicarea cu API-ul, gestionarea stării, sau alte operații care nu sunt legate direct de prezentarea interfeței. Separarea logicii de prezentare cere ca componentele să delegeze aceste responsabilități service-urilor.
+
+AuthService, de exemplu, gestionează autentificarea:
+
+\begin{lstlisting}[language=TypeScript]
+// ============================================================
+// Service: auth.service.ts
+// Purpose: Handle authentication, JWT tokens, user state
+// ============================================================
+
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap, map } from 'rxjs/operators';
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: 'admin' | 'teacher' | 'student';
+  };
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly API_URL = '/api/auth';
+  private tokenKey = 'auth_token';
+
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(
+    this.hasToken()
+  );
+  public isAuthenticated$ =
+    this.isAuthenticatedSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    this.restoreSession();
+  }
+
+  // Main login method
+  login(credentials: LoginCredentials): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${this.API_URL}/login`,
+      credentials
+    ).pipe(
+      tap(response => this.handleLoginSuccess(response)),
+      catchError(error => this.handleLoginError(error))
+    );
+  }
+
+  // Logout and cleanup
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    this.currentUserSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
+  }
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    return this.hasToken() && !this.isTokenExpired();
+  }
+
+  // Get current JWT token
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  // Get current user
+  getCurrentUser(): any {
+    return this.currentUserSubject.value;
+  }
+
+  // ============================================================
+  // Private helper methods
+  // ============================================================
+
+  private handleLoginSuccess(response: LoginResponse): void {
+    localStorage.setItem(this.tokenKey, response.token);
+    this.currentUserSubject.next(response.user);
+    this.isAuthenticatedSubject.next(true);
+  }
+
+  private handleLoginError(error: HttpErrorResponse): Observable<never> {
+    let message = 'Login failed';
+
+    if (error.status === 401) {
+      message = 'Invalid email or password';
+    } else if (error.status === 0) {
+      message = 'Network error. Check your connection.';
+    } else if (error.error?.message) {
+      message = error.error.message;
+    }
+
+    return throwError(() => new Error(message));
+  }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem(this.tokenKey);
+  }
+
+  private isTokenExpired(): boolean {
+    // Decode JWT and check expiration
+    // (Using library like jwt-decode)
+    return false;
+  }
+
+  private restoreSession(): void {
+    if (this.hasToken() && !this.isTokenExpired()) {
+      this.isAuthenticatedSubject.next(true);
+    }
+  }
+}
+\end{lstlisting}
+
+Decoratorul \texttt{@Injectable} marchează clasa ca fiind disponibilă pentru injecție. Argumentul \texttt{providedIn: 'root'} face ca service-ul să fie un singleton la nivel de aplicație—doar o singură instanță există și este partajată de toate componentele care îl injectează.
+
+\textbf{Dependency Injection} este mecanismul prin care Angular injectează dependențe (servicii, configurație) în componente și servicii. În loc de a crea manual instanțe ale serviciilor, componentele declară dependențele lor în constructor, și Angular se ocupă de instanțiere și injecție:
+
+\begin{lstlisting}[language=TypeScript]
+export class StudentListComponent {
+  constructor(private studentService: StudentService) {
+    // studentService este injectat automat de Angular
+  }
+}
+\end{lstlisting}
+
+Avantajele DI sunt semnificative: faciliteaza testing (putem injecta mock-uri ale serviciilor), reduce coupling între componente, și permite modificări ușoare ale implementării fără a afecta componentele consumatoare.
+
+\section{RxJS și Programarea Reactivă – Gestionarea Fluxurilor Asincrone}
+
+RxJS este biblioteca care oferă Angular capacitatea de a lucra cu fluxuri de date asincrone din punct de vedere declarativ și compozabil. În loc de a gândi în termeni de callbacks sau promise-uri care se rezolvă o dată, RxJS modelează datele ca Observable-uri: fluxuri care emit valori în timp (poate zero, unu, sau infinit de valori).
+
+De exemplu, atunci când un utilizator tipărește într-un câmp de căutare, vrem să declanșam o căutare de studenți pe fiecare tastă. Naiv, am putea asculta fiecare eveniment 'input' și face un request HTTP. RxJS oferă o abordare mai elegantă:
+
+\begin{lstlisting}[language=TypeScript]
+searchTerm$ = new Subject<string>();
+
+students$ = this.searchTerm$.pipe(
+  debounceTime(300),
+  distinctUntilChanged(),
+  switchMap(term => this.studentService.search(term)),
+  catchError(() => of([]))
+);
+\end{lstlisting}
+
+\texttt{debounceTime(300)} așteaptă 300ms după ce utilizatorul oprește de a tasta înainte de a procesa. \texttt{distinctUntilChanged()} ignora duplicatele consecutive. \texttt{switchMap} anulează orice request anterior și trimite un request nou. \texttt{catchError} gestionează erorile. Rezultatul este un Observable care emit-e rezultatele de căutare atunci când sunt disponibile.
+
+Alți operatori critici utilizați în SMS:
+
+\begin{itemize}
+  \item \texttt{map()} – transformă fiecare valoare emisă
+  \item \texttt{filter()} – reține doar valorile care trec un predicat
+  \item \texttt{shareReplay()} – caches ultima valoare și o emit-e la noi subscribers
+  \item \texttt{tap()} – execută side effects (logging, updates) fără a modifica valorile
+  \item \texttt{combineLatest()} – combine ultimele valori din mai multe Observable-uri
+  \item \texttt{merge()} – unește mai multe Observable-uri în unu
+\end{itemize}
+
+Pentru management al stării la nivel de aplicație, se utilizează \texttt{BehaviorSubject}: un Subject special care păstrează și emit-e ultima valoare lui fiecare nou subscriber. Aceasta permite componentelor să acceseze dincolo valoarea curentă și să se aboneze la schimbări viitoare.
+
+\section{Reactive Forms și Validarea}
+
+Formularele în SMS sunt construite cu Reactive Forms, o abordare declarativă și type-safe pentru lucrul cu formulare. În loc de two-way binding tradițional, Reactive Forms construiesc explicit modelul formularului și validarea sa:
+
+\begin{lstlisting}[language=TypeScript]
+studentForm = this.fb.group({
+  email: ['', [Validators.required, Validators.email]],
+  name: ['', [Validators.required, Validators.minLength(3)]],
+  year: ['', [Validators.required,
+              Validators.min(1), Validators.max(4)]],
+  group: ['', Validators.required]
+});
+\end{lstlisting}
+
+FormBuilder construiește FormGroup cu FormControl-uri pentru fiecare câmp. Fiecare control are o valoare inițială și un array de validatori (sincroني și asyncroني). Validatorii built-in acopera cazurile obișnuite: required, email, minLength, maxLength, min, max, pattern. Pentru validări complexe—de exemplu, verificarea că email-ul nu este deja înregistrat în baza de date—se pot defini validatori custom asyncronici:
+
+\begin{lstlisting}[language=TypeScript]
+export function uniqueEmailValidator(
+  studentService: StudentService
+): AsyncValidatorFn {
+  return (control: AbstractControl):
+    Observable<ValidationErrors | null> => {
+    if (!control.value) return of(null);
+    return studentService.checkEmailExists(control.value).pipe(
+      map(exists => exists ? { emailTaken: true } : null)
+    );
+  };
+}
+\end{lstlisting}
+
+Aceste validatori pot fi compoziți și recompuziți, ceea ce permite reutilizare și testare izolată.
+
+\section{HttpClient și Interceptors – Comunicarea cu Backend-ul}
+
+HttpClient este serviciul Angular care gestionează cereri HTTP către API. Acesta este construit pe fetch API și oferă o interfață basată pe Observable-uri:
+
+\begin{lstlisting}[language=TypeScript]
+this.http.post<LoginResponse>('/api/auth/login', credentials)
+  .subscribe(response => handleSuccess(response))
+}
+\end{lstlisting}
+
+Dar comunicarea HTTP cu backend-ul nu este atât de simplă în practică: trebuie adăugat JWT token-ul la fiecare request, trebuie gestionată uniform erorile 401 (neautorizat), trebuie afișat o indicator vizual de loading. Aceasta e unde intră \textbf{Interceptors}.
+
+Un interceptor este o funcție care intercept-ează și poate modifica cereri și răspunsuri HTTP la nivel global. JwtInterceptor adaugă automat token-ul la fiecare request:
+
+\begin{lstlisting}[language=TypeScript]
+@Injectable()
+export class JwtInterceptor implements HttpInterceptor {
+  constructor(private authService: AuthService) {}
+
+  intercept(req: HttpRequest<any>,
+            next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = this.authService.getToken();
+    if (token) {
+      req = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` }
+      });
+    }
+    return next.handle(req).pipe(
+      catchError(error => {
+        if (error.status === 401) {
+          this.authService.logout();
+        }
+        return throwError(error);
+      })
+    );
+  }
+}
+\end{lstlisting}
+
+ErrorInterceptor gestionează erorile în mod centralizat, transformând răspunsuri cu eroare HTTP în mesaje ușor de consumat la nivel de aplicație. LoadingInterceptor semnalizează starea aplicației (loading) care poate fi consumată de componente pentru a afișa/ascunde spinner-uri.
+
+Interceptors-ul sunt înregistrați în configurația de provider-i la nivel de root, ceea ce înseamnă că sunt aplicați la fiecare cerere HTTP fără a trebui sa rescrii codul în fiecare service.
+
+\section{UI: Angular Material, Bootstrap și Icoane}
+
+Interfața vizuală a SMS combină mai multe framework-uri de CSS și componente pentru a obține o imagine profesională și accesibilă:
+
+\begin{itemize}
+  \item \textbf{Bootstrap 5} – sistem de grid responsive, componente CSS (buttons, forms, modals), utilitare de styling. Bootstrap oferă baza pentru layout-ul responsive și stiluri consistente.
+  \item \textbf{Angular Material} – bibliotecă de componente UI nativ Angular, construite cu Material Design. Oferă componente avansate: data tables cu sorting și paginare, dialogs, tooltips, autocomplete, etc. Acestea sunt mai sofisticate decât echivalentele Bootstrap.
+  \item \textbf{ng-bootstrap} – wrapper-uri Angular pentru componente Bootstrap (modals, tooltips, datepickers), pentru a integra Bootstrap mai ușor în ecosistemul Angular.
+  \item \textbf{FontAwesome} – bibliotecă de 7000+ SVG icons care pot fi ușor integrate și stilizate.
+\end{itemize}
+
+Stilurile sunt organizate pe mai multe nivele: CSS global în \texttt{styles.css} pentru teme și variabile, CSS local pe componente pentru stiluri specifice. Variabilele CSS și SCSS sunt utilizate pentru a menține consistență: paleta de culori, font-uri, spacing.
+
+\section{Backend/API și Baza de Date – Contextul Tehnic}
+
+Deși aceasta lucrare pune accent pe frontend Angular, sistemul complet necesită și un backend și o bază de date.
+
+\subsection{Arhitectura Client-Server și HTTP}
+
+Aplicația SMS funcționează în modelul clasic client-server: frontend-ul (Angular în browser) comunică cu backend-ul (PHP pe server) prin protocolul HTTP.
+
+\textbf{Fluxul de bază:}
+
+\begin{enumerate}
+  \item \textbf{Client (Browser)} – utilizatorul interacționează cu interfața Angular
+  \item \textbf{HTTP Request} – browserul trimite cerere HTTP specială către server
+  \item \textbf{Server (Backend)} – PHP procesează cererea, validează, accesează BD
+  \item \textbf{HTTP Response} – serverul returnează datele sau erorile
+  \item \textbf{UI Update} – Angular recepționează răspunsul și actualizează interfața
+\end{enumerate}
+
+Exemplu concret: Utilizatorul apasă butonul "Adaugă Student"
+
+\begin{enumerate}
+  \item Frontend colectează date din formular (name, email, year, group)
+  \item Angular construiește un HTTP request POST
+  \item Browserul trimite request-ul la serverul din cloud (ex: \texttt{https://api.example.com/api/students})
+  \item PHP primește request-ul, validează datele
+  \item PHP inserează studentul în baza de date MySQL
+  \item PHP returnează răspunsul (201 Created + datele studentului nou creat)
+  \item Angular recepționează răspunsul
+  \item UI-ul se actualizează: studentul apare în tabel
+\end{enumerate}
+
+\subsection{HTTP Metode (Verbs)}
+
+REST API-ul folosește diferite metode HTTP pentru operații diferite:
+
+\textbf{GET} – Citire/Recuperare de date (safe, idempotent)
+\begin{lstlisting}[language=bash]
+GET /api/students           # Obține toți studenții
+GET /api/students/123       # Obține studentul cu ID 123
+GET /api/students?year=2    # Query parameters - filtrare
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript]
+// Frontend
+this.http.get<Student[]>('/api/students').subscribe(
+  students => console.log('Studenți:', students)
+);
+\end{lstlisting}
+
+\textbf{POST} – Creare de resurse noi
+
+\begin{lstlisting}[language=bash]
+POST /api/students
+Body: { "name": "Ion Popescu", "email": "ion@test.com", "year": 2 }
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript]
+// Frontend
+this.http.post<Student>('/api/students', newStudent).subscribe(
+  createdStudent => console.log('Creat:', createdStudent)
+);
+\end{lstlisting}
+
+Backend PHP primește POST:
+
+\begin{lstlisting}[language=PHP]
+// Backend (PHP)
+$data = json_decode(file_get_contents('php://input'), true);
+$student = Student::create([
+  'name' => $data['name'],
+  'email' => $data['email'],
+  'year' => $data['year']
+]);
+echo json_encode($student);  // Returnează datele create
+\end{lstlisting}
+
+\textbf{PUT} – Actualizare (replacement) completă
+
+\begin{lstlisting}[language=bash]
+PUT /api/students/123
+Body: { "name": "Ion Ionescu", "email": "ion.new@test.com", "year": 3 }
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript]
+// Frontend
+this.http.put<Student>(`/api/students/${id}`, updatedStudent)
+  .subscribe(result => console.log('Actualizat:', result));
+\end{lstlisting}
+
+\textbf{PATCH} – Actualizare parțială (doar câmpuri modificate)
+
+\begin{lstlisting}[language=bash]
+PATCH /api/students/123
+Body: { "year": 3 }      # Doar year se actualizează
+\end{lstlisting}
+
+\textbf{DELETE} – Ștergere
+
+\begin{lstlisting}[language=bash]
+DELETE /api/students/123
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript]
+// Frontend
+this.http.delete(`/api/students/${id}`).subscribe(
+  () => console.log('Șters cu succes')
+);
+\end{lstlisting}
+
+\subsection{JSON – Format de Date}
+
+JSON (JavaScript Object Notation) este formatul standard pentru schimbul de date în API-uri REST. Este ușor de citit pentru oameni și ușor de parsat pentru mașini.
+
+\textbf{Structura de bază:}
+
+\begin{lstlisting}[language=JSON]
+{
+  "id": 123,
+  "name": "Ion Popescu",
+  "email": "ion@example.com",
+  "year": 2,
+  "group": "1210A",
+  "createdAt": "2026-03-22T10:30:00Z"
+}
+\end{lstlisting}
+
+\textbf{Array de obiecte:}
+
+\begin{lstlisting}[language=JSON]
+[
+  {
+    "id": 1,
+    "name": "Ion",
+    "email": "ion@test.com"
+  },
+  {
+    "id": 2,
+    "name": "Maria",
+    "email": "maria@test.com"
+  }
+]
+\end{lstlisting}
+
+\textbf{Obiecte nested:}
+
+\begin{lstlisting}[language=JSON]
+{
+  "id": 1,
+  "name": "AC",
+  "course": {
+    "id": 10,
+    "name": "Analiză Complexă"
+  },
+  "students": [123, 124, 125],
+  "sessions": [
+    { "id": 1, "date": "2026-03-22", "room": "A101" },
+    { "id": 2, "date": "2026-03-29", "room": "A102" }
+  ]
+}
+\end{lstlisting}
+
+În TypeScript, JSON se mapează la interfețe/tipuri:
+
+\begin{lstlisting}[language=TypeScript]
+interface Student {
+  id: number;
+  name: string;
+  email: string;
+  year: number;
+  group: string;
+  createdAt: Date;
+}
+
+// Parsare JSON din HTTP response
+const studentData: Student = {
+  id: 123,
+  name: "Ion Popescu",
+  email: "ion@example.com",
+  year: 2,
+  group: "1210A",
+  createdAt: new Date("2026-03-22")
+};
+\end{lstlisting}
+
+\subsection{HTTP Request/Response Cycle Detaliat}
+
+\textbf{1. Request Headers}
+
+Headerele HTTP sunt metadate care însoțesc cererea:
+
+\begin{lstlisting}[language=HTTP]
+POST /api/students HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Authorization: Bearer eyJhbGc...
+User-Agent: Mozilla/5.0
+Accept: application/json
+Content-Length: 85
+
+{"name":"Ion","email":"ion@test.com","year":2,"group":"1210A"}
+\end{lstlisting}
+
+Headerele importante:
+\begin{itemize}
+  \item \texttt{Content-Type: application/json} – spune serverului că body-ul este JSON
+  \item \texttt{Authorization: Bearer TOKEN} – token JWT pentru autentificare
+  \item \texttt{Accept: application/json} – spune serverului "vreau răspuns JSON"
+  \item \texttt{Content-Length} – dimensiunea body-ului în bytes
+  \item \texttt{User-Agent} – identifică browserul/clientul
+\end{itemize}
+
+\textbf{2. Server Processing}
+
+Backend-ul primește request-ul, procesează:
+
+\begin{lstlisting}[language=PHP]
+<?php
+// ============================================================
+// API Endpoint: POST /api/students
+// Purpose: Create a new student with validation and error handling
+// ============================================================
+
+class StudentController
+{
+    private $db;
+    private $studentModel;
+
+    public function __construct($database)
+    {
+        $this->db = $database;
+        $this->studentModel = new Student($database);
+    }
+
+    public function createStudent()
+    {
+        try {
+            // 1. Validate HTTP method
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                http_response_code(405);
+                echo json_encode([
+                    'error' => 'Method Not Allowed'
+                ]);
+                return;
+            }
+
+            // 2. Verify JWT authentication
+            $headers = getallheaders();
+            $token = $headers['Authorization'] ?? null;
+
+            if (!$token || !$this->verifyJWT($token)) {
+                http_response_code(401);
+                echo json_encode([
+                    'error' => 'Unauthorized'
+                ]);
+                return;
+            }
+
+            // 3. Parse JSON request body
+            $input = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+
+            // 4. Validate input data
+            $errors = $this->validateStudentData($input);
+            if (!empty($errors)) {
+                http_response_code(400);
+                echo json_encode([
+                    'error' => 'Validation failed',
+                    'details' => $errors
+                ]);
+                return;
+            }
+
+            // 5. Check for duplicate email
+            if ($this->studentModel->emailExists($input['email'])) {
+                http_response_code(409);
+                echo json_encode([
+                    'error' => 'Email already registered'
+                ]);
+                return;
+            }
+
+            // 6. Create student in database
+            $student = $this->studentModel->create([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'year' => $input['year'],
+                'group' => $input['group'],
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            // 7. Return success response
+            http_response_code(201);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Student created',
+                'data' => $student
+            ]);
+
+        } catch (Exception $e) {
+            // 8. Handle unexpected errors
+            http_response_code(500);
+            echo json_encode([
+                'error' => 'Internal server error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function validateStudentData($data): array
+    {
+        $errors = [];
+
+        if (empty($data['name'])) {
+            $errors['name'] = 'Name is required';
+        } elseif (strlen($data['name']) < 3) {
+            $errors['name'] = 'Name must be at least 3 chars';
+        }
+
+        if (empty($data['email'])) {
+            $errors['email'] = 'Email is required';
+        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Email format is invalid';
+        }
+
+        if (empty($data['year'])) {
+            $errors['year'] = 'Year is required';
+        } elseif (!in_array($data['year'], [1, 2, 3, 4])) {
+            $errors['year'] = 'Year must be 1-4';
+        }
+
+        if (empty($data['group'])) {
+            $errors['group'] = 'Group is required';
+        }
+
+        return $errors;
+    }
+
+    private function verifyJWT($token): bool
+    {
+        // JWT verification logic (using library like firebase/jwt)
+        // Returns true if token is valid, false otherwise
+        return true;
+    }
+}
+
+// Usage
+$controller = new StudentController($database);
+$controller->createStudent();
+?>
+\end{lstlisting}
+
+\textbf{3. Response Headers}
+
+\begin{lstlisting}[language=HTTP]
+HTTP/1.1 201 Created
+Content-Type: application/json
+Content-Length: 127
+Cache-Control: no-cache
+Date: Mon, 22 Mar 2026 10:30:00 GMT
+
+{"id":456,"name":"Ion","email":"ion@test.com","year":2,"group":"1210A","createdAt":"2026-03-22T10:30:00Z"}
+\end{lstlisting}
+
+Status code-urile HTTP indică rezultatul:
+\begin{itemize}
+  \item \texttt{200 OK} – Request reușit, datele sunt în body
+  \item \texttt{201 Created} – Resursă creată cu succes
+  \item \texttt{204 No Content} – Succes, dar fără body (ex: DELETE)
+  \item \texttt{400 Bad Request} – Datele trimise sunt invalide
+  \item \texttt{401 Unauthorized} – Autentificare necesară/eșuată
+  \item \texttt{403 Forbidden} – Autentificat dar fără permisiune
+  \item \texttt{404 Not Found} – Resursa nu există
+  \item \texttt{500 Internal Server Error} – Bug pe server
+\end{itemize}
+
+\textbf{4. Frontend Recepționează și Procesează}
+
+\begin{lstlisting}[language=TypeScript]
+// ============================================================
+// Component: student-form.component.ts
+// Goal: Handle student creation with proper error handling
+// ============================================================
+
+export class StudentFormComponent {
+  studentForm: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
+
+  constructor(
+    private studentService: StudentService,
+    private alertService: AlertService,
+    private router: Router
+  ) {
+    this.studentForm = this.buildForm();
+  }
+
+  private buildForm(): FormGroup {
+    return new FormGroup({
+      name: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3)
+      ]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.email
+      ], [
+        this.uniqueEmailValidator.bind(this)
+      ]),
+      year: new FormControl(1, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(4)
+      ]),
+      group: new FormControl('', [Validators.required])
+    });
+  }
+
+  // Main submission handler
+  onSubmit(): void {
+    if (this.studentForm.invalid) {
+      this.alertService.warn('Completați corect formularul');
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const student: Student = this.studentForm.value;
+
+    this.studentService.createStudent(student).subscribe({
+      // Success: 201 Created
+      next: (createdStudent: Student) => {
+        this.isLoading = false;
+        this.alertService.success(
+          `Student ${createdStudent.name} adăugat cu succes`
+        );
+        this.router.navigate(['/students']);
+      },
+
+      // Error handling by HTTP status
+      error: (error: HttpErrorResponse) => {
+        this.isLoading = false;
+
+        if (error.status === 400) {
+          // Bad Request - validation errors
+          this.errorMessage = error.error.message ||
+            'Date invalide. Verificați formularul.';
+        } else if (error.status === 401) {
+          // Unauthorized - session expired
+          this.alertService.error('Sesiune expirată. Reautentificați.');
+          this.router.navigate(['/login']);
+        } else if (error.status === 409) {
+          // Conflict - duplicate email
+          this.errorMessage = 'Email-ul este deja înregistrat';
+        } else if (error.status >= 500) {
+          // Server error
+          this.errorMessage =
+            'Eroare server. Contactați administatorul.';
+          console.error('Server error:', error);
+        } else {
+          // Generic error
+          this.errorMessage = 'A apărut o eroare necunoscută';
+        }
+
+        this.alertService.error(this.errorMessage);
+      }
+    });
+  }
+
+  // Async validator for email uniqueness
+  private uniqueEmailValidator(
+    control: AbstractControl
+  ): Observable<ValidationErrors | null> {
+    if (!control.value) {
+      return of(null);
+    }
+
+    return this.studentService.checkEmailExists(control.value).pipe(
+      debounceTime(300),
+      map(exists =>
+        exists ? { emailTaken: true } : null
+      ),
+      catchError(() => of(null))
+    );
+  }
+}
+\end{lstlisting}
+
+\subsection{Performanță și Optimizări}
+
+Pentru volume mari de date, sunt importante unele optimizări:
+
+\begin{itemize}
+    \item \textbf{Paginare} – nu returna toți studenții odată, ci 20 per pagină
+    \item \textbf{Indexuri Database} – pe coloane frecvent căutate (email, group_id)
+    \item \textbf{Caching} – pentru datele statice (cursuri, profesori)
+    \item \textbf{Lazy Loading} – încarcă doar datele necesare (SELECT specific columns)
+    \item \textbf{Connection Pooling} – reutilizează conexiuni la DB
+\end{itemize}
+
+Exemplu de paginare:
+
+\begin{lstlisting}[language=PHP]
+public function getAllPaginated($page = 1, $perPage = 20) {
+    $offset = ($page - 1) * $perPage;
+    $query = "SELECT * FROM " . $this->table .
+             " LIMIT :offset, :perPage";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindParam(':perPage', $perPage, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt;
+}
+\end{lstlisting}
+
+\section{Backend RESTful API în PHP}
+\label{sec:backend-php}
+
+Backend-ul aplicației este construit ca o arhitectură RESTful în PHP pur (fără framework), comunicând cu o bază de date MySQL și expunând endpoint-uri HTTP care servesc clientul frontend Angular. Această abordare oferă flexibilitate, control granular asupra logicii și o curbă de învățare lin-iară pentru studenți.
+
+\subsection{Configurația Inițială și Bootstrap}
+
+Fiecare endpoint API este servit de un fișier PHP care incluie un bootstrap script responsabil cu setări globale. Scriptul de bootstrap (\texttt{api/\_bootstrap.php}) efectuează mai multe operații critice:
+
+\begin{lstlisting}[language=PHP]
+// Set CORS headers for frontend to communicate
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+// Set custom error and exception handlers to return JSON
+set_error_handler(function($severity, $message, $file, $line) {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(function($e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error', 'message' => $e->getMessage()]);
+    exit;
+});
+\end{lstlisting}
+
+\textbf{Puncte cheie:}
+
+\begin{itemize}
+    \item \textbf{CORS Headers} – permițând frontend-ul de pe alt domeniu/port să facă cereri
+    \item \textbf{Preflight Handling} – răspunzând la cererile OPTIONS pentru validare CORS
+    \item \textbf{JSON Error Handling} – transformând erorile PHP în răspunsuri JSON, nu HTML
+    \item \textbf{Exception Handling} – captând excepții neașteptate și returnând date structurate
+\end{itemize}
+
+\subsection{Conectarea la Baza de Date cu PDO}
+
+Clasa \texttt{Database} implementează conexiunea la MySQL folosind PDO (PHP Data Objects):
+
+\begin{lstlisting}[language=PHP]
+class Database {
+    private $host = "localhost";
+    private $db_name = "student_management";
+    private $username = "root";
+    private $password = "root";
+    private $conn;
+
+    public function getConnection() {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO(
+                "mysql:host=" . $this->host .
+                ";dbname=" . $this->db_name,
+                $this->username,
+                $this->password
+            );
+            $this->conn->exec("set names utf8mb4");
+        } catch(PDOException $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        return $this->conn;
+    }
+}
+\end{lstlisting}
+
+\textbf{Beneficii ale PDO:}
+
+\begin{itemize}
+    \item \textbf{Parametrizare} – protecție automată împotriva SQL injection prin prepared statements
+    \item \textbf{Consistență} – suport pentru mai multe baze de date (MySQL, PostgreSQL, SQLite)
+    \item \textbf{Tratarea Erorilor} – excepții bine structurate pentru debugging
+    \item \textbf{Character Encoding} – forțarea UTF-8 pentru suport caractere speciale românești
+\end{itemize}
+
+\subsection{Model Entități – Student, Profesor, Curs}
+
+Fiecare entitate din baza de date are o clasă PHP corespunzătoare care încapsulează logica de acces la date (Data Access Object pattern).
+
+\subsubsection{Clasa Student}
+
+\begin{lstlisting}[language=PHP]
+class Student {
+    private $conn;
+    private $table = "students";
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    // Retrieve all students
+    public function getAll() {
+        $query = "SELECT s.*, sg.name as group_name
+                  FROM " . $this->table . " s
+                  LEFT JOIN student_groups sg ON s.group_id = sg.id
+                  ORDER BY s.name";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // Retrieve student by ID
+    public function getById($id) {
+        $query = "SELECT * FROM " . $this->table . " WHERE id = ? LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Create new student
+    public function create($name, $email, $password, $group_id) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $query = "INSERT INTO " . $this->table .
+                 " (name, email, password, group_id)
+                  VALUES (:name, :email, :password, :group_id)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':group_id', $group_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Update student
+    public function update($id, $name, $email, $group_id) {
+        $query = "UPDATE " . $this->table .
+                 " SET name = :name, email = :email,
+                      group_id = :group_id WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':group_id', $group_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Delete student
+    public function delete($id) {
+        $query = "DELETE FROM " . $this->table . " WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$id]);
+    }
+}
+\end{lstlisting}
+
+Această clasă implementează operațiile CRUD (Create, Read, Update, Delete) de bază. Prin utilizarea prepared statements cu parametri cu nume sau poziție, se asigură protecție împotriva injecțiilor SQL.
+
+\subsection{Endpoint-uri API și Rutare}
+
+Backend-ul expone endpoint-uri organizate după resurse. De exemplu, pentru resursa \texttt{students}:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Metoda HTTP} & \textbf{Endpoint} & \textbf{Descriere} \\
+        \hline
+        GET & \texttt{/api/students} & Obține lista tuturor studenților \\
+        GET & \texttt{/api/students/\{id\}} & Obține un student după ID \\
+        POST & \texttt{/api/students} & Creează un nou student \\
+        PUT & \texttt{/api/students/\{id\}} & Actualizează un student \\
+        DELETE & \texttt{/api/students/\{id\}} & Șterge un student \\
+        POST & \texttt{/api/students/import} & Import bulk din Excel \\
+        \hline
+    \end{tabular}
+    \caption{Endpoint-urile API pentru resursa Students}
+    \label{tbl:api-endpoints}
+\end{table}
+
+\subsubsection{Exemplu: Endpoint GET /api/students}
+
+\begin{lstlisting}[language=PHP]
+<?php
+require_once __DIR__ . '/../_bootstrap.php';
+require_once __DIR__ . '/../../models/Student.php';
+
+$db = new Database();
+$conn = $db->getConnection();
+$student = new Student($conn);
+
+$method = $_SERVER['REQUEST_METHOD'];
+
+if ($method === 'GET') {
+    $result = $student->getAll();
+    $students = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'count' => count($students),
+        'data' => $students
+    ]);
+} else {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+}
+?>
+\end{lstlisting}
+
+Fluxul este simplu: incarcă bootstrap-ul, instantiază clasele de model și baza de date, verifică metoda HTTP, execută operația corespunzătoare și returnează JSON.
+
+\subsection{Import de Date din Excel}
+
+Un caz de utilizare important este importul bulk de studenți din fișiere Excel. Backend-ul folosește biblioteca \texttt{PHPSpreadsheet} pentru a citi și procesa fișierele:
+
+\begin{lstlisting}[language=PHP]
+<?php
+require_once __DIR__ . '/../_bootstrap.php';
+require_once __DIR__ . '/../../models/Student.php';
+require_once 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+$db = new Database();
+$conn = $db->getConnection();
+$student = new Student($conn);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+    $file = $_FILES['file']['tmp_name'];
+
+    try {
+        $spreadsheet = IOFactory::load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $importedCount = 0;
+        // Iterate rows starting from row 2 (skipping header)
+        foreach ($sheet->getRowIterator(2) as $row) {
+            $cells = $row->getCellIterator();
+            $name = $cells->current()->getValue();
+            $cells->next();
+            $email = $cells->current()->getValue();
+            $cells->next();
+            $group_id = $cells->current()->getValue();
+
+            if ($name && $email && $group_id) {
+                if ($student->create($name, $email, 'default_pwd', $group_id)) {
+                    $importedCount++;
+                }
+            }
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'imported' => $importedCount,
+            'message' => 'Import completed'
+        ]);
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+}
+?>
+\end{lstlisting}
+
+\textbf{Etapele procesului:}
+
+\begin{enumerate}
+    \item Primește fișierul din form-data al cererii POST
+    \item Încarcă fișierul Excel folosind PHPSpreadsheet
+    \item Iterează peste rândurile din sheet (trecând peste header)
+    \item Validează date și insereaza fiecare rând în baza de date
+    \item Returnează numărul de înregistrări importate cu succes
+\end{enumerate}
+
+\subsection{Autentificare și Control de Acces}
+
+Autentificarea se realizează printr-un endpoint \texttt{/api/auth/login} care verifică credențialele și returnează un token JWT (dacă este implementat) sau sesiune:
+
+\begin{lstlisting}[language=PHP]
+<?php
+require_once __DIR__ . '/../_bootstrap.php';
+require_once __DIR__ . '/../../models/Student.php';
+require_once __DIR__ . '/../../models/Teacher.php';
+
+$db = new Database();
+$conn = $db->getConnection();
+$student = new Student($conn);
+$teacher = new Teacher($conn);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    // Try student login
+    $studentData = $student->getByEmail($email);
+    if ($studentData && password_verify($password, $studentData['password'])) {
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'user_type' => 'student',
+            'user_id' => $studentData['id'],
+            'name' => $studentData['name'],
+            'email' => $studentData['email']
+        ]);
+        exit;
+    }
+
+    // Try teacher login
+    $teacherData = $teacher->getByEmail($email);
+    if ($teacherData && password_verify($password, $teacherData['password'])) {
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'user_type' => 'teacher',
+            'user_id' => $teacherData['id'],
+            'name' => $teacherData['name'],
+            'is_admin' => $teacherData['is_admin']
+        ]);
+        exit;
+    }
+
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid credentials']);
+}
+?>
+\end{lstlisting}
+
+\textbf{Puncte de securitate:}
+
+\begin{itemize}
+    \item Parolele se compară cu \texttt{password\_verify()} (nu se stochează plaintext)
+    \item Se verifică și studenți și profesori (tipuri de utilizatori diferite)
+    \item Se returnează doar informații necesare (nu parola!)
+    \item Răspunsurile au coduri HTTP corecte (401 pentru neautorizat)
+\end{itemize}
+
+\subsection{Arhitectura Folderelor Backend}
+
+\begin{lstlisting}[language=bash]
+student-management-backend/
+├── api/                          # Endpoint-uri HTTP
+│   ├── _bootstrap.php            # Configurare globala
+│   ├── _auth.php                 # Middleware autentificare
+│   ├── auth/
+│   │   └── login.php             # POST /api/auth/login
+│   ├── students/
+│   │   ├── index.php             # GET/POST /api/students
+│   │   ├── get.php               # GET /api/students/{id}
+│   │   ├── update.php            # PUT /api/students/{id}
+│   │   ├── delete.php            # DELETE /api/students/{id}
+│   │   └── import.php            # POST /api/students/import
+│   ├── courses/
+│   ├── attendance/
+│   └── ... (alte resurse)
+├── models/                       # Clase Data Access Objects
+│   ├── Database.php              # Conexiune la DB
+│   ├── Student.php               # CRUD pentru studenti
+│   ├── Teacher.php               # CRUD pentru profesori
+│   ├── Courses.php               # CRUD pentru cursuri
+│   ├── Attendance.php            # CRUD pentru prezente
+│   └── ... (alte entitati)
+├── config/
+│   └── db.php                    # Credentials baza de date
+├── enums/                        # Enumerari (roluri, statusuri)
+├── uploads/                      # Fișiere încărcate
+├── composer.json                 # Dependențe PHP
+└── .htaccess                     # Reguli Apache rewrite
+\end{lstlisting}
+
+Această structură promovează o separare clară între logica HTTP (api/) și logica de acces la date (models/).
+
+\subsection{Validare Servidor}
+
+Deși frontend-ul validează date înainte de trimitere, backend-ul trebuie să valideze orice date primite pentru a asigura integritate:
+
+\begin{lstlisting}[language=PHP]
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function validateStudentData($data) {
+    $errors = [];
+
+    if (empty($data['name']) || strlen($data['name']) < 2) {
+        $errors[] = 'Name must be at least 2 characters';
+    }
+
+    if (!validateEmail($data['email'])) {
+        $errors[] = 'Invalid email format';
+    }
+
+    if (empty($data['group_id']) || !is_numeric($data['group_id'])) {
+        $errors[] = 'Group ID is invalid';
+    }
+
+    if (empty($data['password']) || strlen($data['password']) < 6) {
+        $errors[] = 'Password must be at least 6 characters';
+    }
+
+    return $errors;
+}
+
+// Usage in endpoint
+$errors = validateStudentData($_POST);
+if (!empty($errors)) {
+    http_response_code(400);
+    echo json_encode(['errors' => $errors]);
+    exit;
+}
+\end{lstlisting}
+
+\subsection{Tratarea Erorilor și Logging}
+
+Pentru debugging, backend-ul loghează erorile importante. O abordare simplă este să scrieți într-un fișier:
+
+\begin{lstlisting}[language=PHP]
+function logError($message, $severity = 'ERROR') {
+    $logFile = __DIR__ . '/../logs/app.log';
+    $timestamp = date('Y-m-d H:i:s');
+    $logMessage = "[{$timestamp}] [{$severity}] {$message}\n";
+    file_put_contents($logFile, $logMessage, FILE_APPEND);
+}
+
+// In exception handler
+set_exception_handler(function($e) {
+    logError($e->getMessage() . "\n" . $e->getTraceAsString());
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error']);
+});
+\end{lstlisting}
+
+\subsection{Integrare Frontend-Backend}
+
+Comunicarea Angular↔PHP se realizează prin HTTP. Un exemplu complet:
+
+\textbf{Frontend (Angular Service):}
+
+\begin{lstlisting}[language=TypeScript]
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class StudentService {
+  private apiUrl = 'http://localhost/api/students';
+
+  constructor(private http: HttpClient) {}
+
+  getStudents(): Observable<any> {
+    return this.http.get(this.apiUrl);
+  }
+
+  createStudent(student: any): Observable<any> {
+    return this.http.post(this.apiUrl, student);
+  }
+
+  updateStudent(id: number, student: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, student);
+  }
+
+  deleteStudent(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+}
+\end{lstlisting}
+
+\textbf{Fluxul Request-Response:}
+
+\begin{enumerate}
+    \item Frontend apelează \texttt{studentService.getStudents()}
+    \item Se face cerere HTTP GET la \texttt{http://localhost/api/students}
+    \item Server-ul PHP primește cererea în \texttt{api/students/index.php}
+    \item Se incarcă modelele și bootstrap-ul
+    \item Se execută \texttt{\$student->getAll()} care face query SQL
+    \item Rezultatele se convertesc în JSON
+    \item Se trimit în răspunsul HTTP cu cod 200
+    \item Frontend-ul primește Observable-ul, se subscribe, și vede datele în component
+\end{enumerate}
+
+\subsection{Performanță și Optimizări}
+
+Pentru volume mari de date, sunt importante unele optimizări:
+
+\begin{itemize}
+    \item \textbf{Paginare} – nu returna toți studenții odată, ci 20 per pagină
+    \item \textbf{Indexuri Database} – pe coloane frecvent căutate (email, group_id)
+    \item \textbf{Caching} – pentru datele statice (cursuri, profesori)
+    \item \textbf{Lazy Loading} – încarcă doar datele necesare (SELECT specific columns)
+    \item \textbf{Connection Pooling} – reutilizează conexiuni la DB
+\end{itemize}
+
+Exemplu de paginare:
+
+\begin{lstlisting}[language=PHP]
+public function getAllPaginated($page = 1, $perPage = 20) {
+    $offset = ($page - 1) * $perPage;
+    $query = "SELECT * FROM " . $this->table .
+             " LIMIT :offset, :perPage";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindParam(':perPage', $perPage, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt;
+}
+\end{lstlisting}

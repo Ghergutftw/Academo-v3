@@ -43,9 +43,13 @@ class Courses {
     }
 
     public function getByTeacher($teacherId) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE teacher_id = ? ORDER BY name";
+        $query = "SELECT DISTINCT c.*
+                  FROM " . $this->table_name . " c
+                  LEFT JOIN course_lab_instructors cli ON cli.course_id = c.id
+                  WHERE c.teacher_id = ? OR cli.teacher_id = ?
+                  ORDER BY c.name";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([$teacherId]);
+        $stmt->execute([$teacherId, $teacherId]);
         return $stmt;
     }
 

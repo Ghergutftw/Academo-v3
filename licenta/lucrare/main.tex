@@ -1,0 +1,126 @@
+\documentclass[12pt, twoside]{report}
+
+%% limba document
+\usepackage[romanian]{babel}
+\selectlanguage{romanian}
+
+%% font lucrare
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+
+%% geometria paginii
+\usepackage{geometry}
+%% setari antet/subsol
+\usepackage{fancyhdr}
+%% indentare primul paragraf din capitol
+\usepackage{indentfirst}
+%% cuprinsul include si bibliografia si este navigabil
+\usepackage[nottoc]{tocbibind}
+\usepackage[unicode, hidelinks, colorlinks, linkcolor=black, urlcolor=blue, citecolor=black]{hyperref}
+%% culoare text (pe moment folosit in titluri de capitole)
+%% https://www.overleaf.com/learn/latex/Using_colours_in_LaTeX
+\usepackage[dvipsnames]{xcolor}
+%% format titlu capitol/subcapitol/etc
+\usepackage{titlesec}
+%% pentru includerea unor pdf-uri externe in document (necesar pentru declaratia de autenticitate)
+\usepackage{pdfpages}
+%% titluri pentru figuri/tabele/listing-uri de cod/etc.
+\usepackage{caption}
+%% pozitionare float-uri (figuri/tabele/etc)
+\usepackage{float}
+%% pentru includerea imaginilor
+\usepackage{graphicx}
+%% pentru tabele pe mai multe pagini
+\usepackage{longtable}	
+%% pentru tabele cu celule cu mai multe linii
+\usepackage{multirow}			
+%% pentru ecuatii
+\usepackage{amsmath}
+%% pentru definitii, teoreme
+\usepackage{amsthm}
+%% pentru algoritmi, pachetul algorithm este cel mai basic
+\usepackage[chapter]{algorithm}
+\usepackage[noend]{algpseudocode}
+% daca pachetul algorithm nu este satisfacator pentru ceea ce aveti de scris, mai exista pachetele:
+% algorithmic, algorithmicx, algpseudocode, algorithm2e
+% https://tex.stackexchange.com/questions/229355/algorithm-algorithmic-algorithmicx-algorithm2e-algpseudocode-confused
+%% formatari listing
+\usepackage{listings}
+\lstdefinelanguage{TypeScript}{
+  keywords={break,case,catch,class,const,continue,debugger,default,delete,do,else,export,extends,false,finally,for,function,if,import,in,instanceof,let,new,null,return,super,switch,this,throw,true,try,typeof,var,void,while,with,as,implements,interface,private,protected,public,static,yield,any,boolean,number,string,symbol,type,from,of},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+% https://www.overleaf.com/learn/latex/Code_listing
+%% pachetul minted formateaza/coloreaza sintaxa codului sursa, spre deosebire de pachetul listings care doar face bold pe sintaxa
+\usepackage[newfloat]{minted}
+% https://www.overleaf.com/learn/latex/Code_Highlighting_with_minted
+
+%% ==================================================================================================== %%
+%% pachetele sunt utilizate doar pentru componenta demo
+%% TREBUIE SCOASE DIN FORMA DE LUCRU/FINALA
+%% pentru text dummy
+\usepackage{lipsum}
+%% pentru TODO-uri
+\usepackage{todonotes}
+%% ==================================================================================================== %%
+
+%% setup dimensiune pagina, dimensiune header/footer
+%% setup dimensiune 16pt
+\input{macros/dimensiuni}
+%% date caracteristice universitatii/facultatii.
+\input{macros/constante}
+%% datele specifice: nume, prenume student; titlu lucrare; nume, prenume, grad didactic coordonator
+%% PENTRU MODIFICARE SE EDITEAZA FISIERUL macros/student.tex
+\input{macros/student}
+
+\begin{document}
+    \pagestyle{empty}
+    {
+        \input{coperti/extern}
+        \newpage
+    
+        \input{coperti/intern}
+        \newpage
+    
+        \includepdf[pages=1, scale=1]{pdf/declaratie_autenticitate_diploma}
+        \newpage
+        
+        \renewcommand{\thispagestyle}[1]{}
+        \setcounter{tocdepth}{4}
+        \setcounter{secnumdepth}{4}
+        \tableofcontents
+        \newpage
+        
+        % \input{continut/rezumat}
+        \newpage
+    }
+    
+    \setcounter{page}{1}
+    \pagenumbering{arabic}
+    \input{macros/configurari}
+    
+    \input{continut/motivatie_introducere}
+
+    \input{continut/capitol1/capitol1}
+    \cleardoublepage
+
+    \input{continut/capitol2/capitol2}
+    \cleardoublepage
+
+    \input{continut/capitol3/capitol3}
+    \cleardoublepage
+
+    \input{continut/capitol4/capitol4}
+    \cleardoublepage
+
+
+    \nocite{*}
+    \bibliographystyle{IEEEtran}
+    \bibliography{bibliografie/bibliografie}
+
+\end{document}

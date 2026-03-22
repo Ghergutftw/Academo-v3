@@ -102,16 +102,43 @@ export class AttendanceGridComponent implements OnInit {
     console.log('Date pentru export:', exportData);
 
     this.attendanceService.exportToExcel(exportData).subscribe({
-      next: (response) => {
+      next: async (response) => {
         const blob = response.body;
         if (!blob) {
           this.error = 'Nu s-a primit niciun fișier de la server';
           return;
         }
+
+        const contentType = (response.headers.get('Content-Type') || blob.type || '').toLowerCase();
+        const isExcelResponse =
+          contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') ||
+          contentType.includes('application/octet-stream');
+
+        if (!isExcelResponse) {
+          const rawText = await blob.text();
+          let message = 'Serverul nu a returnat un fișier Excel valid.';
+          try {
+            const parsed = JSON.parse(rawText);
+            if (parsed?.error) {
+              message = parsed.error;
+            }
+          } catch {
+            if (rawText?.trim()) {
+              message = rawText;
+            }
+          }
+          this.error = message;
+          return;
+        }
+
+        const disposition = response.headers.get('Content-Disposition') || '';
+        const fileNameMatch = disposition.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+        const serverFileName = fileNameMatch ? decodeURIComponent(fileNameMatch[1]) : '';
+
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `prezenta_${this.selectedCourse?.name?.replace(/\s+/g, '_')}_${this.selectedGroup?.name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.download = serverFileName || `prezenta_${this.selectedCourse?.name?.replace(/\s+/g, '_')}_${this.selectedGroup?.name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

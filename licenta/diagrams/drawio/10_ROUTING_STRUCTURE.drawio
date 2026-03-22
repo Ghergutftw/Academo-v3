@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-22" agent="5.0" version="24.1.0" type="device">
+  <diagram id="routing_structure" name="10. Routing Structure">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Angular Routing Structure - App Navigation Map" style="text;html=1;align=center;fontSize=14;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="10" width="600" height="30" as="geometry" />
+        </cell>
+
+        <!-- Root Route -->
+        <mxCell id="root" value="/" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFCCCC;strokeColor#CC0000;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="60" width="80" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Auth Routes -->
+        <mxCell id="auth_group" value="Auth Routes" style="text;html=1;fontSize=11;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="50" y="180" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="login" value="/login" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFE6B3;strokeColor#FF9800;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="220" width="90" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="logout" value="/logout" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFE6B3;strokeColor#FF9800;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="160" y="220" width="90" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Dashboard Routes -->
+        <mxCell id="dashboard_group" value="Protected Routes (CanActivate Guard)" style="text;html=1;fontSize=11;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="180" width="250" height="20" as="geometry" />
+        </cell>
+
+        <mxCell id="dashboard" value="/dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="220" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Students Module Routes -->
+        <mxCell id="students_mod" value="/students (Lazy Load)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="320" width="140" height="50" as="geometry" />
+        </cell>
+
+        <mxCell id="student_list" value="/list" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="40" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <mxCell id="student_create" value="/create" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="410" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="student_edit" value="/:id/edit" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="410" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Courses Module Routes -->
+        <mxCell id="courses_mod" value="/courses (Lazy Load)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="140" height="50" as="geometry" />
+        </cell>
+
+        <mxCell id="course_list" value="/list" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="230" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <mxCell id="course_detail" value="/:id" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="310" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <!-- Attendance Module Routes -->
+        <mxCell id="attendance_mod" value="/attendance (Lazy Load)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="430" y="320" width="140" height="50" as="geometry" />
+        </cell>
+
+        <mxCell id="attendance_mark" value="/mark" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="420" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <mxCell id="attendance_report" value="/report" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="500" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <!-- Exams Module Routes -->
+        <mxCell id="exams_mod" value="/exams (Lazy Load)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="320" width="140" height="50" as="geometry" />
+        </cell>
+
+        <mxCell id="exam_list" value="/list" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="610" y="410" width="70" height="35" as="geometry" />
+        </cell>
+
+        <!-- Arrows -->
+        <mxCell id="arr_root_login" edge="1" parent="1" source="root" target="login" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_logout" edge="1" parent="1" source="root" target="logout" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_dashboard" edge="1" parent="1" source="root" target="dashboard" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_students" edge="1" parent="1" source="root" target="students_mod" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_courses" edge="1" parent="1" source="root" target="courses_mod" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_attendance" edge="1" parent="1" source="root" target="attendance_mod" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+        <mxCell id="arr_root_exams" edge="1" parent="1" source="root" target="exams_mod" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;" />
+
+        <!-- Module children -->
+        <mxCell id="arr_stud_list" edge="1" parent="1" source="students_mod" target="student_list" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+        <mxCell id="arr_stud_create" edge="1" parent="1" source="students_mod" target="student_create" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+        <mxCell id="arr_stud_edit" edge="1" parent="1" source="students_mod" target="student_edit" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+
+        <mxCell id="arr_course_list" edge="1" parent="1" source="courses_mod" target="course_list" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+        <mxCell id="arr_course_detail" edge="1" parent="1" source="courses_mod" target="course_detail" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+
+        <mxCell id="arr_att_mark" edge="1" parent="1" source="attendance_mod" target="attendance_mark" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+        <mxCell id="arr_att_report" edge="1" parent="1" source="attendance_mod" target="attendance_report" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+
+        <mxCell id="arr_exam_list" edge="1" parent="1" source="exams_mod" target="exam_list" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=classic;dashed=1;" />
+
+        <!-- Legend -->
+        <mxCell id="legend" value="LEGEND:&#10;━━━━ Lazy-loaded modules&#10;- - - Child routes&#10;CanActivate Guard on protected routes" style="text;html=1;fontSize=9;fillColor=#FFF9C4;" vertex="1" parent="1">
+          <mxGeometry x="450" y="480" width="250" height="60" as="geometry" />
+        </cell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

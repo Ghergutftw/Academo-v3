@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-22" agent="5.0" version="24.1.0" type="device">
+  <diagram id="di_pattern" name="9. Angular Dependency Injection">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Angular Dependency Injection Container" style="text;html=1;align=center;fontSize=14;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="10" width="500" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- DI Container -->
+        <mxCell id="di_container" value="DI Container&#10;(Injector)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFE6B3;strokeColor#FF9800;strokeWidth=3;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="80" width="150" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Services -->
+        <mxCell id="service1" value="AuthService&#10;(Singleton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="200" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="service2" value="StudentService&#10;(Singleton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="190" y="200" width="110" height="60" as="geometry" />
+        </cell>
+
+        <mxCell id="service3" value="HttpService&#10;(Singleton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="200" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="service4" value="CourseService&#10;(Singleton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E1BEE7;strokeColor#6A1B9A;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="200" width="110" height="60" as="geometry" />
+        </cell>
+
+        <!-- Arrows from DI Container to Services -->
+        <mxCell id="arr1" edge="1" parent="1" source="di_container" target="service1" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=9;endArrow=classic;" />
+        <mxCell id="arr2" edge="1" parent="1" source="di_container" target="service2" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=9;endArrow=classic;" />
+        <mxCell id="arr3" edge="1" parent="1" source="di_container" target="service3" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=9;endArrow=classic;" />
+        <mxCell id="arr4" edge="1" parent="1" source="di_container" target="service4" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=9;endArrow=classic;" />
+
+        <!-- Components -->
+        <mxCell id="comp1" value="LoginComponent" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="50" y="330" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp2" value="StudentListComponent" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="190" y="330" width="110" height="60" as="geometry" />
+        </cell>
+
+        <mxCell id="comp3" value="AttendanceComponent" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="330" width="110" height="60" as="geometry" />
+        </cell>
+
+        <mxCell id="comp4" value="CourseDetailComponent" style="rounded=1;whiteSpace=wrap;html=1;fillColor#BBDEFB;strokeColor#1976D2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="330" width="110" height="60" as="geometry" />
+        </cell>
+
+        <!-- Arrows from DI to Components (requests) -->
+        <mxCell id="arr5" value="needs AuthService" edge="1" parent="1" source="comp1" target="di_container" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=open;dashed=1;" />
+        <mxCell id="arr6" value="needs StudentService" edge="1" parent="1" source="comp2" target="di_container" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=open;dashed=1;" />
+        <mxCell id="arr7" value="needs Attendance" edge="1" parent="1" source="comp3" target="di_container" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=open;dashed=1;" />
+        <mxCell id="arr8" value="needs CourseService" edge="1" parent="1" source="comp4" target="di_container" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=8;endArrow=open;dashed=1;" />
+
+        <!-- Example Code -->
+        <mxCell id="code_box" value="CONSTRUCTOR INJECTION EXAMPLE&#10;&#10;constructor(&#10;  private authService: AuthService,  // ← DI injecteaza&#10;  private http: HttpClient,           // ← DI injecteaza&#10;  private logger: LoggerService       // ← DI injecteaza&#10;) { }" style="rounded=1;whiteSpace=wrap;html=1;fillColor#FFF9C4;strokeColor#FFA500;fontSize=9;fontFamily=monospace;" vertex="1" parent="1">
+          <mxGeometry x="100" y="470" width="600" height="100" as="geometry" />
+        </anxCell>
+
+        <!-- Benefits -->
+        <mxCell id="benefits" value="BENEFICII DI:&#10;✓ Loose coupling - Componente independente&#10;✓ Testabilitate - Mock services ușor&#10;✓ Reusability - Same service instance in entire app&#10;✓ Configuration centralizată" style="rounded=1;whiteSpace=wrap;html=1;fillColor#E8F5E9;strokeColor#388E3C;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="100" y="600" width="600" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

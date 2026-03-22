@@ -1,0 +1,65 @@
+\babel@toc {romanian}{}\relax 
+\babel@toc {romanian}{}\relax 
+\contentsline {chapter}{Motivație}{1}{chapter*.4}%
+\contentsline {chapter}{Introducere}{3}{chapter*.5}%
+\contentsline {chapter}{\numberline {1}Tehnologii Folosite}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Angular 19 – Prezentare Generală și Justificare}{5}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Angular CLI – Instrumentul de Bază al Dezvoltării}{5}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Comenzi Angular CLI Principale}{6}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Fluxul de Dezvoltare Tipic}{11}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Arhitectura pe Componente – Blourile de Construcție}{11}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Rutarea și Lazy Loading – Optimizarea Navigării}{12}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Services și Dependency Injection – Separation of Concerns}{13}{section.1.5}%
+\contentsline {section}{\numberline {1.6}RxJS și Programarea Reactivă – Gestionarea Fluxurilor Asincrone}{16}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Reactive Forms și Validarea}{16}{section.1.7}%
+\contentsline {section}{\numberline {1.8}HttpClient și Interceptors – Comunicarea cu Backend-ul}{17}{section.1.8}%
+\contentsline {section}{\numberline {1.9}UI: Angular Material, Bootstrap și Icoane}{18}{section.1.9}%
+\contentsline {section}{\numberline {1.10}Backend/API și Baza de Date – Contextul Tehnic}{18}{section.1.10}%
+\contentsline {subsection}{\numberline {1.10.1}Arhitectura Client-Server și HTTP}{18}{subsection.1.10.1}%
+\contentsline {subsection}{\numberline {1.10.2}HTTP Metode (Verbs)}{19}{subsection.1.10.2}%
+\contentsline {subsection}{\numberline {1.10.3}JSON – Format de Date}{20}{subsection.1.10.3}%
+\contentsline {subsection}{\numberline {1.10.4}HTTP Request/Response Cycle Detaliat}{21}{subsection.1.10.4}%
+\contentsline {subsection}{\numberline {1.10.5}Performanță și Optimizări}{27}{subsection.1.10.5}%
+\contentsline {section}{\numberline {1.11}Backend RESTful API în PHP}{27}{section.1.11}%
+\contentsline {subsection}{\numberline {1.11.1}Configurația Inițială și Bootstrap}{28}{subsection.1.11.1}%
+\contentsline {subsection}{\numberline {1.11.2}Conectarea la Baza de Date cu PDO}{28}{subsection.1.11.2}%
+\contentsline {subsection}{\numberline {1.11.3}Model Entități – Student, Profesor, Curs}{29}{subsection.1.11.3}%
+\contentsline {subsubsection}{\numberline {1.11.3.1}Clasa Student}{29}{subsubsection.1.11.3.1}%
+\contentsline {subsection}{\numberline {1.11.4}Endpoint-uri API și Rutare}{30}{subsection.1.11.4}%
+\contentsline {subsubsection}{\numberline {1.11.4.1}Exemplu: Endpoint GET /api/students}{31}{subsubsection.1.11.4.1}%
+\contentsline {subsection}{\numberline {1.11.5}Import de Date din Excel}{31}{subsection.1.11.5}%
+\contentsline {subsection}{\numberline {1.11.6}Autentificare și Control de Acces}{33}{subsection.1.11.6}%
+\contentsline {subsection}{\numberline {1.11.7}Arhitectura Folderelor Backend}{34}{subsection.1.11.7}%
+\contentsline {subsection}{\numberline {1.11.8}Validare Servidor}{34}{subsection.1.11.8}%
+\contentsline {subsection}{\numberline {1.11.9}Tratarea Erorilor și Logging}{35}{subsection.1.11.9}%
+\contentsline {subsection}{\numberline {1.11.10}Integrare Frontend-Backend}{36}{subsection.1.11.10}%
+\contentsline {subsection}{\numberline {1.11.11}Performanță și Optimizări}{36}{subsection.1.11.11}%
+\contentsline {chapter}{\numberline {2}Arhitectura Aplicației}{39}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Arhitectura Generală Client-Server}{39}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Structura Frontend-ului (Core, Shared, Features)}{39}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Organizarea Modulelor și Componentelor}{39}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Fluxul Datelor (Component → Service → API → UI)}{39}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Modelul de Date (ERD)}{40}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Diagrame Relevante}{40}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Prezentarea Aplicației și Fluxuri}{41}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Fluxul de Autentificare (Login/Logout)}{41}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Dashboard și Navigare Principală}{41}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Modul Studenți (Listare, CRUD, Filtre)}{41}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Listare}{41}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}CRUD}{41}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Import Excel Studenți (Flux Complet)}{42}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Overview}{42}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Validație}{42}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}UI Flow}{42}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Detaliu Proces}{42}{subsection.3.4.4}%
+\contentsline {section}{\numberline {3.5}Modul Prezență (Selectare Sesiune, Marcare, Salvare)}{42}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Modul Cursuri și Laboratoare}{43}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Modul Examene și Rapoarte}{43}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Administrare (Profesori, Grupe, Permisiuni)}{43}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Rezultate Vizuale}{43}{section.3.9}%
+\contentsline {chapter}{\numberline {4}Concluzii}{45}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Obiective Atinse}{45}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Limitări Curente}{45}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Direcții Viitoare}{45}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Concluzii Finale}{45}{section.4.4}%
+\contentsline {chapter}{Bibliografie}{47}{chapter*.17}%

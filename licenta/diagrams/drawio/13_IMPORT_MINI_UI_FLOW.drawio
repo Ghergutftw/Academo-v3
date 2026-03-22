@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-03-22" agent="5.0" version="24.1.0" type="device">
+  <diagram id="import_mini_ui" name="13. Import Mini UI Flow">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Import UX Flow - Mini" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="30" width="340" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u1" value="Upload Dialog" style="shape=mxgraph.mockup.containers.window;html=1;whiteSpace=wrap;fillColor=#E3F2FD;strokeColor=#1E88E5;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="130" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u2" value="Preview Table" style="shape=mxgraph.mockup.containers.window;html=1;whiteSpace=wrap;fillColor=#FFF8E1;strokeColor=#F9A825;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="130" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u3" value="Result Toast" style="shape=mxgraph.mockup.containers.window;html=1;whiteSpace=wrap;fillColor=#E8F5E9;strokeColor=#43A047;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="130" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="choose file" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=classic;endFill=1;fontSize=10;" edge="1" parent="1" source="u1" target="u2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" value="import" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=classic;endFill=1;fontSize=10;" edge="1" parent="1" source="u2" target="u3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="Use in chapter 3.4 for UI walkthrough" style="text;html=1;fontSize=10;fontColor=#616161;" vertex="1" parent="1">
+          <mxGeometry x="400" y="290" width="280" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+
