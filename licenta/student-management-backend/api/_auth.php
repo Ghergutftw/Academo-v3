@@ -13,26 +13,22 @@ function getAuthUser($db) {
         $token = str_replace('Bearer ', '', $headers['authorization']);
     }
 
-    if (!$token && isset($_GET['token'])) {
-        $token = $_GET['token'];
-    } else if (!$token && isset($_POST['token'])) {
-        $token = $_POST['token'];
-    }
-    
     if (!$token) {
         return null;
     }
     
     try {
-        $decoded = json_decode(base64_decode($token), true);
-        if (!$decoded || !isset($decoded['id'], $decoded['role'])) {
+        $decoded = decodeJwt($token);
+        if (!isset($decoded['sub'], $decoded['role'])) {
             return null;
         }
-        
+
+        $userId = (int)$decoded['sub'];
+
         // Verify user still exists based on role
         if ($decoded['role'] === UserRole::ADMIN || $decoded['role'] === UserRole::TEACHER) {
             $teacherModel = new Teacher($db);
-            $teacher = $teacherModel->getById($decoded['id']);
+            $teacher = $teacherModel->getById($userId);
             if ($teacher) {
                 return [
                     'id' => $teacher['id'],
@@ -45,14 +41,15 @@ function getAuthUser($db) {
             }
         } else if ($decoded['role'] === UserRole::STUDENT) {
             $studentModel = new Student($db);
-            $student = $studentModel->getById($decoded['id']);
+            $student = $studentModel->getById($userId);
             if ($student) {
                 return [
                     'id' => $student['id'],
                     'email' => $student['email'],
                     'role' => UserRole::STUDENT,
                     'user_type_id' => $student['id'],
-                    'name' => $student['name']
+                    'name' => $student['name'],
+                    'study_cycle' => $student['study_cycle'] ?? 'Licenta'
                 ];
             }
         }

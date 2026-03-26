@@ -56,6 +56,7 @@ require_once __DIR__ . '/../models/StudyGroupMember.php';
 require_once __DIR__ . '/../models/CourseLabInstructor.php';
 require_once __DIR__ . '/../models/ExamSchedule.php';
 require_once __DIR__ . '/../models/Schedule.php';
+require_once __DIR__ . '/_jwt.php';
 require_once __DIR__ . '/_auth.php';
 
 $db = (new Database())->getConnection();

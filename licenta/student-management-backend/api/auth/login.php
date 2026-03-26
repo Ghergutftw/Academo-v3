@@ -30,7 +30,13 @@ if (!$teacher && strpos($email, '@') === false) {
 
 if ($teacher && password_verify($password, $teacher['password'])) {
     $role = $teacher['is_admin'] ? UserRole::ADMIN : UserRole::TEACHER;
-    
+    $claims = [
+        'sub' => (int)$teacher['id'],
+        'email' => $teacher['email'],
+        'role' => $role,
+        'user_type_id' => (int)$teacher['id']
+    ];
+
     $response = [
         'success' => true,
         'user' => [
@@ -41,12 +47,7 @@ if ($teacher && password_verify($password, $teacher['password'])) {
             'name' => $teacher['name'],
             'is_admin' => (bool)$teacher['is_admin']
         ],
-        'token' => base64_encode(json_encode([
-            'id' => $teacher['id'],
-            'email' => $teacher['email'],
-            'role' => $role,
-            'user_type_id' => $teacher['id']
-        ]))
+        'token' => createJwt($claims)
     ];
     respond($response, 200);
     exit;
@@ -62,6 +63,13 @@ if (!$student && strpos($email, '@') === false) {
 }
 
 if ($student && password_verify($password, $student['password'])) {
+    $claims = [
+        'sub' => (int)$student['id'],
+        'email' => $student['email'],
+        'role' => UserRole::STUDENT,
+        'user_type_id' => (int)$student['id']
+    ];
+
     $response = [
         'success' => true,
         'user' => [
@@ -72,12 +80,7 @@ if ($student && password_verify($password, $student['password'])) {
             'name' => $student['name'],
             'study_cycle' => $student['study_cycle'] ?? 'Licenta'
         ],
-        'token' => base64_encode(json_encode([
-            'id' => $student['id'],
-            'email' => $student['email'],
-            'role' => UserRole::STUDENT,
-            'user_type_id' => $student['id']
-        ]))
+        'token' => createJwt($claims)
     ];
     respond($response, 200);
     exit;

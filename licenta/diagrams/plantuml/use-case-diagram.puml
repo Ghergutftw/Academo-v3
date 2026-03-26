@@ -1,9 +1,9 @@
-@startuml Student Management System - Use Cases
+@startuml Academo - Use Cases
 !theme plain
 skinparam actorStyle awesome
 skinparam packageStyle rectangle
 
-title Student Management System\nDiagrama Cazuri de Utilizare
+title Academo\nDiagrama Cazuri de Utilizare
 
 ' Actori
 actor "Student" as student #lightblue
@@ -11,7 +11,7 @@ actor "Profesor" as teacher #lightgreen
 actor "Administrator" as admin #orange
 
 ' Sistem
-rectangle "Student Management System" {
+rectangle "Academo" {
 
   ' === AUTENTIFICARE ===
   package "Autentificare" #aliceblue {

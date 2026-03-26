@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "student-management-frontend": {
+    "academo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -39,7 +39,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/student-management-frontend",
+            "outputPath": "dist/academo",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -102,10 +102,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "student-management-frontend:build:production"
+              "buildTarget": "academo:build:production"
             },
             "development": {
-              "buildTarget": "student-management-frontend:build:development"
+              "buildTarget": "academo:build:development"
             }
           },
           "defaultConfiguration": "development"

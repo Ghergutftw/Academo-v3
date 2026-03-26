@@ -1,9 +1,9 @@
-@startuml Student Management System - Architecture
+@startuml Academo - Architecture
 !theme plain
 skinparam componentStyle rectangle
 skinparam linetype ortho
 
-title Student Management System\nDiagrama de Arhitectură (3-Tier Architecture)
+title Academo\nDiagrama de Arhitectură (3-Tier Architecture)
 
 ' === PRESENTATION LAYER (Client) ===
 package "Client Layer\n(Browser)" as ClientLayer #lightblue {

@@ -1,6 +1,6 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.5.1 Chrome/142.0.7444.265 Electron/39.6.1 Safari/537.36" version="29.5.1">
   <diagram name="Page-1" id="du72j9dRxIgCUdLfOUN4">
-    <mxGraphModel dx="2958" dy="801" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1427" dy="1035" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -213,48 +213,6 @@
         </mxCell>
         <mxCell id="o5LsZPKa0t7iR5y8FfLM-255" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;color: rgb(51, 153, 255); font-size: 8px;&quot;&gt;&lt;b&gt;Dependecy Injection&lt;/b&gt;&lt;/font&gt;" vertex="1">
           <mxGeometry height="22" width="81" x="132.62" y="640.5" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-1" parent="1" style="swimlane;html=1;childLayout=stackLayout;startSize=30;rounded=1;fontSize=14;fontStyle=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;" value="CLIENT SIDE" vertex="1">
-          <mxGeometry height="180" width="700" x="50" y="50" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-2" parent="ngq5vdayuaV5vsys-Bvh-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;strokeWidth=2;fontSize=11;" value="Angular 19 Frontend (SPA)&#xa;• Components (Student, Course, Attendance...)&#xa;• Services (HTTP, Auth, Data)&#xa;• RxJS + Bootstrap UI + Angular Material" vertex="1">
-          <mxGeometry height="150" width="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-3" parent="1" style="swimlane;html=1;childLayout=stackLayout;startSize=30;rounded=1;fontSize=14;fontStyle=1;fillColor=#F3E5F5;strokeColor:#7B1FA2;strokeWidth=2;" value="SERVER SIDE" vertex="1">
-          <mxGeometry height="280" width="1360" x="50" y="310" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-4" parent="ngq5vdayuaV5vsys-Bvh-3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;strokeWidth=2;fontSize=11;" value="PHP RESTful API&#xa;• Controllers (Request handling)&#xa;• Services (Business logic)&#xa;• Models (Data abstraction)&#xa;• Middleware (Auth, Validation)" vertex="1">
-          <mxGeometry height="250" width="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-5" parent="ngq5vdayuaV5vsys-Bvh-3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#512DA8;strokeWidth=2;fontSize=11;" value="MySQL/MariaDB Database&#xa;10 Tabele: Students, Courses, Attendance, Teachers, Labs, etc." vertex="1">
-          <mxGeometry height="250" width="680" x="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-6" edge="1" parent="1" source="ngq5vdayuaV5vsys-Bvh-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=12;fontStyle=1;endArrow=doubleArrow;endFill=1;startArrow=doubleArrow;startFill=1;" target="ngq5vdayuaV5vsys-Bvh-4" value="REST API (HTTPS)">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-7" edge="1" parent="1" source="ngq5vdayuaV5vsys-Bvh-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=11;endArrow=doubleArrow;endFill=1;startArrow=doubleArrow;startFill=1;" target="ngq5vdayuaV5vsys-Bvh-5" value="PDO / MySQL Driver">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-8" parent="1" style="swimlane;html=1;childLayout=stackLayout;startSize=30;rounded=1;fontSize=14;fontStyle=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;" value="CLIENT SIDE" vertex="1">
-          <mxGeometry height="180" width="700" x="-1406" y="10" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-9" parent="ngq5vdayuaV5vsys-Bvh-8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;strokeWidth=2;fontSize=11;" value="Angular 19 Frontend (SPA)&#xa;• Components (Student, Course, Attendance...)&#xa;• Services (HTTP, Auth, Data)&#xa;• RxJS + Bootstrap UI + Angular Material" vertex="1">
-          <mxGeometry height="150" width="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-10" parent="1" style="swimlane;html=1;childLayout=stackLayout;startSize=30;rounded=1;fontSize=14;fontStyle=1;fillColor=#F3E5F5;strokeColor:#7B1FA2;strokeWidth=2;" value="SERVER SIDE" vertex="1">
-          <mxGeometry height="280" width="1360" x="-1406" y="270" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-11" parent="ngq5vdayuaV5vsys-Bvh-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;strokeWidth=2;fontSize=11;" value="PHP RESTful API&#xa;• Controllers (Request handling)&#xa;• Services (Business logic)&#xa;• Models (Data abstraction)&#xa;• Middleware (Auth, Validation)" vertex="1">
-          <mxGeometry height="250" width="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-12" parent="ngq5vdayuaV5vsys-Bvh-10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#512DA8;strokeWidth=2;fontSize=11;" value="MySQL/MariaDB Database&#xa;10 Tabele: Students, Courses, Attendance, Teachers, Labs, etc." vertex="1">
-          <mxGeometry height="250" width="680" x="680" y="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-13" edge="1" parent="1" source="ngq5vdayuaV5vsys-Bvh-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=12;fontStyle=1;endArrow=doubleArrow;endFill=1;startArrow=doubleArrow;startFill=1;" target="ngq5vdayuaV5vsys-Bvh-11" value="REST API (HTTPS)">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="ngq5vdayuaV5vsys-Bvh-14" edge="1" parent="1" source="ngq5vdayuaV5vsys-Bvh-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=11;endArrow=doubleArrow;endFill=1;startArrow=doubleArrow;startFill=1;" target="ngq5vdayuaV5vsys-Bvh-12" value="PDO / MySQL Driver">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

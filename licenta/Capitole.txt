@@ -1,7 +1,0 @@
-4-5 capitole
-1. Introducere 2-4 Starea actual Context
-2. Tehnologii
-	Angular
-3. Arhitectura? 
-3. Prezentare aplicatie
-4. Concluzii 2-4

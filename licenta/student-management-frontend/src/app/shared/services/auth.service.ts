@@ -65,7 +65,7 @@ export class AuthService {
       try {
         const user = JSON.parse(storedUser);
         this.currentUserSubject.next(user);
-        this.http.get<any>(`${this.api}/verify.php?token=${token}`).subscribe({
+        this.http.get<any>(`${this.api}/verify.php`).subscribe({
           next: (response) => {
             if (response.valid) {
               this.currentUserSubject.next(response.user);
