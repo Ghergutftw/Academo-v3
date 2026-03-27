@@ -42,6 +42,7 @@ export class StudyGroupsComponent implements OnInit {
   filteredAvailableStudents: Student[] = [];
   studentSearchText: string = '';
   studentCountsMap: { [groupId: number]: number } = {};
+  groupStudentsMap: { [groupId: number]: Student[] } = {};
 
   // Form for creating/editing study groups
   showGroupForm = false;
@@ -202,7 +203,8 @@ export class StudyGroupsComponent implements OnInit {
   loadGroupStudents(groupId: number) {
     this.studyGroupService.getStudents(groupId).subscribe({
       next: (response) => {
-        this.groupStudents = response.data as any[];
+        this.groupStudents = response.data as Student[];
+        this.groupStudentsMap[groupId] = this.groupStudents;
         this.updateAvailableStudents();
       },
       error: (error) => console.error('Error loading group students:', error)
@@ -212,18 +214,36 @@ export class StudyGroupsComponent implements OnInit {
   updateAvailableStudents() {
     const groupStudentIds = this.groupStudents.map(s => s.id);
 
-    // Get the selected group's course year
     const selectedGroup = this.studyGroups.find(g => g.id === this.selectedGroupId);
-    const courseYear = selectedGroup ? this.courses.find(c => c.id === selectedGroup.course_id)?.year : null;
+    const selectedCourse = selectedGroup ? this.courses.find(c => c.id === selectedGroup.course_id) : null;
+    const courseYear = selectedCourse?.year ?? null;
+    const isOptional = !!selectedCourse?.is_optional;
 
-    // Filter students by: not already in group AND same study year as course AND same study cycle
-    this.availableStudents = this.students.filter(
-      s => !groupStudentIds.includes(s.id) &&
-        (courseYear === null || s.study_year === courseYear) &&
-        (this.selectedStudyCycle === null || s.study_cycle === this.selectedStudyCycle)
-    );
+    this.availableStudents = this.students.filter(s => {
+      if (groupStudentIds.includes(s.id)) return false;
+      if (courseYear !== null && s.study_year !== courseYear) return false;
+      if (this.selectedStudyCycle !== null && s.study_cycle !== this.selectedStudyCycle) return false;
+
+      // For optional courses, student can be in only one study group for the same course.
+      if (isOptional && selectedGroup?.course_id) {
+        const alreadyInAnotherGroup = this.studyGroups.some(g =>
+          g.id !== this.selectedGroupId &&
+          g.course_id === selectedGroup.course_id &&
+          this.hasStudentInGroup(g.id!, s.id)
+        );
+        if (alreadyInAnotherGroup) return false;
+      }
+
+      return true;
+    });
+
     this.studentSearchText = '';
     this.filteredAvailableStudents = [...this.availableStudents];
+  }
+
+  private hasStudentInGroup(groupId: number, studentId: number): boolean {
+    const members = this.groupStudentsMap[groupId] || [];
+    return members.some(s => s.id === studentId);
   }
 
   openGroupForm(group?: StudyGroup) {
@@ -347,13 +367,17 @@ export class StudyGroupsComponent implements OnInit {
 
     this.studyGroupService.updateMembers(this.selectedGroupId, newIds).subscribe({
       next: () => {
-        this.loadGroupStudents(this.selectedGroupId!);
-        // Actualizează contorul imediat
+        const added = this.availableStudents.find(s => s.id === studentId);
+        if (added) {
+          this.groupStudents = [...this.groupStudents, added];
+          this.groupStudentsMap[this.selectedGroupId!] = this.groupStudents;
+        }
         this.studentCountsMap[this.selectedGroupId!] = newIds.length;
-        // Nu mai afișa alert custom la succes
+        this.updateAvailableStudents();
+        this.loadStudentCounts();
       },
       error: () => {
-        alert('Eroare la adăugarea studentului');
+        this.alertService.error('Eroare la adaugarea studentului');
       }
     });
   }
@@ -361,19 +385,19 @@ export class StudyGroupsComponent implements OnInit {
   removeStudentFromGroup(studentId: number) {
     if (!this.selectedGroupId) return;
 
-    const newIds = this.groupStudents
-      .filter(s => s.id !== studentId)
-      .map(s => s.id);
+    const updatedStudents = this.groupStudents.filter(s => s.id !== studentId);
+    const newIds = updatedStudents.map(s => s.id);
 
     this.studyGroupService.updateMembers(this.selectedGroupId, newIds).subscribe({
       next: () => {
-        this.loadGroupStudents(this.selectedGroupId!);
-        // Actualizează contorul imediat
+        this.groupStudents = updatedStudents;
+        this.groupStudentsMap[this.selectedGroupId!] = updatedStudents;
         this.studentCountsMap[this.selectedGroupId!] = newIds.length;
-        // Nu mai afișa alert custom la succes
+        this.updateAvailableStudents();
+        this.loadStudentCounts();
       },
       error: () => {
-        alert('Eroare la eliminarea studentului');
+        this.alertService.error('Eroare la eliminarea studentului');
       }
     });
   }
@@ -466,11 +490,12 @@ export class StudyGroupsComponent implements OnInit {
     this.studyGroupService.updateMembers(this.selectedGroupId, allStudentIds).subscribe({
       next: () => {
         this.loadGroupStudents(this.selectedGroupId!);
-        alert(`${studentsFromAdminGroup.length} studenți au fost adăugați la grupă`);
+        this.studentCountsMap[this.selectedGroupId!] = allStudentIds.length;
+        this.loadStudentCounts();
+        this.alertService.success(`${studentsFromAdminGroup.length} studenți au fost adăugați la grupă`);
       },
-      error: (error) => {
-        console.error('Error adding all students:', error);
-        alert('Eroare la adăugarea studenților');
+      error: () => {
+        this.alertService.error('Eroare la adăugarea studenților');
       }
     });
   }
@@ -518,7 +543,10 @@ export class StudyGroupsComponent implements OnInit {
     this.studyGroups.forEach(g => {
       if (g.id) {
         this.studyGroupService.getStudents(g.id).subscribe({
-          next: (res) => { this.studentCountsMap[g.id!] = res.data?.length ?? 0; },
+          next: (res) => {
+            this.studentCountsMap[g.id!] = res.data?.length ?? 0;
+            this.groupStudentsMap[g.id!] = (res.data ?? []) as Student[];
+          },
           error: () => {}
         });
       }
@@ -611,17 +639,24 @@ export class StudyGroupsComponent implements OnInit {
 
     this.studyGroupService.updateMembers(this.selectedGroupId, allIds).subscribe({
       next: () => {
-        this.loadGroupStudents(this.selectedGroupId!);
-        // Actualizează contorul imediat
+        const addedStudents = studentsToAdd
+          .map(id => this.availableStudents.find(s => s.id === id))
+          .filter((s): s is Student => s !== undefined);
+
+        this.groupStudents = [...this.groupStudents, ...addedStudents];
+        this.groupStudentsMap[this.selectedGroupId!] = this.groupStudents;
         this.studentCountsMap[this.selectedGroupId!] = allIds.length;
-        let message = `${studentsToAdd.length} studenți au fost adăugați cu succes!`;
+        this.updateAvailableStudents();
+        this.loadStudentCounts();
+
+        let message = `${studentsToAdd.length} studenti au fost adaugati cu succes!`;
         if (notFoundEmails.length > 0) {
-          message += `\n\n${notFoundEmails.length} email-uri/linii nu au fost găsite:\n${notFoundEmails.slice(0, 5).join('\n')}${notFoundEmails.length > 5 ? '\n...' : ''}`;
+          message += `\n\n${notFoundEmails.length} email-uri/linii nu au fost gasite:\n${notFoundEmails.slice(0, 5).join('\n')}${notFoundEmails.length > 5 ? '\n...' : ''}`;
         }
         this.alertService.success(message);
       },
       error: () => {
-        this.alertService.error('Eroare la adăugarea studenților');
+        this.alertService.error('Eroare la adaugarea studentilor');
       }
     });
   }
