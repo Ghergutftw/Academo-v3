@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex main"] 1774567371.04184 "main.aux" "main.bbl" "main" 1774567372.4683 0
-  "./bibliografie/bibliografie.bib" 1774567370 4395 61f5350cc46340cec4fb852f775681a1 ""
+["bibtex main"] 1774805658.38774 "main.aux" "main.bbl" "main" 1774808103.88972 0
+  "./bibliografie/bibliografie.bib" 1774804271 4395 61f5350cc46340cec4fb852f775681a1 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "main.aux" 1774567371 1335 46ac1d5d2f590ab699e3addea9075b48 "pdflatex"
+  "main.aux" 1774808103 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1774567371.21096 "main.tex" "main.pdf" "main" 1774567372.46866 0
-  "C:/Users/Madalin/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1774195309 82507 a9eef8696c92627b87e9975edea03b2a ""
+["pdflatex"] 1774808102.69272 "main.tex" "main.pdf" "main" 1774808103.89009 0
+  "C:/Users/Madalin/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1774804279 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/Madalin/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1774105682 13334817 30062ac41d501846aaf6ec5316eff808 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/fonts/tfm/adobe/times/ptmb7t.tfm" 1136765054 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -200,7 +200,7 @@
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/xkeyval/xkeyval.sty" 1656236919 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
-  "continut/motivatie_introducere.tex" 1774562315 13095 76ac9257017b58c935b0bd07701b1e33 ""
+  "continut/motivatie_introducere.tex" 1774808102 6897 947f531fe827e0f900e9fadd80bf5e13 ""
   "coperti/cropped-logo_ac_iasi.png" 1774113339 53324 ed7de646e96340d89e7483be6968b967 ""
   "coperti/extern.tex" 1774113339 1743 98df880c0448aedbf7c79e8efef4413a ""
   "coperti/intern.tex" 1774113339 1702 9bed589d76dc247f43b17d780304a868 ""
@@ -209,11 +209,11 @@
   "macros/constante.tex" 1774113339 278 845b8a77bfb66a3c42689e07bc42dcfe ""
   "macros/dimensiuni.tex" 1774113339 633 1ba18f14e754b6302f4f7acc19b7ca9a ""
   "macros/student.tex" 1774193651 919 36b3a64051a0f52345c578e00d46adb1 ""
-  "main.aux" 1774567371 1335 46ac1d5d2f590ab699e3addea9075b48 "pdflatex"
-  "main.bbl" 1774567371 3942 59f822bff29067ec0e244b4c6c8061f5 "bibtex main"
-  "main.out" 1774567371 295 8b66d85b8a96de063d0dd07b82e30e72 "pdflatex"
+  "main.aux" 1774808103 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
+  "main.bbl" 1774805658 3942 59f822bff29067ec0e244b4c6c8061f5 "bibtex main"
+  "main.out" 1774808103 295 8b66d85b8a96de063d0dd07b82e30e72 "pdflatex"
   "main.tex" 1774565807 4243 3c252a553ecc9f8284475a31b96392ea ""
-  "main.toc" 1774567371 221 dfa8a434402f8d8a1a171d5ae6f9cc73 "pdflatex"
+  "main.toc" 1774808103 221 1180f69b4304d5e09698a1bef2ac3e02 "pdflatex"
   "pdf/declaratie_autenticitate_diploma.pdf" 1774113339 181665 dab4ed100f2b35bdca2317483de20537 ""
   (generated)
   "main.aux"

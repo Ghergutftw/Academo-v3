@@ -1,5 +1,5 @@
 \babel@toc {romanian}{}\relax 
 \babel@toc {romanian}{}\relax 
 \contentsline {chapter}{Motivație}{1}{chapter*.4}%
-\contentsline {chapter}{Introducere}{3}{chapter*.5}%
-\contentsline {chapter}{Bibliografie}{5}{chapter*.6}%
+\contentsline {chapter}{Introducere}{2}{chapter*.5}%
+\contentsline {chapter}{Bibliografie}{3}{chapter*.6}%
