@@ -1,6 +1,6 @@
 PWD c:\wamp64\www\licenta\lucrare
 INPUT C:\Users\Madalin\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT main.tex
+INPUT c:\wamp64\www\licenta\lucrare\main.tex
 OUTPUT main.log
 INPUT C:\Users\Madalin\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
 INPUT C:\Users\Madalin\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls

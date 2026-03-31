@@ -76,7 +76,12 @@ export class StudentDashboardComponent implements OnInit {
   loadAttendanceRecords(): void {
     if (!this.currentUser) return;
     this.attendanceService.getByStudent(this.currentUser.user_type_id).subscribe({
-      next: (records) => { this.attendanceRecords = records; this.extractAvailableCourses(); this.applyFilters(); },
+      next: (records) => {
+        // Filter out records without session_date (incomplete records)
+        this.attendanceRecords = records.filter(r => r.session_date && r.session_date.trim() !== '');
+        this.extractAvailableCourses();
+        this.applyFilters();
+      },
       error: (error) => { console.error('Failed to load attendance records:', error); }
     });
   }
@@ -121,7 +126,7 @@ export class StudentDashboardComponent implements OnInit {
 
   updatePagination(): void {
     const start = this.pageIndex * this.pageSize;
-    this.paginatedRecords = this.filteredRecords.filter(value => value.id != 0).slice(start, start + this.pageSize)
+    this.paginatedRecords = this.filteredRecords.slice(start, start + this.pageSize);
   }
 
   onFilterChange(): void { this.applyFilters(); }
