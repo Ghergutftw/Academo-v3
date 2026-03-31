@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond(['error' => 'Method not allowed'], 405);
 }
 
-  = json_input();
+$input = json_input();
 $email = $input['email'] ?? '';
 $password = $input['password'] ?? '';
 

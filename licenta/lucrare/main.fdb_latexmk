@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1774805658.38774 "main.aux" "main.bbl" "main" 1774808728.65799 0
+["bibtex main"] 1774809285.85742 "main.aux" "main.bbl" "main" 1774816885.948 0
   "./bibliografie/bibliografie.bib" 1774804271 4395 61f5350cc46340cec4fb852f775681a1 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "main.aux" 1774808728 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
+  "main.aux" 1774816885 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1774808727.42733 "main.tex" "main.pdf" "main" 1774808728.65836 0
+["pdflatex"] 1774816884.6368 "main.tex" "main.pdf" "main" 1774816885.94832 0
   "C:/Users/Madalin/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1774804279 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/Madalin/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1774105682 13334817 30062ac41d501846aaf6ec5316eff808 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -200,7 +200,7 @@
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "C:/Users/Madalin/AppData/Local/Programs/MiKTeX/tex/latex/xkeyval/xkeyval.sty" 1656236919 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
-  "continut/motivatie_introducere.tex" 1774808727 6920 d023f3b77b8bc46de4961336bc9689cc ""
+  "continut/motivatie_introducere.tex" 1774816885 6254 e07c0407590f4454353b889c157c5379 ""
   "coperti/cropped-logo_ac_iasi.png" 1774113339 53324 ed7de646e96340d89e7483be6968b967 ""
   "coperti/extern.tex" 1774113339 1743 98df880c0448aedbf7c79e8efef4413a ""
   "coperti/intern.tex" 1774113339 1702 9bed589d76dc247f43b17d780304a868 ""
@@ -209,11 +209,11 @@
   "macros/constante.tex" 1774113339 278 845b8a77bfb66a3c42689e07bc42dcfe ""
   "macros/dimensiuni.tex" 1774113339 633 1ba18f14e754b6302f4f7acc19b7ca9a ""
   "macros/student.tex" 1774193651 919 36b3a64051a0f52345c578e00d46adb1 ""
-  "main.aux" 1774808728 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
-  "main.bbl" 1774805658 3942 59f822bff29067ec0e244b4c6c8061f5 "bibtex main"
-  "main.out" 1774808728 295 8b66d85b8a96de063d0dd07b82e30e72 "pdflatex"
+  "main.aux" 1774816885 1297 4e225baff93dc95a8dd2050387ae1f17 "pdflatex"
+  "main.bbl" 1774809285 3942 59f822bff29067ec0e244b4c6c8061f5 "bibtex main"
+  "main.out" 1774816885 295 8b66d85b8a96de063d0dd07b82e30e72 "pdflatex"
   "main.tex" 1774565807 4243 3c252a553ecc9f8284475a31b96392ea ""
-  "main.toc" 1774808728 221 1180f69b4304d5e09698a1bef2ac3e02 "pdflatex"
+  "main.toc" 1774816885 221 1180f69b4304d5e09698a1bef2ac3e02 "pdflatex"
   "pdf/declaratie_autenticitate_diploma.pdf" 1774113339 181665 dab4ed100f2b35bdca2317483de20537 ""
   (generated)
   "main.aux"
