@@ -1,0 +1,210 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ mode === 'add' ? 'Adaugă Materie' : 'Editează Materie' }}</h5>
+  <button (click)="activeModal.dismiss()" aria-label="Închide" class="btn-close" type="button"></button>
+</div>
+<div class="modal-body modal-lg" style="padding: 1rem 1.5rem; width: 100%; max-width: 100vw; min-width: 0; overflow: auto;">
+  <div class="row">
+    <div class="col-md-6" style="min-width: 320px;">
+      <div class="mb-4">
+        <label class="form-label" for="courseName">Nume</label>
+        <input
+          [(ngModel)]="courseName"
+          class="form-control"
+          id="courseName"
+          required
+          type="text"
+        />
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="courseAcronym">Acronim</label>
+        <input
+          [(ngModel)]="courseAcronym"
+          class="form-control"
+          [class.is-invalid]="courseAcronym.trim() === '' && showLabError"
+          [class.is-valid]="courseAcronym.trim() !== '' && showLabError"
+          id="courseAcronym"
+          placeholder="ex: PAI"
+          type="text"
+          maxlength="10"
+          required
+        />
+        <div *ngIf="courseAcronym.trim() === '' && showLabError" class="invalid-feedback">
+          Acronimul este obligatoriu.
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="courseStudyCycle">Ciclu de Studiu</label>
+        <select
+          (change)="onStudyCycleChange()"
+          [(ngModel)]="courseStudyCycle"
+          class="form-select"
+          id="courseStudyCycle"
+          required
+        >
+          <option [value]="null" disabled selected>Selectați ciclul</option>
+          <option [value]="'Licenta'">Licență</option>
+          <option [value]="'Master'">Master</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-4">
+            <label class="form-label" for="courseYear">An</label>
+            <select
+              [(ngModel)]="courseYear"
+              class="form-select"
+              id="courseYear"
+              required
+              [disabled]="!courseStudyCycle"
+            >
+              <option [value]="null" disabled selected>Selectați anul</option>
+              @if (courseStudyCycle === 'Licenta') {
+                <option [value]="1">Anul 1</option>
+                <option [value]="2">Anul 2</option>
+                <option [value]="3">Anul 3</option>
+                <option [value]="4">Anul 4</option>
+              }
+              @if (courseStudyCycle === 'Master') {
+                <option [value]="5">Anul 1</option>
+                <option [value]="6">Anul 2</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-4">
+            <label class="form-label" for="courseSemester">Semestru</label>
+            <select
+              [(ngModel)]="courseSemester"
+              class="form-select"
+              id="courseSemester"
+              required
+            >
+              <option [value]="null" disabled selected>Selectați semestrul</option>
+              <option [value]="1">Semestrul 1</option>
+              <option [value]="2">Semestrul 2</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="courseTeacher">Profesor Titular</label>
+        <select
+          [(ngModel)]="courseTeacherId"
+          class="form-select"
+          id="courseTeacher"
+          required
+        >
+          <option [value]="null" disabled selected>Selectați profesorul titular</option>
+          <option *ngFor="let teacher of teachers" [value]="teacher.id">{{ teacher.name }}</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <div class="form-check">
+          <input
+            [(ngModel)]="courseIsOptional"
+            class="form-check-input"
+            id="courseOptional"
+            type="checkbox"
+          >
+          <label class="form-check-label" for="courseOptional">
+            Materie Opțională
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6" style="min-width: 320px;">
+      <div class="mb-5">
+        <label class="form-label">Laboranți</label>
+        <div class="form-text mb-3">
+          Selectați cel puțin un profesor care poate conduce sesiuni de laborator pentru această materie.
+        </div>
+        <div class="mb-3">
+          <input
+            (input)="filterLabInstructors()"
+            [(ngModel)]="labSearchText"
+            class="form-control search-input"
+            placeholder="Căutați profesor..."
+            type="text"
+          />
+        </div>
+        <div [class.required-lab]="labInstructorIds.length === 0" [class.valid-lab]="labInstructorIds.length > 0"
+             class="lab-instructors-list" style="max-height: 300px; overflow-y: auto;">
+          @if (filteredTeachersForLab.length > 0) {
+            @for (teacher of filteredTeachersForLab; track teacher.id) {
+              <div class="form-check mb-3">
+                <input
+                  (change)="toggleLabInstructor(teacher.id, $event)"
+                  [checked]="isLabInstructor(teacher.id)"
+                  [id]="'lab-' + teacher.id"
+                  class="form-check-input"
+                  type="checkbox"
+                />
+                <label [for]="'lab-' + teacher.id" class="form-check-label">
+                  {{ teacher.name }}
+                  <div *ngIf="teacher.email" class="text-muted small" style="font-size: 0.8em; margin-top: -2px;">{{ teacher.email }}</div>
+                </label>
+              </div>
+            }
+          } @else {
+            <p class="text-muted mb-0">Nu au fost găsiți profesori</p>
+          }
+        </div>
+        @if (labInstructorIds.length === 0 && showLabError) {
+          <div class="text-danger small mt-1">Trebuie să selectați cel puțin un laborant</div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="mb-5 mt-4">
+    <label class="form-label fw-bold">Fișa Disciplinei</label>
+    <div class="border rounded p-3 bg-light">
+      @if (mode === 'edit' && course?.course_file) {
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <span class="badge bg-success me-2">{{ getFileExtension(course?.course_file) }}</span>
+            <span class="text-muted">{{ course?.course_file }}</span>
+          </div>
+          <div class="btn-group" role="group">
+            <button (click)="downloadFile()" class="btn btn-sm btn-outline-info" type="button">
+              Descarcă
+            </button>
+            <button (click)="deleteFile()" class="btn btn-sm btn-outline-danger" type="button">
+              Șterge
+            </button>
+          </div>
+        </div>
+      } @else if (mode === 'add' && selectedFile) {
+        <div class="d-flex align-items-center mb-3">
+          <span class="badge bg-success me-2">{{ selectedFile.name.split('.').pop()?.toUpperCase() || 'FIȘIER' }}</span>
+          <span class="text-muted">{{ selectedFile.name }}</span>
+          <button (click)="clearSelectedFile()" class="btn btn-sm btn-outline-danger ms-2" type="button">
+            <small>Șterge</small>
+          </button>
+        </div>
+      } @else {
+        <p class="text-muted mb-3">
+          {{ mode === 'add' ? 'Nu este selectat niciun fișier' : 'Nu există fișier asociat' }}
+        </p>
+      }
+      <div>
+        <input #fileInput (change)="onFileSelected($event)" style="display: none" type="file">
+        <button (click)="fileInput.click()" class="btn btn-sm btn-success" type="button">
+          @if (mode === 'edit' && course?.course_file) {
+            Actualizează Fișier
+          } @else if (mode === 'add' && selectedFile) {
+            Schimbă Fișier
+          } @else {
+            Încarcă Fișier
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer" style="padding: 1.5rem 2.5rem;">
+  <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">Anulează</button>
+  <button (click)="save()" [disabled]="!isFormValid()" class="btn btn-primary" type="button">
+    {{ mode === 'add' ? 'Adaugă' : 'Salvează' }}
+  </button>
+</div>

@@ -1,0 +1,161 @@
+@startuml Academo - Architecture
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+title Academo\nDiagrama de Arhitectură (3-Tier Architecture)
+
+' === PRESENTATION LAYER (Client) ===
+package "Client Layer\n(Browser)" as ClientLayer #lightblue {
+
+    component "Angular 19 SPA" as Angular {
+        component "Components" as AngularComponents #aliceblue {
+            [Login Component]
+            [Student Dashboard]
+            [Teacher Dashboard]
+            [Admin Dashboard]
+            [Attendance Grid]
+        }
+
+        component "Services" as AngularServices #lavender {
+            [Auth Service]
+            [HTTP Interceptor]
+            [Students Service]
+            [Courses Service]
+            [Attendance Service]
+        }
+
+        component "Guards & Models" as AngularUtils #thistle {
+            [Auth Guard]
+            [Role Guard]
+            [TypeScript Models]
+        }
+    }
+
+    component "UI Libraries" as UILibs #powderblue {
+        [Angular Material]
+        [Bootstrap 5]
+        [ng-bootstrap]
+    }
+}
+
+' === APPLICATION LAYER (Backend) ===
+package "Application Layer\n(PHP Server)" as AppLayer #lightgreen {
+
+    component "REST API Endpoints" as API #honeydew {
+        [/api/auth/login.php]
+        [/api/students/**]
+        [/api/teachers/**]
+        [/api/courses/**]
+        [/api/sessions/**]
+        [/api/attendance/**]
+    }
+
+    component "Business Logic" as Models #palegreen {
+        [Student Model]
+        [Teacher Model]
+        [Course Model]
+        [Session Model]
+        [Attendance Model]
+    }
+
+    component "Utilities" as Utils #lightcyan {
+        [Database Connection]
+        [Response Helper]
+        [Validation]
+        [File Upload Handler]
+    }
+}
+
+' === DATA LAYER (Database) ===
+package "Data Layer\n(MySQL/MariaDB)" as DataLayer #mistyrose {
+
+    database "student_management DB" as DB {
+        storage "Utilizatori" as UserTables #fff0f0 {
+            frame "teachers"
+            frame "students"
+        }
+
+        storage "Academic" as AcademicTables #ffffe0 {
+            frame "courses"
+            frame "laboratories"
+            frame "student_groups"
+            frame "study_groups"
+        }
+
+        storage "Prezență" as AttendanceTables #f0fff0 {
+            frame "sessions"
+            frame "attendance"
+        }
+    }
+}
+
+' === EXTERNAL SERVICES ===
+cloud "External" as External #azure {
+    [File Storage\n(course_files/)]
+    [Email Service\n(Future)]
+}
+
+' === CONNECTIONS ===
+
+' Client to Backend
+AngularServices -down-> API : "HTTP/HTTPS\nJSON REST API\n(CORS enabled)"
+AngularComponents -down-> AngularServices : "Dependency\nInjection"
+AngularUtils -down-> AngularServices : "Guards protect\nroutes"
+
+' Backend to Database
+API -down-> Models : "Business Logic\nCalls"
+Models -down-> DB : "PDO\nPrepared Statements\n(SQL)"
+
+' Backend to External
+Models -right-> External : "File I/O\nFuture: Email"
+
+' Security & Session
+note right of AngularServices
+  **Authentication:**
+  - Token stored in sessionStorage
+  - Sent as Bearer token in headers
+  - AuthGuard validates on each route
+end note
+
+note right of API
+  **Security Measures:**
+  - Password hashing (BCrypt)
+  - SQL injection prevention (PDO)
+  - Input validation
+  - Role-based access control
+end note
+
+note bottom of DB
+  **Database Features:**
+  - Foreign Keys with CASCADE
+  - UNIQUE constraints
+  - Indexes on frequent queries
+  - Transaction support
+end note
+
+' Technology Stack
+note bottom of ClientLayer
+  **Technologies:**
+  - Angular 19 (Standalone Components)
+  - TypeScript 5+
+  - RxJS (Observables)
+  - Angular Material + Bootstrap
+end note
+
+note bottom of AppLayer
+  **Technologies:**
+  - PHP 8+ (Procedural + OOP)
+  - PDO for database access
+  - REST API architecture
+  - JSON data format
+end note
+
+note bottom of DataLayer
+  **Technologies:**
+  - MySQL 8 / MariaDB
+  - InnoDB engine
+  - UTF-8 encoding
+end note
+
+@enduml

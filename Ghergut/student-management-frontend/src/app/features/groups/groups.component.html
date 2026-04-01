@@ -1,0 +1,188 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Grupe de studenți</h2>
+      <div class="d-flex gap-2">
+        <button
+          (click)="clearNameSearch(); clearYearFilter(); clearAcademicYearFilter()"
+          [class]="'btn ' + (searchText || selectedYearFilter !== null || selectedAcademicYearFilter ? 'btn-warning' : 'btn-outline-secondary')"
+          [disabled]="!searchText && selectedYearFilter === null && !selectedAcademicYearFilter"
+          title="Resetează filtrele">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Resetează
+        </button>
+        @if (isAdmin) {
+          <button (click)="openAddModal()" class="btn btn-light">Adaugă Grupă</button>
+        }
+      </div>
+    </div>
+    <div class="card-body bg-light">
+      @if (groups.length) {
+        <!-- Filter Section -->
+        <div class="row mb-3 filter-row">
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Caută după Grupă</label>
+            <mat-form-field class="w-100">
+              <input
+                (ngModelChange)="applyFilters()"
+                [(ngModel)]="searchText"
+                [formControl]="nameSearchControl"
+                matInput
+                placeholder="Tastează numele grupei..."
+                type="text">
+              <button
+                (click)="clearNameSearch()"
+                *ngIf="searchText"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold"> An de Studiu</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="yearControl"
+                [matAutocomplete]="yearAuto"
+                matInput
+                placeholder="Selectează anul..."
+                type="text">
+              <button
+                (click)="clearYearFilter()"
+                *ngIf="selectedYearFilter !== null"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #yearAuto="matAutocomplete"
+                (optionSelected)="onYearSelected($event.option.value)"
+                [displayWith]="displayYear.bind(this)">
+                @for (year of getUniqueYears(); track year) {
+                  <mat-option [value]="year">{{ year }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold"> An Academic</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="academicYearControl"
+                [matAutocomplete]="ayAuto"
+                matInput
+                placeholder="Selectează anul academic..."
+                type="text">
+              <button
+                (click)="clearAcademicYearFilter()"
+                *ngIf="selectedAcademicYearFilter"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #ayAuto="matAutocomplete"
+                (optionSelected)="onAcademicYearSelected($event.option.value)"
+                [displayWith]="displayAcademicYear.bind(this)">
+                @for (ay of getUniqueAcademicYears(); track ay) {
+                  <mat-option [value]="ay">{{ ay }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-soft">
+            <thead class="table-light">
+            <tr>
+              <th style="width: 30%;">Nume</th>
+              <th style="width: 15%;">An de Studiu</th>
+              <th style="width: 20%;">An Academic</th>
+              <th style="width: 15%;">Studenți</th>
+              @if (isAdmin) {
+                <th style="width: 20%;">Acțiuni</th>
+              }
+            </tr>
+            </thead>
+            <tbody>
+              @for (group of getPaginatedGroups(); track group.id) {
+                <tr>
+                  <td>{{ group.name }}</td>
+                  <td>Anul {{ group.year }}</td>
+                  <td>{{ group.academic_year }}</td>
+                  <td>
+                    <button (click)="toggleStudents(group.id)" class="btn btn-sm btn-outline-info">
+                      {{ expandedGroup === group.id ? 'Ascunde' : 'Arată' }} Studenții
+                    </button>
+                  </td>
+                  @if (isAdmin) {
+                    <td>
+                      <button (click)="editGroup(group)" class="btn btn-sm btn-outline-primary me-2">Editează</button>
+                      <button (click)="deleteGroup(group.id)" class="btn btn-sm btn-outline-danger">Șterge</button>
+                    </td>
+                  }
+                </tr>
+                @if (expandedGroup === group.id) {
+                  <tr class="students-expand-row">
+                    <td [attr.colspan]="isAdmin ? 5 : 4" class="p-0">
+                      <div class="students-panel">
+                        @if (studentsMap[group.id] && studentsMap[group.id].length) {
+                          <table class="table table-sm students-inner-table mb-0">
+                            <thead>
+                            <tr>
+                              <th>Nume</th>
+                              <th>Email</th>
+                              @if (isAdmin) { <th class="text-end">Acțiuni</th> }
+                            </tr>
+                            </thead>
+                            <tbody>
+                              @for (student of studentsMap[group.id]; track student.id) {
+                                <tr>
+                                  <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                      <div class="student-avatar">{{ student?.name?.charAt(0) }}</div>
+                                      {{ student.name }}
+                                    </div>
+                                  </td>
+                                  <td class="text-muted">{{ student.email }}</td>
+                                  @if (isAdmin) {
+                                    <td class="text-end">
+                                      <button (click)="editStudent(student)" class="btn btn-xs btn-outline-primary me-1">Editează</button>
+                                      <button (click)="deleteStudent(student.id, group.id)" class="btn btn-xs btn-outline-danger">Șterge</button>
+                                    </td>
+                                  }
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        } @else {
+                          <div class="students-empty">
+                            <i class="bi bi-person-x fs-5 text-muted"></i>
+                            <span class="text-muted ms-2">Nu există studenți în această grupă.</span>
+                          </div>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [length]="filteredGroups.length"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageSize]="pageSize"
+          aria-label="Select page of groups"
+          showFirstLastButtons>
+        </mat-paginator>
+      } @else {
+        <div class="alert alert-info">Nu au fost găsite Grupe de studenți.</div>
+      }
+    </div>
+  </div>
+</div>

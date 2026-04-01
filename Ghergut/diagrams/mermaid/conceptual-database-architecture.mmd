@@ -1,0 +1,78 @@
+---
+title: "Conceptual Database Architecture - Academo"
+---
+graph TB
+    subgraph Users["👥 UTILIZATORI"]
+        direction LR
+        Teachers["📚 TEACHERS<br/>Profesori & Admin<br/>- email, password, name<br/>- is_admin flag"]
+        Students["👨‍🎓 STUDENTS<br/>Studenți<br/>- email, name, password<br/>- group_id, study_cycle<br/>- start_year, study_year"]
+    end
+
+    subgraph Structure["🏫 STRUCTURA ACADEMICĂ"]
+        direction LR
+        Groups["👥 STUDENT_GROUPS<br/>Grupe Fizice<br/>- 1210A, 1210B, 2310C<br/>- año, semestru"]
+
+        Courses["📖 COURSES<br/>Materii/Cursuri<br/>- name, teacher_id<br/>- is_optional flag<br/>- year, semester"]
+
+        Labs["🔬 LABORATORIES<br/>Laboratoare<br/>- 1-14 per curs<br/>- topic"]
+
+        Instructors["👨‍🏫 COURSE_LAB_INSTRUCTORS<br/>Asistenți Lab<br/>- course_id -> teacher_id"]
+    end
+
+    subgraph StudyGroups["📚 GRUPE DE STUDIU"]
+        direction LR
+        SG["📋 STUDY_GROUPS<br/>Pseudo-Grupe Flexibile<br/>- creată dintr-un curs<br/>- poate include 1+ grupe fizice"]
+
+        SGM["🔗 STUDY_GROUP_MEMBERS<br/>Relație M:N<br/>- student_id -> study_group_id<br/>- conectează studenți la grupe"]
+    end
+
+    subgraph Sessions["🎓 SESIUNI & PREZENȚĂ"]
+        direction LR
+        Sessions["📅 SESSIONS<br/>Sesiuni de Laborator<br/>- course_id, study_group_id<br/>- lab_number, date<br/>- topic"]
+
+        Attendance["✓/✗ ATTENDANCE<br/>Prezență/Absență<br/>- student_id, session_id<br/>- status (present/absent)<br/>- recorded_at"]
+    end
+
+    subgraph Exams["📝 EXAMENE"]
+        direction LR
+        ExamSchedule["📋 EXAM_SCHEDULES<br/>Programarea Examenelor<br/>- file_name, file_path<br/>- uploaded_by (teacher_id)<br/>- year, timestamps"]
+    end
+
+    %% Relații UTILIZATORI -> STRUCTURĂ
+    Teachers -->|cre ază| Courses
+    Teachers -->|asistent la| Instructors
+    Students -->|aparține| Groups
+    Groups -->|este localizat în| Courses
+
+    %% Relații STRUCTURĂ -> GRUPE STUDIU
+    Courses -->|crează| SG
+    Labs -->|parte din| Courses
+    SG -->|conține studenți din| Groups
+    SG -->|are membri| SGM
+    Students -->|se înscrie în| SGM
+
+    %% Relații GRUPE STUDIU -> SESIUNI
+    SG -->|are sesiuni| Sessions
+    Courses -->|legat de sesiuni| Sessions
+    Labs -->|asociate sesiunilor| Sessions
+    Students -->|participă la| Sessions
+    Sessions -->|înregistrează| Attendance
+    Students -->|are înregistrări| Attendance
+
+    %% Relații EXAMENE
+    Teachers -->|încarcă| ExamSchedule
+    ExamSchedule -->|pentru anul| Courses
+
+    %% Styling
+    classDef userClass fill:#E3F2FD,stroke:#1976D2,stroke-width:2px,color:#000
+    classDef structureClass fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#000
+    classDef studyClass fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#000
+    classDef sessionClass fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    classDef examClass fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#000
+
+    class Teachers,Students userClass
+    class Groups,Courses,Labs,Instructors structureClass
+    class SG,SGM studyClass
+    class Sessions,Attendance sessionClass
+    class ExamSchedule examClass
+

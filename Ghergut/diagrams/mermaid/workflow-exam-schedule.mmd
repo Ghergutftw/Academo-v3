@@ -1,0 +1,59 @@
+---
+title: "Workflow: Gestionarea Programării Examenelor"
+---
+flowchart TD
+    Start([Administrator Acceseaza\nModul Examene]) --> CheckAuth{Autentificat\nca Admin?}
+
+    CheckAuth -->|Nu| Login[Redirecționare\nla Login]
+    Login --> Start
+
+    CheckAuth -->|Da| Menu{Ce Dorești?}
+
+    Menu -->|Vizualizare| ViewExisting[Afișare Programarea\nExamenelor Actuale]
+    ViewExisting --> ShowExam["📋 Tabel cu:<br/>- Fișier încărcat<br/>- Data încărcării<br/>- Anul academic<br/>- Prof. care a încărcat"]
+    ShowExam --> DownloadOption{Descărcare\nFișier?}
+    DownloadOption -->|Nu| End1([Sfârşit])
+    DownloadOption -->|Da| Download["⬇️ Download Excel"]
+    Download --> End2([Sfârşit])
+
+    Menu -->|Încărcare Nouă| SelectFile[Selectează Fișier Excel\nProgramare Examene]
+    SelectFile --> ValidateFile{Fișier Valid?}
+
+    ValidateFile -->|Nu| ErrorFile["❌ Eroare:<br/>Fișier invalid<br/>Folosiți template-ul"]
+    ErrorFile --> SelectFile
+
+    ValidateFile -->|Da| ValidateName{Fișier cu Examene\npentru ce An?}
+
+    ValidateName --> SelectYear["📅 Selectează Anul<br/>(Ex: 2026)"]
+    SelectYear --> CheckExisting{Deja Existe<br/>Programare<br/>pentru acest An?}
+
+    CheckExisting -->|Da| AskReplace["Programarea Deja Există<br/>Doriți să O Înlocuiți?"]
+    AskReplace -->|Nu| Menu
+    AskReplace -->|Da| Replace["🔄 Înlocuire..."]
+    Replace --> Upload
+
+    CheckExisting -->|Nu| Upload["📤 Upload în<br/>uploads/exams/[YEAR]/"]
+
+    Upload --> SaveDB["💾 Salvare în Database:<br/>- file_name<br/>- file_path<br/>- uploaded_by (Admin ID)<br/>- year<br/>- uploaded_at"]
+
+    SaveDB --> Notify["✅ Notificare:<br/>Programare Examene\nÎncărcată cu Succes"]
+
+    Notify --> ShareAccess["🔗 Acces pentru Toți:<br/>- Studenți: Vizualizare + Download<br/>- Profesori: Vizualizare + Download<br/>- Admin: Vizualizare + Update"]
+
+    ShareAccess --> End3([Sfârşit])
+
+    style Start fill:#90EE90
+    style End1 fill:#FFB6C1
+    style End2 fill:#90EE90
+    style End3 fill:#90EE90
+    style CheckAuth fill:#FFE4B5
+    style Menu fill:#FFE4B5
+    style ValidateFile fill:#FFE4B5
+    style ValidateName fill:#FFE4B5
+    style CheckExisting fill:#FFE4B5
+    style AskReplace fill:#FFE4B5
+    style Download fill:#98FB98
+    style Upload fill:#98FB98
+    style Notify fill:#98FB98
+    style ErrorFile fill:#FFB6C1
+

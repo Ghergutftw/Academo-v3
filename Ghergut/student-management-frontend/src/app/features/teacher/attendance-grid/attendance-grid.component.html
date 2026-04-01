@@ -1,0 +1,168 @@
+<div class="attendance-grid-container">
+  <div class="page-header">
+    <h2>Tabel Prezență - Marchează Prezența Studenților</h2>
+  </div>
+
+  @if (error) {
+    <div class="alert alert-danger alert-dismissible fade show">
+      {{ error }}
+      <button (click)="error = ''" aria-label="Close" class="btn-close" type="button"></button>
+    </div>
+  }
+
+  @if (success) {
+    <div class="alert alert-success alert-dismissible fade show">
+      {{ success }}
+      <button (click)="success = ''" aria-label="Close" class="btn-close" type="button"></button>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Materie</mat-label>
+            <mat-select (selectionChange)="onCourseChange()" [(ngModel)]="selectedCourse" [disabled]="loading">
+              <mat-option [value]="null">Selectează o materie</mat-option>
+              @for (course of courses; track course.id) {
+                <mat-option [value]="course">{{ course.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>
+              @if (isMandatoryCourse) {
+                Grupă de Studenți
+              } @else {
+                Grupă de Studiu
+              }
+            </mat-label>
+            <mat-select (selectionChange)="onGroupChange()" [(ngModel)]="selectedGroup"
+                        [disabled]="!selectedCourse || loading" panelClass="hide-disabled">
+              <mat-option [value]="null">
+                @if (isMandatoryCourse) {
+                  Selectează o grupă de studenți
+                } @else {
+                  Selectează o grupă de studiu
+                }
+              </mat-option>
+              @for (group of displayGroups; track group.id) {
+                <mat-option [value]="group">{{ group.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (selectedCourse && !isMandatoryCourse && displayGroups.length === 0) {
+            <small class="text-muted d-block mt-1">
+              <i class="bi bi-info-circle"></i> Nu există grupe de studiu create pentru această materie opțională încă.
+            </small>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Încărcare...</span>
+      </div>
+      <p class="mt-3 text-muted">Încărcare date prezență...</p>
+    </div>
+  }
+
+  @if (selectedCourse && selectedGroup && !loading && students.length > 0) {
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            {{ selectedCourse.name }} - {{ selectedGroup.name }}
+          </h5>
+          <div class="d-flex align-items-center gap-2">
+            <button (click)="exportToExcel()" [disabled]="loading || students.length === 0"
+                    class="btn btn-sm btn-outline-light">
+              <i class="bi bi-file-earmark-excel"></i> Export Excel
+            </button>
+            <button (click)="savePendingChanges()" [disabled]="!hasPending || saving" class="btn btn-sm btn-success">
+              <i class="bi bi-save"></i> Salvează modificările
+            </button>
+            <button (click)="discardPendingChanges()" [disabled]="!hasPending || saving"
+                    class="btn btn-sm btn-outline-light">
+              <i class="bi bi-arrow-counterclockwise"></i> Anulează
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="attendance-table">
+            <thead>
+            <tr>
+              <th class="sticky-col student-col">Student</th>
+              @for (labNum of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; track labNum) {
+                <th
+                  [title]="getLabTopic(labNum)"
+                  class="lab-col text-center">
+                  <div class="lab-header d-flex flex-column align-items-center justify-content-center">
+                    <div class="lab-number">Lab {{ labNum }}</div>
+                    <span class="ms-1" style="cursor:pointer;" tabindex="0"
+                          [attr.aria-label]="getLabTopic(labNum)"
+                          [matTooltip]="getLabTopic(labNum)"
+                          matTooltipPosition="above">
+                      <i class="bi bi-question-circle text-info" style="font-size:1.1rem;"></i>
+                    </span>
+                  </div>
+                </th>
+              }
+            </tr>
+            </thead>
+            <tbody>
+              @for (student of students; track student.id) {
+                <tr>
+                  <td class="sticky-col student-col">
+                    <div class="student-info">
+                      <div class="student-name">{{ student.name }}</div>
+                      <div class="student-email">{{ student.email }}</div>
+                    </div>
+                  </td>
+                  @for (labNum of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; track labNum) {
+                    <td class="attendance-cell text-center">
+                      <button
+                        (click)="toggleAttendance(student.id, labNum)"
+                        [class.btn-present]="getCellStatus(student.id, labNum) === 'present'"
+                        [class.btn-absent]="getCellStatus(student.id, labNum) !== 'present'"
+                        class="attendance-toggle-btn"
+                        type="button">
+                        <i [class]="getCellStatus(student.id, labNum) === 'present' ? 'bi bi-check-lg' : 'bi bi-x-lg'"></i>
+                      </button>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (selectedCourse && selectedGroup && !loading && students.length === 0) {
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle"></i>
+      Nu au fost găsiți studenți în această grupă de studiu.
+    </div>
+  }
+
+  @if (!selectedCourse || !selectedGroup) {
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-grid-3x3 text-muted" style="font-size: 4rem;"></i>
+        <h4 class="mt-3 text-muted">Selectează o materie și o grupă de studiu pentru a vizualiza tabelul de
+          prezență</h4>
+      </div>
+    </div>
+  }
+</div>

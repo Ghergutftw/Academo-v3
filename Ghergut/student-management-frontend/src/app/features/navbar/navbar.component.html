@@ -1,0 +1,80 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img ngSrc="assets/academo.svg" alt="Academo Logo" class="brand-logo-image academo-logo" height="190" width=190 priority>
+    <img ngSrc="assets/logo.png" alt="AC Logo" class="brand-logo-image ac-logo" href="https://ac.tuiasi.ro/" height="190" width=190 priority>
+    <span class="brand-text"></span>
+  </div>
+
+  @if (isAuthenticated) {
+    <ul class="nav-links">
+      @if (isAdmin) {
+        <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/admin/students"
+               routerLinkActive="active">Studenți</a></li>
+        <li><a routerLink="/admin/teachers" routerLinkActive="active">Profesori</a></li>
+        <li><a routerLink="/admin/courses" routerLinkActive="active">Materii</a></li>
+        <li><a routerLink="/admin/groups" routerLinkActive="active">Grupe de Studenți</a></li>
+        <li><a routerLink="/admin/study-groups" routerLinkActive="active">Grupe de Studiu</a></li>
+        <li><a routerLink="/schedule" routerLinkActive="active">Orar</a></li>
+      }
+
+      @if (isTeacher) {
+        <li><a routerLink="/teacher/attendance-grid" routerLinkActive="active">Tabel Prezență</a></li>
+        <li><a routerLink="/teacher/courses" routerLinkActive="active">Materiile Mele</a></li>
+        <li><a routerLink="/teacher/previous-activities" routerLinkActive="active">Activități Anterioare</a></li>
+        <li><a routerLink="/teacher/students" routerLinkActive="active">Studenți</a></li>
+        <li><a routerLink="/teacher/groups" routerLinkActive="active">Grupe de Studenți</a></li>
+        <li><a routerLink="/schedule" routerLinkActive="active">Orar</a></li>
+
+      }
+
+      @if (isStudent) {
+        <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/student" routerLinkActive="active">Panou
+          Principal</a>
+        </li>
+        <li><a routerLink="/student/courses" routerLinkActive="active">Materiile Mele</a></li>
+        <li><a routerLink="/student/my-group" routerLinkActive="active">Grupa Mea</a></li>
+        <li>
+          <a routerLink="/schedule" routerLinkActive="active">
+            Orar
+          </a>
+        </li>
+      }
+
+      <li><a routerLink="/exam-schedule" routerLinkActive="active">
+        Programare Examene
+      </a></li>
+    </ul>
+
+    <div class="navbar-user">
+      <button (click)="toggleDropdown()" class="user-profile-btn" type="button">
+        <div class="user-avatar">{{ userInitial }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ currentUser?.name }}</div>
+          <div class="user-role">{{ currentUser?.role }}</div>
+        </div>
+        <i class="bi bi-chevron-down dropdown-icon"></i>
+      </button>
+
+      @if (showDropdown) {
+        <div class="custom-dropdown-menu">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name">{{ currentUser?.name }}</div>
+            <div class="dropdown-user-email">{{ currentUser?.email }}</div>
+          </div>
+          <div class="dropdown-divider"></div>
+          @if (isStudent || isTeacher) {
+            <button (click)="openChangePasswordModal()" class="dropdown-item" type="button">
+              <i class="bi bi-key me-2"></i>
+              Schimbă Parola
+            </button>
+            <div class="dropdown-divider"></div>
+          }
+          <button (click)="logout()" class="dropdown-item logout-item" type="button">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Deconectare
+          </button>
+        </div>
+      }
+    </div>
+  }
+</nav>

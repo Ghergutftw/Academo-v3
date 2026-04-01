@@ -1,0 +1,77 @@
+\chapter{Arhitectura Aplicației}
+\label{cap:arhitectura}
+
+\section{Arhitectura Generală Client-Server}
+
+Aplicația SMS urmează o arhitectură clasică client-server:
+
+\begin{itemize}
+  \item \textbf{Frontend (Client):} Angular SPA, rulează în browser
+  \item \textbf{Backend API:} PHP REST API, pe server web
+  \item \textbf{Database:} MySQL, accesibilă doar din backend
+  \item \textbf{Communication:} HTTP/HTTPS cu JSON
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.85\textwidth]{1_ARHITECTURA_SISTEM.drawio.png}
+  \caption{Arhitectura Sistem – Client-Server}
+  \label{fig:arch}
+\end{figure}
+
+\section{Structura Frontend-ului (Core, Shared, Features)}
+
+Frontend-ul este organizat pe module:
+
+\begin{itemize}
+  \item \textbf{AppModule:} root module, routing principal
+  \item \textbf{CoreModule:} servicii singleton (AuthService, HttpService)
+  \item \textbf{SharedModule:} componente refolosibile (Navbar, Sidebar)
+  \item \textbf{Feature Modules (lazy-loaded):} StudentModule, CourseModule, AttendanceModule, ExamModule
+\end{itemize}
+
+\section{Organizarea Modulelor și Componentelor}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.8\textwidth]{3_FRONTEND_COMPONENTS.drawio.png}
+  \caption{Component Tree – Ierarhia Componentelor}
+  \label{fig:components}
+\end{figure}
+
+Fiecare modul conține: Components, Services, Models (TypeScript interfaces), Routing.
+
+Pattern: \textbf{Smart Components} apelează servicii, \textbf{Presentational Components} doar afișează.
+
+\section{Fluxul Datelor (Component → Service → API → UI)}
+
+\begin{enumerate}
+  \item User interacționează cu Component
+  \item Component apelează Service method
+  \item Service apelează HttpClient
+  \item HttpClient trimite request la API (cu JWT header din JwtInterceptor)
+  \item API procesează, validează, salvează în DB
+  \item API returnează JSON
+  \item Service emite datele via Observable
+  \item Component subscribe și actualizează UI
+\end{enumerate}
+
+\section{Modelul de Date (ERD)}
+
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[width=0.95\textwidth]{erd-placeholder.png}
+%  \caption{Entity-Relationship Diagram}
+%  \label{fig:erd}
+%\end{figure}
+
+Relații principale: 1:N și M:N între tabele (teachers-courses, students-groups, sessions-attendance, etc.).
+
+\section{Diagrame Relevante}
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=0.85\textwidth]{2_USE_CASES.drawio.png}
+  \caption{Diagrama Cazurilor de Utilizare}
+  \label{fig:usecases}
+\end{figure}

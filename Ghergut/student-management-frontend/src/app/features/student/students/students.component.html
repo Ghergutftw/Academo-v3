@@ -1,0 +1,281 @@
+<div class="container-fluid mt-4">
+  <div class="card">
+    <div class="card-header bg-soft-primary text-dark d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Studenți</h2>
+      @if (isAdmin) {
+        <div>
+          <button (click)="resetFilters()" [class]="'btn ms-2 ' + (searchText || selectedGroupFilter || selectedYearFilter || selectedStudyCycleFilter || selectedStudyYearFilter || selectedFinancingTypeFilter || selectedStudentStatusFilter ? 'btn-warning' : 'btn-outline-secondary')" title="Resetează filtrele" [disabled]="!searchText && !selectedGroupFilter && !selectedYearFilter && !selectedStudyCycleFilter && !selectedStudyYearFilter && !selectedFinancingTypeFilter && !selectedStudentStatusFilter"><i class="bi bi-arrow-counterclockwise me-1"></i> Resetează</button>
+          <button (click)="triggerFileInput()" class="btn btn-success me-2 ms-2">
+            <i class="bi bi-file-earmark-excel"></i> Importă Excel
+          </button>
+          <button (click)="openAddModal()" class="btn btn-light">Adaugă Student</button>
+          <input (change)="onFileSelected($event)" accept=".xlsx,.xls" id="excelFileInput" style="display: none;"
+                 type="file">
+        </div>
+      }
+    </div>
+    <div class="card-body bg-light">
+      @if (students.length) {
+        <!-- Filter Section -->
+        <div class="row mb-3 filter-row align-items-end">
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Nume sau Email</label>
+            <mat-form-field class="w-100">
+              <input
+                (input)="applyFilters()"
+                [(ngModel)]="searchText"
+                matInput
+                placeholder="Tastează pentru a căuta studenți..."
+                type="text">
+              <button
+                (click)="clearSearchText()"
+                *ngIf="searchText"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-bold"> Grupă</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="groupControl"
+                [matAutocomplete]="groupAuto"
+                matInput
+                placeholder="Selectează grupa..."
+                type="text">
+              <button
+                (click)="clearGroupFilter()"
+                *ngIf="selectedGroupFilter"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #groupAuto="matAutocomplete"
+                (optionSelected)="onGroupSelected($event.option.value)"
+                [displayWith]="displayGroupName.bind(this)">
+                @for (group of groups; track group.id) {
+                  <mat-option [value]="group">
+                    {{ group.name }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          @if (isAdmin) {
+            <div class="col-md-3">
+              <label class="form-label fw-bold"> An Începere</label>
+              <mat-form-field class="w-100">
+                <input
+                  [formControl]="yearControl"
+                  [matAutocomplete]="yearAuto"
+                  matInput
+                  placeholder="Selectează anul..."
+                  type="text">
+                <button
+                  (click)="clearYearFilter()"
+                  *ngIf="selectedYearFilter"
+                  mat-icon-button
+                  matSuffix>
+                  ✕
+                </button>
+                <mat-autocomplete
+                  #yearAuto="matAutocomplete"
+                  (optionSelected)="onYearSelected($event.option.value)"
+                  [displayWith]="displayYear.bind(this)">
+                  @for (year of getUniqueYears(); track year) {
+                    <mat-option [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          }
+          <div class="col-md-2">
+            <label class="form-label fw-bold"> Ciclu de Studii</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="studyCycleControl"
+                [matAutocomplete]="studyCycleAuto"
+                matInput
+                placeholder="Selectează ciclul..."
+                type="text">
+              <button
+                (click)="clearStudyCycleFilter()"
+                *ngIf="selectedStudyCycleFilter"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #studyCycleAuto="matAutocomplete"
+                (optionSelected)="onStudyCycleSelected($event.option.value)"
+                [displayWith]="displayStudyCycle.bind(this)">
+                @for (cycle of studyCycles; track cycle) {
+                  <mat-option [value]="cycle">
+                    {{ cycle }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Second Row of Filters -->
+        <div class="row mb-3 filter-row">
+          <div class="col-md-3">
+            <label class="form-label fw-bold"> An de Studiu</label>
+            <mat-form-field class="w-100">
+              <input
+                [formControl]="studyYearControl"
+                [matAutocomplete]="studyYearAuto"
+                matInput
+                placeholder="Selectează anul de studiu..."
+                type="text">
+              <button
+                (click)="clearStudyYearFilter()"
+                *ngIf="selectedStudyYearFilter"
+                mat-icon-button
+                matSuffix>
+                ✕
+              </button>
+              <mat-autocomplete
+                #studyYearAuto="matAutocomplete"
+                (optionSelected)="onStudyYearSelected($event.option.value)"
+                [displayWith]="displayStudyYear.bind(this)">
+                @for (year of availableStudyYears; track year) {
+                  <mat-option [value]="year">
+                    An {{ year }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          @if (isAdmin) {
+            <div class="col-md-3">
+              <label class="form-label fw-bold"> Finanțare</label>
+              <mat-form-field class="w-100">
+                <input
+                  [formControl]="financingTypeControl"
+                  [matAutocomplete]="financingTypeAuto"
+                  matInput
+                  placeholder="Selectează finanțarea..."
+                  type="text">
+                <button
+                  (click)="clearFinancingTypeFilter()"
+                  *ngIf="selectedFinancingTypeFilter"
+                  mat-icon-button
+                  matSuffix>
+                  ✕
+                </button>
+                <mat-autocomplete
+                  #financingTypeAuto="matAutocomplete"
+                  (optionSelected)="onFinancingTypeSelected($event.option.value)"
+                  [displayWith]="displayFinancingType.bind(this)">
+                  @for (type of financingTypes; track type) {
+                    <mat-option [value]="type">
+                      {{ type }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold"> Status</label>
+              <mat-form-field class="w-100">
+                <input
+                  [formControl]="studentStatusControl"
+                  [matAutocomplete]="studentStatusAuto"
+                  matInput
+                  placeholder="Selectează statusul..."
+                  type="text">
+                <button
+                  (click)="clearStudentStatusFilter()"
+                  *ngIf="selectedStudentStatusFilter"
+                  mat-icon-button
+                  matSuffix>
+                  ✕
+                </button>
+                <mat-autocomplete
+                  #studentStatusAuto="matAutocomplete"
+                  (optionSelected)="onStudentStatusSelected($event.option.value)"
+                  [displayWith]="displayStudentStatus.bind(this)">
+                  @for (status of studentStatuses; track status) {
+                    <mat-option [value]="status">
+                      {{ status }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          }
+          <div class="col-md-3">
+            <!-- Spacer or additional filter if needed -->
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-soft">
+            <thead class="table-light">
+            <tr>
+              <th>Nume</th>
+              <th>Email</th>
+              <th>Grupă</th>
+              @if (isAdmin) {
+                <th>An Început</th>
+              }
+              <th>Ciclu Studii</th>
+              <th>An Studiu</th>
+              @if (isAdmin) {
+                <th>Finanțare</th>
+                <th>Status</th>
+              }
+              @if (isAdmin) {
+                <th>Acțiuni</th>
+              }
+            </tr>
+            </thead>
+            <tbody>
+              @for (s of getPaginatedStudents(); track s.id) {
+                <tr>
+                  <td>{{ s.name }}</td>
+                  <td>{{ s.email }}</td>
+                  <td>{{ s.group_name }}</td>
+                  @if (isAdmin) {
+                    <td>{{ s.start_year || '-' }}</td>
+                  }
+                  <td>{{ s.study_cycle || '-' }}</td>
+                  <td>{{ s.study_year ? 'Anul ' + s.study_year : '-' }}</td>
+                  @if (isAdmin) {
+                    <td>{{ s.financing_type || '-' }}</td>
+                    <td>{{ s.student_status || '-' }}</td>
+                  }
+                  @if (isAdmin) {
+                    <td>
+                      <button (click)="editStudent(s)" class="btn btn-sm btn-outline-primary me-2">Editează</button>
+                      <button (click)="deleteStudent(s.id)" class="btn btn-sm btn-outline-danger">Șterge</button>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [length]="filteredStudents.length"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageSize]="pageSize"
+          aria-label="Select page of students"
+          showFirstLastButtons>
+        </mat-paginator>
+      } @else {
+        <div class="alert alert-info">Nu au fost găsiți studenți.</div>
+      }
+    </div>
+  </div>
+</div>

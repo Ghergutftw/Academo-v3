@@ -1,0 +1,125 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ mode === 'add' ? 'Adaugă Grupă' : 'Editează Grupă' }}</h5>
+  <button type="button" class="btn-close" aria-label="Închide" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div class="mb-3">
+    <label for="groupName" class="form-label">Nume</label>
+    <input
+      id="groupName"
+      type="text"
+      class="form-control"
+      [(ngModel)]="groupName"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="studyCycle" class="form-label">Ciclu de Studiu</label>
+    <select
+      id="studyCycle"
+      class="form-select"
+      [(ngModel)]="studyCycle"
+      (ngModelChange)="onCycleChange()"
+      required
+    >
+      <option value="">Selectați ciclul</option>
+      <option value="Licenta">Licență</option>
+      <option value="Master">Master</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="groupYear" class="form-label">An de Studiu</label>
+    <select
+      id="groupYear"
+      class="form-select"
+      [(ngModel)]="groupYear"
+      (ngModelChange)="onYearChange()"
+      [disabled]="!studyCycle"
+      required
+    >
+      <option [ngValue]="null">Selectați anul</option>
+      @for (year of availableYears; track year) {
+        <option [ngValue]="year">Anul {{ year }}</option>
+      }
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">An Universitar</label>
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          id="academicYearStart"
+          type="text"
+          class="form-control"
+          [(ngModel)]="academicYearStart"
+          (ngModelChange)="onAcademicYearStartChange()"
+          placeholder="ex. 2025"
+          maxlength="4"
+          pattern="[0-9]{4}"
+          required
+        />
+      </div>
+      <div class="col-md-6">
+        <input
+          id="academicYearEnd"
+          type="text"
+          class="form-control"
+          [(ngModel)]="academicYearEnd"
+          placeholder="ex. 2026"
+          [readonly]="true"
+          required
+        />
+      </div>
+    </div>
+  </div>
+
+  @if (groupYear !== null) {
+    <div class="mb-3">
+      <label class="form-label">{{ mode === 'add' ? 'Adaugă Studenți' : 'Gestionează Studenți' }} (Anul {{ groupYear }})</label>
+      <div class="d-flex align-items-center mb-2">
+        <button type="button" class="btn btn-outline-primary btn-sm me-2" (click)="importExcelFile.click()">
+          <i class="bi bi-file-earmark-excel"></i> Import Excel
+        </button>
+        <input #importExcelFile type="file" accept=".xlsx,.xls,.csv" (change)="onExcelImport($event)" style="display: none;" />
+        <input
+          type="text"
+          class="form-control search-input mb-2"
+          placeholder="Căutare după nume sau email..."
+          [(ngModel)]="studentSearchText"
+          (ngModelChange)="filterDisplayedStudents()"
+        />
+      </div>
+      <div class="student-selection" style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px;">
+        @if (loading) {
+          <p class="text-muted">Se încarcă studenții...</p>
+        } @else if (displayedStudents.length === 0 && !studentSearchText) {
+          <p class="text-muted">Nu au fost găsiți studenți pentru anul {{ groupYear }}</p>
+        } @else if (displayedStudents.length === 0 && studentSearchText) {
+          <p class="text-muted">Niciun student nu corespunde căutării</p>
+        } @else {
+          @for (student of displayedStudents; track student.id) {
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="'student-' + student.id"
+                [checked]="isStudentSelected(student.id)"
+                (change)="toggleStudent(student.id)"
+              />
+              <label class="form-check-label" [for]="'student-' + student.id">
+                {{ student.name }} ({{ student.email }})
+              </label>
+            </div>
+          }
+        }
+      </div>
+      <small class="text-muted">{{ selectedStudentIds.length }} student(i) selectat(i)</small>
+    </div>
+  }
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Anulează</button>
+  <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!groupName || !groupYear || !studyCycle || !isAcademicYearValid()">
+    {{ mode === 'add' ? 'Adaugă' : 'Salvează' }}
+  </button>
+</div>

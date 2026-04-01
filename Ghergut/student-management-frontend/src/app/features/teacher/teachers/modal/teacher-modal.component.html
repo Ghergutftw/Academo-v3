@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ mode === 'add' ? 'Adaugă Profesor' : 'Editează Profesor' }}</h5>
+  <button (click)="activeModal.dismiss()" aria-label="Închide" class="btn-close" type="button"></button>
+</div>
+<div class="modal-body">
+  <div class="mb-3">
+    <label class="form-label" for="teacherName">Nume</label>
+    <input
+      [(ngModel)]="teacherName"
+      class="form-control"
+      id="teacherName"
+      required
+      type="text"
+    />
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="teacherEmail">Email</label>
+    <input
+      [(ngModel)]="teacherEmail"
+      class="form-control"
+      id="teacherEmail"
+      required
+      type="email"
+    />
+  </div>
+  <div class="mb-3">
+    <div class="form-check">
+      <input
+        [(ngModel)]="teacherIsAdmin"
+        class="form-check-input"
+        id="teacherIsAdmin"
+        type="checkbox"
+      />
+      <label class="form-check-label" for="teacherIsAdmin">
+        Administrator
+      </label>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">Anulează</button>
+  <button (click)="save()" [disabled]="!teacherName || !teacherEmail" class="btn btn-primary" type="button">
+    {{ mode === 'add' ? 'Adaugă' : 'Salvează' }}
+  </button>
+</div>
